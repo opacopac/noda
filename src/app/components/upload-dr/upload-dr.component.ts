@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {DrMapper} from '../../dr-mapper/DrMapper';
-import {VoronoiHelper} from '../../voronoi/voronoi-helper';
+import {NovaDrParser} from '../../dr-parser/NovaDrParser';
+import {VoronoiHelper} from '../../geo/voronoi-helper';
+import {OlMapService} from '../../services/ol-map.service';
+import {DrData} from '../../model/dr-data';
+import {OlHaltestelle} from '../../map-components/OlHaltestelle';
 
 
 @Component({
@@ -12,7 +15,7 @@ export class UploadDrComponent implements OnInit {
     public dataFile;
 
 
-    constructor() {
+    constructor(private mapService: OlMapService) {
     }
 
 
@@ -34,8 +37,14 @@ export class UploadDrComponent implements OnInit {
     public parseFileClick() {
         console.log('uploading...');
 
-        // DrMapper.loadZipFile(this.dataFile);
-        DrMapper.loadXmlFile(this.dataFile);
+        const drDataPromise = NovaDrParser.loadXmlFile(this.dataFile);
+        drDataPromise.then((drData: DrData) => {
+            const layer = this.mapService.addVectorLayer(false);
+
+            for (const hst of drData.haltestellen) {
+                const olHst = new OlHaltestelle(hst, layer.getSource());
+            }
+        });
 
         console.log('upload completed');
     }

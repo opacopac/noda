@@ -1,4 +1,4 @@
-import {Haltestelle} from '../model/Haltestelle';
+import {Haltestelle} from '../model/haltestelle';
 
 
 export class VoronoiHelper {
@@ -21,7 +21,7 @@ export class VoronoiHelper {
 
     private static getSitesFromHst(hstList: Haltestelle[]): Site[] {
         return hstList.map(hst => {
-            return { x: hst.position.chX, y: hst.position.chY };
+            return { x: hst.position.longitude, y: hst.position.latitude };
         });
     }
 }

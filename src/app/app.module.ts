@@ -3,11 +3,13 @@ import {NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
 import {UploadDrComponent} from './components/upload-dr/upload-dr.component';
+import { BaseMapComponent } from './components/base-map/base-map.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        UploadDrComponent
+        UploadDrComponent,
+        BaseMapComponent
     ],
     imports: [
         BrowserModule
