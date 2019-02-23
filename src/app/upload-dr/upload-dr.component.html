@@ -1,0 +1,6 @@
+<p>
+  upload-dr works!
+</p>
+<input type="file" (change)="this.fileUploadChange($event)">
+<button (click)="this.parseFileClick()" [disabled]="!this.isFileSelected()">Parse</button>
+<button (click)="this.calcVoronoiClick()">Calc Voronoi</button>

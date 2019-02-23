@@ -25,7 +25,9 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/vendor/rhill-voronoi/rhill-voronoi-core.js"
+            ]
           },
           "configurations": {
             "production": {
