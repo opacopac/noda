@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {DrMapper} from '../dr-mapper/DrMapper';
-import {VoronoiHelper} from '../voronoi/voronoi-helper';
+import {DrMapper} from '../../dr-mapper/DrMapper';
+import {VoronoiHelper} from '../../voronoi/voronoi-helper';
 
 
 @Component({
@@ -34,9 +34,8 @@ export class UploadDrComponent implements OnInit {
     public parseFileClick() {
         console.log('uploading...');
 
-        const reader = new FileReader();
-        reader.onload = DrMapper.parseXmlFile.bind(this);
-        reader.readAsText(this.dataFile);
+        // DrMapper.loadZipFile(this.dataFile);
+        DrMapper.loadXmlFile(this.dataFile);
 
         console.log('upload completed');
     }

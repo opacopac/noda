@@ -2,7 +2,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
-import {UploadDrComponent} from './upload-dr/upload-dr.component';
+import {UploadDrComponent} from './components/upload-dr/upload-dr.component';
 
 @NgModule({
     declarations: [
