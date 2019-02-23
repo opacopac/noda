@@ -9,7 +9,11 @@ export class NovaDrParserHaltestelle {
         const hstList: Haltestelle[] = [];
 
         for (const drHst of drHstList) {
-            hstList.push(DrMapperHaltestelle.createHaltestelleFromJson(drHst));
+            const hst = DrMapperHaltestelle.createHaltestelleFromJson(drHst);
+
+            if (hst) {
+                hstList.push(hst);
+            }
         }
 
         return hstList;

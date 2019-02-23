@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {NovaDrParser} from '../../dr-parser/NovaDrParser';
-import {VoronoiHelper} from '../../geo/voronoi-helper';
 import {OlMapService} from '../../services/ol-map.service';
 import {DrData} from '../../model/dr-data';
 import {OlHaltestelle} from '../../map-components/OlHaltestelle';
@@ -34,7 +33,7 @@ export class UploadDrComponent implements OnInit {
     }
 
 
-    public parseFileClick() {
+    public loadFileClick() {
         console.log('uploading...');
 
         const drDataPromise = NovaDrParser.loadXmlFile(this.dataFile);
@@ -48,14 +47,4 @@ export class UploadDrComponent implements OnInit {
 
         console.log('upload completed');
     }
-
-
-    public calcVoronoiClick() {
-        console.log('calculation voronoi...');
-
-        VoronoiHelper.calculate([]);
-
-        console.log('calculation voronoi completed');
-    }
-
 }
