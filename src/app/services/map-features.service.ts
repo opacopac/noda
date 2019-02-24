@@ -5,6 +5,8 @@ import {OlKante} from '../ol-components/OlKante';
 import {OlHaltestelle} from '../ol-components/OlHaltestelle';
 import {OlMapCoords, OlMapService} from './ol-map.service';
 import {OlZone} from '../ol-components/OlZone';
+import {Extent2d} from '../geo/extent-2d';
+import {Haltestelle} from '../model/haltestelle';
 
 
 @Injectable({
@@ -43,9 +45,10 @@ export class MapFeaturesService {
             this.initLayers();
         }
 
-        this.drawKanten();
-        this.drawHaltestellen();
-        this.drawZonen();
+        const hstList = this.searchHaltestellen(this.mapCoords.extent);
+        this.drawHaltestellen(hstList);
+        // this.drawKanten();
+        // this.drawZonen();
     }
 
 
@@ -65,10 +68,10 @@ export class MapFeaturesService {
     }
 
 
-    private drawHaltestellen() {
+    private drawHaltestellen(hstList: Haltestelle[]) {
         this.hstLayer.getSource().clear(true);
 
-        this.drData.haltestellen.forEach(hst => {
+        hstList.forEach(hst => {
             const olHst = new OlHaltestelle(hst, this.hstLayer.getSource());
         });
     }
@@ -80,5 +83,22 @@ export class MapFeaturesService {
         this.drData.zonen.forEach(zone => {
             const olHst = new OlZone(zone, this.hstLayer.getSource());
         });
+    }
+
+
+    private searchHaltestellen(extent: Extent2d, maxResults = 100): Haltestelle[] {
+        const hstResult: Haltestelle[] = [];
+
+        for (const hst of this.drData.hstPrioList) {
+            if (hstResult.length >= maxResults) {
+                break;
+            } else if (extent.containsPoint(hst.position)) {
+                hstResult.push(hst);
+            }
+        }
+
+        console.log(hstResult.length + ' haltestellen found');
+
+        return hstResult;
     }
 }
