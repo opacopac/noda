@@ -3,7 +3,6 @@ import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import LineString from 'ol/geom/LineString';
 import Polygon from 'ol/geom/Polygon';
-import MultiPolygon from 'ol/geom/MultiPolygon';
 import {Position2d} from '../geo/position-2d';
 import {DataItem} from '../model/data-item';
 import {OlPos} from '../geo/ol-pos';
@@ -84,40 +83,26 @@ export abstract class OlComponentBase {
         if (!positionList) {
             this.hideFeature(feature);
         }
-        const newPosList = positionList ? positionList.map((pos) => OlPos.getMercator(pos)) : undefined;
+        const mercatorPosList = positionList ? positionList.map((pos) => OlPos.getMercator(pos)) : undefined;
         const olLine = (feature.getGeometry() as LineString);
         if (!olLine) {
-            feature.setGeometry(new LineString(newPosList));
+            feature.setGeometry(new LineString(mercatorPosList));
         } else {
-            olLine.setCoordinates(newPosList);
+            olLine.setCoordinates(mercatorPosList);
         }
     }
 
 
-    protected setPolygonGeometry(feature: Feature, polygon: Polygon) {
-        if (!polygon) {
+    protected setPolygonGeometry(feature: Feature, positionList: Position2d[]) {
+        if (!positionList) {
             this.hideFeature(feature);
         }
-        const newPolygon = polygon ? polygon.getMercatorList() : undefined;
+        const mercatorPosList = positionList ? positionList.map((pos) => OlPos.getMercator(pos)) : undefined;
         const olPolygon = (feature.getGeometry() as Polygon);
         if (!olPolygon) {
-            feature.setGeometry(new Polygon([newPolygon]));
+            feature.setGeometry(new Polygon([mercatorPosList]));
         } else {
-            olPolygon.setCoordinates([newPolygon]);
-        }
-    }
-
-
-    protected setMultiPolygonGeometry(feature: Feature, multiPolygon: MultiPolygon) {
-        if (!multiPolygon) {
-            this.hideFeature(feature);
-        }
-        const newPolygon = multiPolygon ? multiPolygon.getMercatorList() : undefined;
-        const olPolygon = (feature.getGeometry() as Polygon);
-        if (!olPolygon) {
-            feature.setGeometry(new Polygon(newPolygon));
-        } else {
-            olPolygon.setCoordinates(newPolygon);
+            olPolygon.setCoordinates([mercatorPosList]);
         }
     }
 }
