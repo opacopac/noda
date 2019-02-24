@@ -6,6 +6,7 @@ import Polygon from 'ol/geom/Polygon';
 import MultiPolygon from 'ol/geom/MultiPolygon';
 import {Position2d} from '../geo/position-2d';
 import {DataItem} from '../model/data-item';
+import {OlPos} from '../geo/ol-pos';
 
 
 export abstract class OlComponentBase {
@@ -68,7 +69,7 @@ export abstract class OlComponentBase {
         if (!position) {
             this.hideFeature(feature);
         } else {
-            const newPos = position.getMercator();
+            const newPos = OlPos.getMercator(position);
             const olPoint = (feature.getGeometry() as Point);
             if (!olPoint) {
                 feature.setGeometry(new Point(newPos));
@@ -83,7 +84,7 @@ export abstract class OlComponentBase {
         if (!positionList) {
             this.hideFeature(feature);
         }
-        const newPosList = positionList ? positionList.map((pos) => pos.getMercator()) : undefined;
+        const newPosList = positionList ? positionList.map((pos) => OlPos.getMercator(pos)) : undefined;
         const olLine = (feature.getGeometry() as LineString);
         if (!olLine) {
             feature.setGeometry(new LineString(newPosList));

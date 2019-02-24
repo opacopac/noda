@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {NovaDrParser} from '../../dr-parser/NovaDrParser';
+import {NovaDrParser} from '../../nova-dr/NovaDrParser';
 import {OlMapService} from '../../services/ol-map.service';
 import {DrData} from '../../model/dr-data';
-import {OlHaltestelle} from '../../map-components/OlHaltestelle';
+import {MapFeaturesService} from '../../services/map-features.service';
 
 
 @Component({
@@ -14,7 +14,9 @@ export class UploadDrComponent implements OnInit {
     public dataFile;
 
 
-    constructor(private mapService: OlMapService) {
+    constructor(
+        private mapService: OlMapService,
+        private mapFeatureService: MapFeaturesService) {
     }
 
 
@@ -38,11 +40,7 @@ export class UploadDrComponent implements OnInit {
 
         const drDataPromise = NovaDrParser.loadXmlFile(this.dataFile);
         drDataPromise.then((drData: DrData) => {
-            const layer = this.mapService.addVectorLayer(false);
-
-            for (const hst of drData.haltestellen) {
-                const olHst = new OlHaltestelle(hst, layer.getSource());
-            }
+            this.mapFeatureService.updateDrData(drData);
         });
 
         console.log('upload completed');

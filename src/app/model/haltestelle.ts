@@ -5,7 +5,6 @@ import {DataItemType} from './data-item-type';
 
 export class Haltestelle implements DataItem {
     public constructor(
-        public id: string,
         public uic: number,
         public bavName: string,
         public position: Position2d

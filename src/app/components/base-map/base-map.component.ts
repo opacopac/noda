@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {OlMapService} from '../../services/ol-map.service';
+import {Subscription} from 'rxjs';
+import {MapFeaturesService} from '../../services/map-features.service';
 
 
 @Component({
@@ -9,9 +11,12 @@ import {OlMapService} from '../../services/ol-map.service';
 })
 export class BaseMapComponent implements OnInit {
     private readonly targetElement = 'map';
+    private mapMovedZoomedSubscription: Subscription;
 
-
-    constructor(private mapService: OlMapService) {
+    constructor(
+        private mapService: OlMapService,
+        private mapFeatureService: MapFeaturesService
+    ) {
     }
 
 
@@ -22,5 +27,9 @@ export class BaseMapComponent implements OnInit {
 
     private initMap() {
         this.mapService.initMap(this.targetElement);
+
+        this.mapMovedZoomedSubscription = this.mapService.onMapCoordsChanged.subscribe(mapCoords => {
+            this.mapFeatureService.updateMapCoords(mapCoords);
+        });
     }
 }
