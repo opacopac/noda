@@ -3,7 +3,8 @@ import {NovaDrParser} from '../../nova-dr/NovaDrParser';
 import {OlMapService} from '../../services/ol-map.service';
 import {DrData} from '../../model/dr-data';
 import {MapFeaturesService} from '../../services/map-features.service';
-import {LocalStorageService} from '../../services/local-storage.service';
+import {StorageService} from '../../services/storage.service';
+import {Zonenplan} from '../../model/zonenplan';
 
 
 @Component({
@@ -16,7 +17,7 @@ export class UploadDrComponent implements OnInit {
 
 
     constructor(
-        private storageService: LocalStorageService,
+        private storageService: StorageService,
         private mapService: OlMapService,
         private mapFeatureService: MapFeaturesService) {
     }
@@ -47,5 +48,48 @@ export class UploadDrComponent implements OnInit {
         });
 
         console.log('upload completed');
+    }
+
+
+    public getHstCount(): number {
+        if (this.mapFeatureService.drData) {
+            return this.mapFeatureService.drData.haltestellen.size;
+        } else {
+            return 0;
+        }
+    }
+
+
+    public getKantenCount(): number {
+        if (this.mapFeatureService.drData) {
+            return this.mapFeatureService.drData.kanten.size;
+        } else {
+            return 0;
+        }
+    }
+
+
+    public getZonenCount(): number {
+        if (this.mapFeatureService.drData) {
+            return this.mapFeatureService.drData.zonen.size;
+        } else {
+            return 0;
+        }
+    }
+
+
+    public getZonenplanList(): Zonenplan[] {
+        if (this.mapFeatureService.drData) {
+            return Array.from(this.mapFeatureService.drData.zonenplaene.values());
+        } else {
+            return [];
+        }
+    }
+
+
+    public zonenplanChange(event: Event) {
+        const idx = parseInt((event.target as HTMLSelectElement).value, 10);
+        const zonenplan = idx >= 0 ? this.getZonenplanList()[idx] : undefined;
+        this.mapFeatureService.selectZonenplan(zonenplan);
     }
 }

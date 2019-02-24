@@ -1,3 +1,15 @@
-<p>upload stammdaten.xml:</p>
-<input type="file" (change)="this.fileUploadChange($event)">
-<button (click)="this.loadFileClick()" [disabled]="!this.isFileSelected()">Load</button>
+<table>
+    <tr>
+        <td>upload stammdaten.xml:</td>
+        <td><input type="file" (change)="this.fileUploadChange($event)"><button (click)="this.loadFileClick()" [disabled]="!this.isFileSelected()">Load</button></td>
+        <td>Haltestellen: {{ this.getHstCount() }}</td>
+        <td>Kanten: {{ this.getKantenCount() }}</td>
+        <td>Zonen: {{ this.getZonenCount() }}</td>
+        <td>Zonenpläne:
+            <select (change)="this.zonenplanChange($event)" [value]="-1">
+                <option [value]="-1">-- select --</option>
+                <option *ngFor="let zonenplan of this.getZonenplanList(); let i = index;" [value]="i">{{ zonenplan.bezeichnung }}</option>
+            </select>
+        </td>
+    </tr>
+</table>

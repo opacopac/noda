@@ -9,7 +9,7 @@ import {Kante} from '../model/kante';
 @Injectable({
     providedIn: 'root'
 })
-export class LocalStorageService {
+export class StorageService {
     private readonly drIdKey = 'drId';
     private readonly hstKey = 'haltestellen';
     private readonly kantenKey = 'kanten';

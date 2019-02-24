@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {LocalStorageService} from './services/local-storage.service';
+import {StorageService} from './services/storage.service';
 import {MapFeaturesService} from './services/map-features.service';
 
 
@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
 
 
     constructor(
-        private storageService: LocalStorageService,
+        private storageService: StorageService,
         private mapFeaturesService: MapFeaturesService
     ) {
     }

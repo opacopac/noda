@@ -9,13 +9,16 @@ import {Extent2d} from '../geo/extent-2d';
 import {Haltestelle} from '../model/haltestelle';
 import {Kante} from '../model/kante';
 import {QuadTree} from '../geo/quad-tree';
+import {Zonenplan} from '../model/zonenplan';
+import {Zone} from '../model/zone';
 
 
 @Injectable({
     providedIn: 'root'
 })
 export class MapFeaturesService {
-    private drData: DrData;
+    public drData: DrData;
+    private selectedZonenplan: Zonenplan;
     private hstPrioList: Haltestelle[];
     private hstQuadTree: QuadTree<Haltestelle>;
     private mapCoords: OlMapCoords;
@@ -31,6 +34,13 @@ export class MapFeaturesService {
     public updateMapCoords(mapCoords: OlMapCoords) {
         this.mapCoords = mapCoords;
         this.updateMap();
+    }
+
+
+    public selectZonenplan(zonenplan: Zonenplan) {
+        this.selectedZonenplan = zonenplan;
+        const zonenList = zonenplan ? zonenplan.zonen : [];
+        this.drawZonen(zonenList);
     }
 
 
@@ -97,7 +107,8 @@ export class MapFeaturesService {
         const kantenList = this.searchKanten(hstList);
         this.drawKanten(kantenList);
 
-        // this.drawZonen();
+        const zonenList = this.selectedZonenplan ? this.selectedZonenplan.zonen : [];
+        this.drawZonen(zonenList);
     }
 
 
@@ -126,11 +137,11 @@ export class MapFeaturesService {
     }
 
 
-    private drawZonen() {
+    private drawZonen(zonenList: Zone[]) {
         this.zonenLayer.getSource().clear(true);
 
-        this.drData.zonen.forEach(zone => {
-            const olHst = new OlZone(zone, this.hstLayer.getSource());
+        zonenList.forEach(zone => {
+            const olZone = new OlZone(zone, this.hstLayer.getSource());
         });
     }
 
