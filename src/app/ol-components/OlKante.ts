@@ -21,18 +21,32 @@ export class OlKante extends OlComponentBase {
         super();
 
         this.olFeature = this.createFeature(kante);
-        this.olFeature.setStyle(this.createStyle());
+        this.olFeature.setStyle(this.createStyle(kante));
         this.setLineGeometry(this.olFeature, [kante.haltestelle1.position, kante.haltestelle2.position]);
         this.source.addFeature(this.olFeature);
     }
 
 
-    private createStyle(): Style {
+    private createStyle(kante: Kante): Style {
         return new Style({
+            /*fill: new Fill({
+                color: '#999999'
+            }),*/
             stroke: new Stroke({
-                color: '#FF00FF',
-                width: 5
+                color: this.getKanteColor(kante),
+                width: 3
             })
         });
+    }
+
+
+    private getKanteColor(kante: Kante): string {
+        switch (kante.verkehrsmittelTyp) {
+            case 'BUS': return '#FFCC00';
+            case 'SCHIFF': return '#6666FF';
+            case 'BAHN': return '#111111';
+            case 'FUSSWEG':
+            default: return '#EE00EE';
+        }
     }
 }

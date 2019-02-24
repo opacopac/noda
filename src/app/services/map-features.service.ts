@@ -8,6 +8,7 @@ import {OlZone} from '../ol-components/OlZone';
 import {Extent2d} from '../geo/extent-2d';
 import {Haltestelle} from '../model/haltestelle';
 import {Kante} from '../model/kante';
+import {QuadTree} from '../geo/quad-tree';
 
 
 @Injectable({
@@ -15,6 +16,8 @@ import {Kante} from '../model/kante';
 })
 export class MapFeaturesService {
     private drData: DrData;
+    private hstPrioList: Haltestelle[];
+    private hstQuadTree: QuadTree<Haltestelle>;
     private mapCoords: OlMapCoords;
     private kantenLayer: VectorLayer;
     private hstLayer: VectorLayer;
@@ -25,15 +28,57 @@ export class MapFeaturesService {
     }
 
 
-    public updateDrData(drData: DrData) {
-        this.drData = drData;
+    public updateMapCoords(mapCoords: OlMapCoords) {
+        this.mapCoords = mapCoords;
         this.updateMap();
     }
 
 
-    public updateMapCoords(mapCoords: OlMapCoords) {
-        this.mapCoords = mapCoords;
+    public updateDrData(drData: DrData) {
+        this.drData = drData;
+
+        this.calcLUTs();
+
         this.updateMap();
+    }
+
+
+    private calcLUTs() {
+        console.log('creating LUTs...');
+        this.createKantenLut();
+        this.createZonenLut();
+        this.createZonenplanLut();
+        console.log('creating LUTs completed');
+
+        console.log('creating hst quad tree...');
+        this.hstQuadTree = this.createHstQuadTree(this.drData.haltestellen);
+        console.log('creating hst quad tree completed');
+
+        console.log('creating hst prio list...');
+        this.hstPrioList = this.getHstPrioList(this.drData.haltestellen);
+        console.log('creating hst prio list completed');
+    }
+
+
+    private createKantenLut() {
+        this.drData.kanten.forEach(kante => {
+            kante.haltestelle1.kantenLut.push(kante);
+            kante.haltestelle2.kantenLut.push(kante);
+        });
+    }
+
+
+    private createZonenLut() {
+        this.drData.zonen.forEach(zone => {
+            zone.kanten.forEach(kante => kante.zonenLut.push(zone));
+        });
+    }
+
+
+    private createZonenplanLut() {
+        this.drData.zonenplaene.forEach(zonenplan => {
+            zonenplan.zonen.forEach(zone => zone.zonenplanLut.push(zonenplan));
+        });
     }
 
 
@@ -93,7 +138,7 @@ export class MapFeaturesService {
     private searchHaltestellen(extent: Extent2d, maxResults = 100): Haltestelle[] {
         const hstResult: Haltestelle[] = [];
 
-        for (const hst of this.drData.hstPrioList) {
+        for (const hst of this.hstPrioList) {
             if (hstResult.length >= maxResults) {
                 break;
             } else if (extent.containsPoint(hst.position)) {
@@ -115,5 +160,24 @@ export class MapFeaturesService {
         });
 
         return kantenResult;
+    }
+
+
+    private createHstQuadTree(hstMap: Map<string, Haltestelle>): QuadTree<Haltestelle> {
+        const quad = new QuadTree<Haltestelle>(undefined, 5, 10, 45, 50);
+
+        hstMap.forEach(hst => quad.addItem(hst));
+
+        return quad;
+    }
+
+
+    private getHstPrioList(hstMap: Map<string, Haltestelle>): Haltestelle[] {
+        const hstPrioList = Array.from(hstMap.values());
+        hstPrioList.sort((hst1: Haltestelle, hst2: Haltestelle) => {
+            return hst2.kantenLut.length - hst1.kantenLut.length;
+        });
+
+        return hstPrioList;
     }
 }

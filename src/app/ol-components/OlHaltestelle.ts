@@ -32,13 +32,14 @@ export class OlHaltestelle extends OlComponentBase {
             image: new Circle({
                 radius: 6,
                 fill: new Fill({
-                    color: '#FF00FF'
-                })
+                    color: '#999999'
+                }),
+                stroke: new Stroke({color: '#000000', width: 1}),
             }),
             text: new Text({
                 font: 'bold 14px Calibri,sans-serif',
                 text: haltestelle.bavName,
-                fill: new Fill({color: '#451A57'}),
+                fill: new Fill({color: '#333333'}),
                 stroke: new Stroke({color: '#FFFFFF', width: 2}),
                 offsetX: 0,
                 offsetY: 20

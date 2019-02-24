@@ -57,15 +57,7 @@ export class NovaDrParser {
         const zonenplanMap = NovaDrParserZonenplan.parseZonenplanList(drJson, zonenMap);
         console.log('parsing zonenpläne completed (' + zonenplanMap.size + ')');
 
-        console.log('creating hst quad tree...');
-        const hstQuadTree = this.createHstQuadTree(hstMap);
-        console.log('creating hst quad tree completed');
-
-        console.log('creating hst prio list...');
-        const hstPrioList = this.getHstPrioList(hstMap);
-        console.log('creating hst prio list completed');
-
-        return new DrData(drId, hstMap, kantenMap, zonenMap, zonenplanMap, hstQuadTree, hstPrioList);
+        return new DrData(drId, hstMap, kantenMap, zonenMap, zonenplanMap);
     }
 
 
@@ -89,24 +81,5 @@ export class NovaDrParser {
         };
 
         return fxp.parse(xmlText, options);
-    }
-
-
-    private static createHstQuadTree(hstMap: Map<string, Haltestelle>): QuadTree<Haltestelle> {
-        const quad = new QuadTree<Haltestelle>(undefined, 5, 10, 45, 50);
-
-        hstMap.forEach(hst => quad.addItem(hst));
-
-        return quad;
-    }
-
-
-    private static getHstPrioList(hstMap: Map<string, Haltestelle>): Haltestelle[] {
-        const hstPrioList = Array.from(hstMap.values());
-        hstPrioList.sort((hst1: Haltestelle, hst2: Haltestelle) => {
-            return hst2.kantenLut.length - hst1.kantenLut.length;
-        });
-
-        return hstPrioList;
     }
 }

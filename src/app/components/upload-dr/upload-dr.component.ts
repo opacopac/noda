@@ -3,6 +3,7 @@ import {NovaDrParser} from '../../nova-dr/NovaDrParser';
 import {OlMapService} from '../../services/ol-map.service';
 import {DrData} from '../../model/dr-data';
 import {MapFeaturesService} from '../../services/map-features.service';
+import {LocalStorageService} from '../../services/local-storage.service';
 
 
 @Component({
@@ -15,6 +16,7 @@ export class UploadDrComponent implements OnInit {
 
 
     constructor(
+        private storageService: LocalStorageService,
         private mapService: OlMapService,
         private mapFeatureService: MapFeaturesService) {
     }
@@ -40,6 +42,7 @@ export class UploadDrComponent implements OnInit {
 
         const drDataPromise = NovaDrParser.loadXmlFile(this.dataFile);
         drDataPromise.then((drData: DrData) => {
+            this.storageService.storeDrData(drData);
             this.mapFeatureService.updateDrData(drData);
         });
 

@@ -37,15 +37,10 @@ export class NovaDrParserZonenplan {
             return undefined;
         }
 
-        const zonenplan = new Zonenplan(
+        return new Zonenplan(
             drZonenplanVer.bezeichnung,
             zonenList
         );
-
-        // reverse zonenplan lut
-        zonenList.forEach(zone => zone.zonenplanLut.push(zonenplan));
-
-        return zonenplan;
     }
 
 
