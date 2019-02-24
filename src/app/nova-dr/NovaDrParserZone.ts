@@ -37,10 +37,15 @@ export class NovaDrParserZone {
             return undefined;
         }
 
-        return new Zone(
+        const zone = new Zone(
             parseInt(drZoneVer.code, 10),
             kantenList
         );
+
+        // create reverse LUT
+        kantenList.forEach(kante => kante.zonenLut.push(zone));
+
+        return zone;
     }
 
 

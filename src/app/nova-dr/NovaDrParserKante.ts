@@ -40,10 +40,16 @@ export class NovaDrParserKante {
             return undefined;
         }
 
-        return new Kante(
+        const kante = new Kante(
             hst1,
             hst2,
             drKanteVer.verkehrsmittelTyp
         );
+
+        // create reverse LUT
+        hst1.kantenLut.push(kante);
+        hst2.kantenLut.push(kante);
+
+        return kante;
     }
 }
