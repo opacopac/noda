@@ -5,6 +5,8 @@ import {NovaDrSchema} from './NovaDrSchema';
 import {DrData} from '../model/dr-data';
 import {X2jOptionsOptional} from 'fast-xml-parser';
 import {NovaDrParserKante} from './NovaDrParserKante';
+import {NovaDrParserZone} from './NovaDrParserZone';
+import {NovaDrParserZonenplan} from './NovaDrParserZonenplan';
 
 
 export class NovaDrParser {
@@ -45,7 +47,15 @@ export class NovaDrParser {
         const kantenMap = NovaDrParserKante.parseKanteList(drJson, hstMap);
         console.log('parsing kanten completed (' + kantenMap.size + ')');
 
-        return new DrData(drId, hstMap, kantenMap);
+        console.log('parsing zonen...');
+        const zonenMap = NovaDrParserZone.parseZoneList(drJson, kantenMap);
+        console.log('parsing zonen completed (' + zonenMap.size + ')');
+
+        console.log('parsing zonenpläne...');
+        const zonenplanMap = NovaDrParserZonenplan.parseZonenplanList(drJson, zonenMap);
+        console.log('parsing zonenpläne completed (' + zonenplanMap.size + ')');
+
+        return new DrData(drId, hstMap, kantenMap, zonenMap, zonenplanMap);
     }
 
 

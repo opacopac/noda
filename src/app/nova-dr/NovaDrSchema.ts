@@ -6,6 +6,7 @@ export interface NovaDrSchema {
 export interface NovaDrSchemaRoot {
     metadata: NovaDrSchemaMetaData;
     subsystemNetz: NovaDrSchemaNetz;
+    subsystemZonenModell: NovaDrSchemaZonenModell;
 }
 
 
