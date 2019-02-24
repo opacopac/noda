@@ -7,6 +7,7 @@ import {OlMapCoords, OlMapService} from './ol-map.service';
 import {OlZone} from '../ol-components/OlZone';
 import {Extent2d} from '../geo/extent-2d';
 import {Haltestelle} from '../model/haltestelle';
+import {Kante} from '../model/kante';
 
 
 @Injectable({
@@ -47,7 +48,10 @@ export class MapFeaturesService {
 
         const hstList = this.searchHaltestellen(this.mapCoords.extent);
         this.drawHaltestellen(hstList);
-        // this.drawKanten();
+
+        const kantenList = this.searchKanten(hstList);
+        this.drawKanten(kantenList);
+
         // this.drawZonen();
     }
 
@@ -59,10 +63,10 @@ export class MapFeaturesService {
     }
 
 
-    private drawKanten() {
+    private drawKanten(kantenList: Kante[]) {
         this.kantenLayer.getSource().clear(true);
 
-        this.drData.kanten.forEach(kante => {
+        kantenList.forEach(kante => {
             const olKante = new OlKante(kante, this.kantenLayer.getSource());
         });
     }
@@ -100,5 +104,16 @@ export class MapFeaturesService {
         console.log(hstResult.length + ' haltestellen found');
 
         return hstResult;
+    }
+
+
+    private searchKanten(hstResult: Haltestelle[]): Kante[] {
+        const kantenResult: Kante[] = [];
+
+        hstResult.forEach(hst => {
+            hst.kantenLut.forEach(kante => kantenResult.push(kante));
+        });
+
+        return kantenResult;
     }
 }
