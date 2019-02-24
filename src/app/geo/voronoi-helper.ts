@@ -12,10 +12,10 @@ export class VoronoiHelper {
 
     private static getBoundingBox(): BBox {
         return {
-            xl: 0,
-            xr: 1000000,
-            yb: 0,
-            yt: 1000000,
+            xl: 5,
+            xr: 10,
+            yb: 45,
+            yt: 50,
         };
     }
 

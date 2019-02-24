@@ -11,6 +11,7 @@ import {Kante} from '../model/kante';
 import {QuadTree} from '../geo/quad-tree';
 import {Zonenplan} from '../model/zonenplan';
 import {Zone} from '../model/zone';
+import {VoronoiHelper} from '../geo/voronoi-helper';
 
 
 @Injectable({
@@ -67,6 +68,10 @@ export class MapFeaturesService {
         console.log('creating hst prio list...');
         this.hstPrioList = this.getHstPrioList(this.drData.haltestellen);
         console.log('creating hst prio list completed');
+
+        console.log('calculating voronoi...');
+        this.calcVoronoi(this.drData.haltestellen);
+        console.log('calculating voronoi completed');
     }
 
 
@@ -190,5 +195,10 @@ export class MapFeaturesService {
         });
 
         return hstPrioList;
+    }
+
+
+    private calcVoronoi(hstMap: Map<string, Haltestelle>) {
+        const voronoiResult = VoronoiHelper.calculate(Array.from(hstMap.values()));
     }
 }
