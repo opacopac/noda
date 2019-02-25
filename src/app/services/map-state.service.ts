@@ -17,15 +17,39 @@ import {VoronoiHelper} from '../geo/voronoi-helper';
 @Injectable({
     providedIn: 'root'
 })
-export class MapFeaturesService {
+export class MapStateService {
     public drData: DrData;
-    private selectedZonenplan: Zonenplan;
+    private _showKanten = true;
+    private _showHst = true;
+    private _selectedZonenplan: Zonenplan;
     private hstPrioList: Haltestelle[];
     private hstQuadTree: QuadTree<Haltestelle>;
     private mapCoords: OlMapCoords;
     private kantenLayer: VectorLayer;
     private hstLayer: VectorLayer;
     private zonenLayer: VectorLayer;
+
+
+    public get showKanten(): boolean {
+        return this._showKanten;
+    }
+
+
+    public set showKanten(value: boolean) {
+        this._showKanten = value;
+        this.updateMap();
+    }
+
+
+    public get showHst(): boolean {
+        return this._showHst;
+    }
+
+
+    public set showHst(value: boolean) {
+        this._showHst = value;
+        this.updateMap();
+    }
 
 
     constructor(private mapService: OlMapService) {
@@ -39,17 +63,16 @@ export class MapFeaturesService {
 
 
     public selectZonenplan(zonenplan: Zonenplan) {
-        this.selectedZonenplan = zonenplan;
+        this._selectedZonenplan = zonenplan;
         const zonenList = zonenplan ? zonenplan.zonen : [];
         this.drawZonen(zonenList);
+        this.updateMap();
     }
 
 
     public updateDrData(drData: DrData) {
         this.drData = drData;
-
         this.calcLUTs();
-
         this.updateMap();
     }
 
@@ -107,12 +130,16 @@ export class MapFeaturesService {
         }
 
         const hstList = this.searchHaltestellen(this.mapCoords.extent);
-        this.drawHaltestellen(hstList);
+        if (this._showHst)  {
+            this.drawHaltestellen(hstList);
+        } else {
+            this.drawHaltestellen([]);
+        }
 
-        const kantenList = this.searchKanten(hstList);
+        const kantenList = this._showKanten ? this.searchKanten(hstList) : [];
         this.drawKanten(kantenList);
 
-        const zonenList = this.selectedZonenplan ? this.selectedZonenplan.zonen : [];
+        const zonenList = this._selectedZonenplan ? this._selectedZonenplan.zonen : [];
         this.drawZonen(zonenList);
     }
 

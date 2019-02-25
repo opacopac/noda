@@ -1,0 +1,27 @@
+<table>
+    <tr>
+        <td>
+            upload stammdaten.xml:
+            <app-upload-dr></app-upload-dr>
+        </td>
+        <td>
+            <input type="checkbox" (change)="this.showHaltestellenChange($event)" checked>
+            {{ this.getHstCount() }} Haltestellen
+        </td>
+        <td>
+            <input type="checkbox" (change)="this.showKantenChange($event)" checked>
+            {{ this.getKantenCount() }} Kanten
+        </td>
+        <td>
+            {{ this.getZonenCount() }} Zonen
+        </td>
+        <td>
+            Zonenpläne:
+            <select (change)="this.zonenplanChange($event)" [value]="-1">
+                <option [value]="-1">(empty)</option>
+                <option *ngFor="let zonenplan of this.getZonenplanList(); let i = index;"
+                        [value]="i">{{ zonenplan.bezeichnung }}</option>
+            </select>
+        </td>
+    </tr>
+</table>

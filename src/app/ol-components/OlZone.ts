@@ -47,18 +47,16 @@ export class OlZone extends OlComponentBase {
     private createStyle(zone: Zone): Style {
         return new Style({
             fill: new Fill({
-                // color: 'rgba(152, 206, 235, 0.3)'
                 color: this.getColorString(zone, 0.3)
             }),
-            /*stroke: new Stroke({
-                color: 'rgba(23, 128, 194, 0.8)',
-                width: 3,
-                lineDash: [10, 7]
-            }),*/
+            stroke: new Stroke({
+                color: 'rgba(255, 255, 255, 0.2)', // this.getColorString(zone, 0.1),
+                width: 1,
+            }),
             text: new Text({
                 font: 'bold 24px Calibri,sans-serif',
                 text: zone.code.toString(),
-                fill: new Fill({ color: this.getColorString(zone, 1.0) }), // new Fill({color: 'rgba(255, 0, 0, 1.0)'}),
+                fill: new Fill({ color: this.getColorString(zone, 1.0) }),
                 stroke: new Stroke({ color: '#FFFFFF', width: 3 }),
             })
         });

@@ -34,7 +34,8 @@ export class OlKante extends OlComponentBase {
             }),*/
             stroke: new Stroke({
                 color: this.getKanteColor(kante),
-                width: 3
+                width: 3,
+                lineDash: this.isFussweg(kante) ? [10, 7] : undefined
             })
         });
     }
@@ -42,11 +43,16 @@ export class OlKante extends OlComponentBase {
 
     private getKanteColor(kante: Kante): string {
         switch (kante.verkehrsmittelTyp) {
-            case 'BUS': return '#FFCC00';
+            case 'BUS': return '#FFFF00';
             case 'SCHIFF': return '#6666FF';
             case 'BAHN': return '#111111';
             case 'FUSSWEG':
-            default: return '#EE00EE';
+            default: return '#000099';
         }
+    }
+
+
+    private isFussweg(kante: Kante): boolean {
+        return kante.verkehrsmittelTyp === 'FUSSWEG';
     }
 }

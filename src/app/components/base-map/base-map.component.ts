@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {OlMapService} from '../../services/ol-map.service';
 import {Subscription} from 'rxjs';
-import {MapFeaturesService} from '../../services/map-features.service';
+import {MapStateService} from '../../services/map-state.service';
 
 
 @Component({
@@ -15,7 +15,7 @@ export class BaseMapComponent implements OnInit {
 
     constructor(
         private mapService: OlMapService,
-        private mapFeatureService: MapFeaturesService
+        private mapFeatureService: MapStateService
     ) {
     }
 
