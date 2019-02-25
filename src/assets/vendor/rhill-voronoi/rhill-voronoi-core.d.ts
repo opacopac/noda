@@ -7,6 +7,7 @@ declare class Voronoi {
 declare interface Site {
     x: number;
     y: number;
+    ext_ref?: any;
 }
 
 declare interface BBox {

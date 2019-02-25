@@ -105,4 +105,18 @@ export abstract class OlComponentBase {
             olPolygon.setCoordinates([mercatorPosList]);
         }
     }
+
+
+    protected setMultiPolygonGeometry(feature: Feature, polygonList: Position2d[][]) {
+        if (!polygonList) {
+            this.hideFeature(feature);
+        }
+        const newPolygon = polygonList ? polygonList.map(polygon => polygon.map(pos => OlPos.getMercator(pos))) : undefined;
+        const olPolygon = (feature.getGeometry() as Polygon);
+        if (!olPolygon) {
+            feature.setGeometry(new Polygon(newPolygon));
+        } else {
+            olPolygon.setCoordinates(newPolygon);
+        }
+    }
 }

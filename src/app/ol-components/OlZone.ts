@@ -4,6 +4,7 @@ import {Style, Icon, Fill, Circle, Text, Stroke} from 'ol/style';
 import {OlComponentBase} from './OlComponentBase';
 import {Zone} from '../model/zone';
 import {Position2d} from '../geo/position-2d';
+import {Haltestelle} from '../model/haltestelle';
 
 
 export class OlZone extends OlComponentBase {
@@ -23,8 +24,8 @@ export class OlZone extends OlComponentBase {
 
         this.olFeature = this.createFeature(zone);
         this.olFeature.setStyle(this.createStyle(zone));
-        const posList = this.getPosList(zone);
-        this.setPolygonGeometry(this.olFeature, posList);
+        const hstPolyList = this.getHstPolygonList(zone);
+        this.setMultiPolygonGeometry(this.olFeature, hstPolyList);
         this.source.addFeature(this.olFeature);
     }
 
@@ -49,15 +50,18 @@ export class OlZone extends OlComponentBase {
     }
 
 
-    private getPosList(zone: Zone): Position2d[] {
-        const posList: Position2d[] = [];
-
-        // TODO
+    private getHstPolygonList(zone: Zone): Position2d[][] {
+        const hstList: Haltestelle[] = [];
         zone.kanten.forEach(kante => {
-            posList.push(kante.haltestelle1.position);
-            posList.push(kante.haltestelle2.position);
+            if (hstList.indexOf(kante.haltestelle1) === -1) {
+                hstList.push(kante.haltestelle1);
+            }
+
+            if (hstList.indexOf(kante.haltestelle2) === -1) {
+                hstList.push(kante.haltestelle2);
+            }
         });
 
-        return posList;
+        return hstList.map(hst => hst.polygon);
     }
 }

@@ -199,6 +199,6 @@ export class MapFeaturesService {
 
 
     private calcVoronoi(hstMap: Map<string, Haltestelle>) {
-        const voronoiResult = VoronoiHelper.calculate(Array.from(hstMap.values()));
+        VoronoiHelper.calculate(Array.from(hstMap.values()));
     }
 }

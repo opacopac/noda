@@ -7,6 +7,7 @@ import {Positionable} from '../geo/positionable';
 
 export class Haltestelle implements DataItem, Positionable {
     public kantenLut: Kante[] = [];
+    public polygon: Position2d[] = [];
 
 
     public constructor(
