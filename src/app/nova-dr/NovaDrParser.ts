@@ -38,23 +38,24 @@ export class NovaDrParser {
         const drJson = this.parseXmlText(xmlText);
         console.log('parsing xml completed');
 
+        const stichdatum = this.getStichdatum();
         const drId = NovaDrParserMetadata.parseDatenreleaseId(drJson);
         console.log('DR id: ' + drId);
 
         console.log('parsing haltestellen...');
-        const hstMap = NovaDrParserHaltestelle.parseHaltestelleList(drJson);
+        const hstMap = NovaDrParserHaltestelle.parseHaltestelleList(drJson, stichdatum);
         console.log('parsing haltestellen completed (' + hstMap.size + ')');
 
         console.log('parsing kanten...');
-        const kantenMap = NovaDrParserKante.parseKanteList(drJson, hstMap);
+        const kantenMap = NovaDrParserKante.parseKanteList(drJson, stichdatum, hstMap);
         console.log('parsing kanten completed (' + kantenMap.size + ')');
 
         console.log('parsing zonen...');
-        const zonenMap = NovaDrParserZone.parseZoneList(drJson, kantenMap);
+        const zonenMap = NovaDrParserZone.parseZoneList(drJson, stichdatum, kantenMap);
         console.log('parsing zonen completed (' + zonenMap.size + ')');
 
         console.log('parsing zonenpläne...');
-        const zonenplanMap = NovaDrParserZonenplan.parseZonenplanList(drJson, zonenMap);
+        const zonenplanMap = NovaDrParserZonenplan.parseZonenplanList(drJson, stichdatum, zonenMap);
         console.log('parsing zonenpläne completed (' + zonenplanMap.size + ')');
 
         return new DrData(drId, hstMap, kantenMap, zonenMap, zonenplanMap);
@@ -81,5 +82,16 @@ export class NovaDrParser {
         };
 
         return fxp.parse(xmlText, options);
+    }
+
+
+    private static getStichdatum(): string {
+        const today = new Date();
+        const month = today.getMonth() + 1;
+        const monthStr = month >= 10 ? month.toString() : '0' + month.toString();
+        const day = today.getDate();
+        const dayStr = day >= 10 ? day.toString() : '0' + day.toString();
+
+        return today.getFullYear() + '-' + monthStr + '-' + dayStr;
     }
 }

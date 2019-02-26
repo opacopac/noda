@@ -10,7 +10,6 @@ import {Haltestelle} from '../model/haltestelle';
 import {Kante} from '../model/kante';
 import {QuadTree} from '../geo/quad-tree';
 import {Zonenplan} from '../model/zonenplan';
-import {Zone} from '../model/zone';
 import {VoronoiHelper} from '../geo/voronoi-helper';
 
 
@@ -21,6 +20,7 @@ export class MapStateService {
     public drData: DrData;
     private _showKanten = true;
     private _showHst = true;
+    private _showHstLabels = false;
     private _selectedZonenplan: Zonenplan;
     private hstPrioList: Haltestelle[];
     private hstQuadTree: QuadTree<Haltestelle>;
@@ -52,6 +52,17 @@ export class MapStateService {
     }
 
 
+    public get showHstLabels(): boolean {
+        return this._showHstLabels;
+    }
+
+
+    public set showHstLabels(value: boolean) {
+        this._showHstLabels = value;
+        this.updateMap();
+    }
+
+
     constructor(private mapService: OlMapService) {
     }
 
@@ -64,8 +75,7 @@ export class MapStateService {
 
     public selectZonenplan(zonenplan: Zonenplan) {
         this._selectedZonenplan = zonenplan;
-        const zonenList = zonenplan ? zonenplan.zonen : [];
-        this.drawZonen(zonenList);
+        this.drawZonen(zonenplan);
         this.updateMap();
     }
 
@@ -129,18 +139,18 @@ export class MapStateService {
             this.initLayers();
         }
 
-        const hstList = this.searchHaltestellen(this.mapCoords.extent);
+        const maxResults = this._showHstLabels ? 100 : 500;
+        const hstList = this.searchHaltestellen(this.mapCoords.extent, maxResults);
         if (this._showHst)  {
-            this.drawHaltestellen(hstList);
+            this.drawHaltestellen(hstList, this._showHstLabels);
         } else {
-            this.drawHaltestellen([]);
+            this.drawHaltestellen([], false);
         }
 
         const kantenList = this._showKanten ? this.searchKanten(hstList) : [];
         this.drawKanten(kantenList);
 
-        const zonenList = this._selectedZonenplan ? this._selectedZonenplan.zonen : [];
-        this.drawZonen(zonenList);
+        this.drawZonen(this._selectedZonenplan);
     }
 
 
@@ -160,25 +170,29 @@ export class MapStateService {
     }
 
 
-    private drawHaltestellen(hstList: Haltestelle[]) {
+    private drawHaltestellen(hstList: Haltestelle[], showLabels: boolean) {
         this.hstLayer.getSource().clear(true);
 
         hstList.forEach(hst => {
-            const olHst = new OlHaltestelle(hst, this.hstLayer.getSource());
+            const olHst = new OlHaltestelle(hst, this.hstLayer.getSource(), showLabels);
         });
     }
 
 
-    private drawZonen(zonenList: Zone[]) {
+    private drawZonen(zonenplan: Zonenplan) {
         this.zonenLayer.getSource().clear(true);
 
-        zonenList.forEach(zone => {
-            const olZone = new OlZone(zone, this.hstLayer.getSource());
+        if (!zonenplan) {
+            return;
+        }
+
+        zonenplan.zonen.forEach(zone => {
+            const olZone = new OlZone(zone, zonenplan, this.hstLayer.getSource());
         });
     }
 
 
-    private searchHaltestellen(extent: Extent2d, maxResults = 100): Haltestelle[] {
+    private searchHaltestellen(extent: Extent2d, maxResults: number): Haltestelle[] {
         const hstResult: Haltestelle[] = [];
 
         for (const hst of this.hstPrioList) {

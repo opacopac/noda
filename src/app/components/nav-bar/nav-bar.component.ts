@@ -60,6 +60,11 @@ export class NavBarComponent implements OnInit {
     }
 
 
+    public showHaltestellenLabelsChange(event: Event) {
+        this.mapFeatureService.showHstLabels = (event.target as HTMLInputElement).checked;
+    }
+
+
     public showKantenChange(event: Event) {
         this.mapFeatureService.showKanten = (event.target as HTMLInputElement).checked;
     }

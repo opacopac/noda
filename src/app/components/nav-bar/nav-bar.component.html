@@ -7,6 +7,7 @@
         <td>
             <input type="checkbox" (change)="this.showHaltestellenChange($event)" checked>
             {{ this.getHstCount() }} Haltestellen
+            (<input type="checkbox" (change)="this.showHaltestellenLabelsChange($event)"> Labels)
         </td>
         <td>
             <input type="checkbox" (change)="this.showKantenChange($event)" checked>

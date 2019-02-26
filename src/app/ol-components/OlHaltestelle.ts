@@ -16,18 +16,19 @@ export class OlHaltestelle extends OlComponentBase {
 
     public constructor(
         haltestelle: Haltestelle,
-        private readonly source: Vector) {
+        private readonly source: Vector,
+        private readonly showLabels: boolean) {
 
         super();
 
         this.olFeature = this.createFeature(haltestelle);
-        this.olFeature.setStyle(this.createPointStyle(haltestelle));
+        this.olFeature.setStyle(this.createPointStyle(haltestelle, this.showLabels));
         this.setPointGeometry(this.olFeature, haltestelle.position);
         this.source.addFeature(this.olFeature);
     }
 
 
-    private createPointStyle(haltestelle: Haltestelle): Style {
+    private createPointStyle(haltestelle: Haltestelle, showLabels: boolean): Style {
         return new Style({
             image: new Circle({
                 radius: 6,
@@ -36,14 +37,14 @@ export class OlHaltestelle extends OlComponentBase {
                 }),
                 stroke: new Stroke({color: '#000000', width: 1}),
             }),
-            text: new Text({
+            text: showLabels ? new Text({
                 font: 'bold 14px Calibri,sans-serif',
                 text: haltestelle.bavName,
                 fill: new Fill({color: '#333333'}),
                 stroke: new Stroke({color: '#FFFFFF', width: 2}),
                 offsetX: 0,
                 offsetY: 20
-            })
+            }) : undefined
         });
     }
 }

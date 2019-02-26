@@ -42,7 +42,7 @@ export interface NovaDrSchemaHaltestelle {
         xKoordinate: string;
         uic: string;
         subHaltestellen: string | undefined;
-    };
+    }[];
 }
 
 
@@ -58,7 +58,7 @@ export interface NovaDrSchemaKante {
         verkehrsmittelTyp: string;
         zuschlagspflichtig: string;
         bahnersatz: string;
-    };
+    }[];
 }
 
 // endregion
@@ -82,7 +82,7 @@ export interface NovaDrSchemaZonenplan {
         prioritaet: string;
         zonen: string;
         pruefeSubhaltestellen: string;
-    };
+    }[];
 }
 
 
@@ -98,7 +98,7 @@ export interface NovaDrSchemaZone {
         kanteDefault: string;
         nachbarZone: string;
         zonenpreisfaktor: string;
-    };
+    }[];
 }
 
 // endregion
