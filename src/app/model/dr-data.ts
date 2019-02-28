@@ -2,6 +2,7 @@ import {Haltestelle} from './haltestelle';
 import {Kante} from './kante';
 import {Zone} from './zone';
 import {Zonenplan} from './zonenplan';
+import {Lokalnetz} from './lokalnetz';
 
 
 export class DrData {
@@ -10,6 +11,7 @@ export class DrData {
         public haltestellen: Map<string, Haltestelle>,
         public kanten: Map<string, Kante>,
         public zonen: Map<string, Zone>,
+        public lokalnetze: Map<string, Lokalnetz>,
         public zonenplaene: Map<string, Zonenplan>
     ) {
     }

@@ -1,20 +1,17 @@
 <table>
-    <tr>
+    <tr valign="bottom">
         <td>
-            upload stammdaten.xml:
-            <app-upload-dr></app-upload-dr>
+            upload stammdaten.xml: <app-upload-dr></app-upload-dr><br>
+            <!--download stammdaten.xml: <app-download-dr></app-download-dr>-->
         </td>
         <td>
             <input type="checkbox" (change)="this.showHaltestellenChange($event)" checked>
-            {{ this.getHstCount() }} Haltestellen
-            (<input type="checkbox" (change)="this.showHaltestellenLabelsChange($event)"> Labels)
+            {{ this.getHstCount() }} Haltestellen<br>
+            <input type="checkbox" (change)="this.showHaltestellenLabelsChange($event)"> show Labels
         </td>
         <td>
             <input type="checkbox" (change)="this.showKantenChange($event)" checked>
             {{ this.getKantenCount() }} Kanten
-        </td>
-        <td>
-            {{ this.getZonenCount() }} Zonen
         </td>
         <td>
             Zonenpläne:
@@ -23,6 +20,9 @@
                 <option *ngFor="let zonenplan of this.getZonenplanList(); let i = index;"
                         [value]="i">{{ zonenplan.bezeichnung }}</option>
             </select>
+            <br>
+            <input type="radio" name="zonlok" [value]="1" checked (change)="this.showZonenSelect(true)">{{ this.getZonenCount() }} Zonen<br>
+            <input type="radio" name="zonlok" [value]="2" (change)="this.showZonenSelect(false)">{{ this.getLokalnetzCount() }} Lokalnetze<br>
         </td>
     </tr>
 </table>

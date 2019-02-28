@@ -7,33 +7,11 @@ import {X2jOptionsOptional} from 'fast-xml-parser';
 import {NovaDrParserKante} from './NovaDrParserKante';
 import {NovaDrParserZone} from './NovaDrParserZone';
 import {NovaDrParserZonenplan} from './NovaDrParserZonenplan';
-import {Haltestelle} from '../model/haltestelle';
-import {QuadTree} from '../geo/quad-tree';
+import {NovaDrParserLokalnetz} from './NovaDrParserLokalnetz';
 
 
 export class NovaDrParser {
-    public static loadXmlFile(file: any): Promise<DrData> {
-        console.log('loading text file...');
-
-        const reader = new FileReader();
-        return new Promise<DrData>((success, error) => {
-            reader.onload = (ev: FileReaderProgressEvent) => {
-                console.log('loading text file completed');
-                const drData = this.processContent(ev.target.result);
-                success(drData);
-            };
-
-            reader.onerror = (ev: FileReaderProgressEvent) => {
-                console.error(ev);
-                error(ev);
-            };
-
-            reader.readAsText(file);
-        });
-    }
-
-
-    private static processContent(xmlText: string): DrData {
+    public static processContent(xmlText: string): DrData {
         console.log('parsing xml...');
         const drJson = this.parseXmlText(xmlText);
         console.log('parsing xml completed');
@@ -54,11 +32,15 @@ export class NovaDrParser {
         const zonenMap = NovaDrParserZone.parseZoneList(drJson, stichdatum, kantenMap);
         console.log('parsing zonen completed (' + zonenMap.size + ')');
 
+        console.log('parsing lokalnetze...');
+        const lokalnetzMap = NovaDrParserLokalnetz.parseLokalnetzList(drJson, stichdatum, kantenMap);
+        console.log('parsing lokalnetze completed (' + lokalnetzMap.size + ')');
+
         console.log('parsing zonenpläne...');
-        const zonenplanMap = NovaDrParserZonenplan.parseZonenplanList(drJson, stichdatum, zonenMap);
+        const zonenplanMap = NovaDrParserZonenplan.parseZonenplanList(drJson, stichdatum, zonenMap, lokalnetzMap);
         console.log('parsing zonenpläne completed (' + zonenplanMap.size + ')');
 
-        return new DrData(drId, hstMap, kantenMap, zonenMap, zonenplanMap);
+        return new DrData(drId, hstMap, kantenMap, zonenMap, lokalnetzMap, zonenplanMap);
     }
 
 

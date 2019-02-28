@@ -20,10 +20,11 @@ export class AppComponent implements OnInit {
 
 
     ngOnInit(): void {
-        const drData = this.storageService.loadDrData();
-
-        if (drData) {
-            this.mapFeaturesService.updateDrData(drData);
-        }
+        this.storageService.loadDrData()
+            .subscribe(drData => {
+                if (drData) {
+                    this.mapFeaturesService.updateDrData(drData);
+                }
+            });
     }
 }

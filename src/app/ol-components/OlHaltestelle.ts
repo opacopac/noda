@@ -31,9 +31,9 @@ export class OlHaltestelle extends OlComponentBase {
     private createPointStyle(haltestelle: Haltestelle, showLabels: boolean): Style {
         return new Style({
             image: new Circle({
-                radius: 6,
+                radius: 5,
                 fill: new Fill({
-                    color: '#999999'
+                    color: '#CCCCCC'
                 }),
                 stroke: new Stroke({color: '#000000', width: 1}),
             }),

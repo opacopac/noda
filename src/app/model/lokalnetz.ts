@@ -3,17 +3,17 @@ import {Kante} from './kante';
 import {Zonelike} from './zonelike';
 
 
-export class Zone extends Zonelike {
+export class Lokalnetz extends Zonelike {
     public constructor(
         public code: number,
         public kanten: Kante[],
-        public bezeichnung?: string
+        public bezeichnung: string,
     ) {
         super(code, kanten, bezeichnung);
     }
 
 
     public getType(): DataItemType {
-        return DataItemType.Zone;
+        return DataItemType.Lokalnetz;
     }
 }

@@ -1,26 +1,21 @@
 import {NovaDrSchema, NovaDrSchemaZonenplan} from './NovaDrSchema';
 import {Zone} from '../model/zone';
 import {Zonenplan} from '../model/zonenplan';
-import {isArray} from "util";
+import {isArray} from 'util';
+import {Lokalnetz} from '../model/lokalnetz';
 
 
 export class NovaDrParserZonenplan {
-    public static parseZonenplanList(jsonDr: NovaDrSchema, stichdatum: string, zonenMap: Map<string, Zone>): Map<string, Zonenplan> {
+    public static parseZonenplanList(jsonDr: NovaDrSchema, stichdatum: string, zonenMap: Map<string, Zone>, lokalnetzMap: Map<string, Lokalnetz>): Map<string, Zonenplan> {
         const drZonenplanList = jsonDr.datenrelease.subsystemZonenModell.zonenplaene.zonenplan;
         const zonenplanMap: Map<string, Zonenplan> = new Map<string, Zonenplan>();
 
         for (const drZonenplan of drZonenplanList) {
-            console.log(drZonenplan);
             const id = this.parseZonenplanId(drZonenplan);
-            const zonenplan = this.parseZonenplan(drZonenplan, stichdatum, zonenMap);
-
-            console.log(zonenplan);
+            const zonenplan = this.parseZonenplan(drZonenplan, stichdatum, zonenMap, lokalnetzMap);
 
             if (id && zonenplan) {
                 zonenplanMap.set(id, zonenplan);
-                console.log('ok');
-            } else {
-                console.error('NOK');
             }
         }
 
@@ -28,12 +23,12 @@ export class NovaDrParserZonenplan {
     }
 
 
-    private static parseZonenplanId(drKante: NovaDrSchemaZonenplan): string {
-        return drKante['@_id'];
+    private static parseZonenplanId(drZonenplan: NovaDrSchemaZonenplan): string {
+        return drZonenplan['@_id'];
     }
 
 
-    private static parseZonenplan(drZonenplan: NovaDrSchemaZonenplan, stichdatum: string, zonenMap: Map<string, Zone>): Zonenplan {
+    private static parseZonenplan(drZonenplan: NovaDrSchemaZonenplan, stichdatum: string, zonenMap: Map<string, Zone>, lokalnetzMap: Map<string, Lokalnetz>): Zonenplan {
         if (!drZonenplan.version) {
             return undefined;
         }
@@ -51,14 +46,13 @@ export class NovaDrParserZonenplan {
                 continue;
             }
 
-            const zonenList = this.parseZonenList(drZonenplanVer.zonen, zonenMap);
-            if (!zonenList || zonenList.length === 0) {
-                continue;
-            }
+            const zonenList = this.parseIdList<Zone>(drZonenplanVer.zonen, zonenMap);
+            const lokalnetzList = this.parseIdList<Lokalnetz>(drZonenplanVer.lokalnetz, lokalnetzMap);
 
             return new Zonenplan(
                 drZonenplanVer.bezeichnung,
-                zonenList
+                zonenList,
+                lokalnetzList
             );
         }
 
@@ -66,15 +60,18 @@ export class NovaDrParserZonenplan {
     }
 
 
-    private static parseZonenList(idString: string, zonenMap: Map<string, Zone>): Zone[] {
-        const zonenIds = idString.split(' ');
+    private static parseIdList<T>(idString: string, idEntityMap: Map<string, T>): T[] {
+        if (!idString) {
+            return [];
+        }
+        const ids = idString.split(' ');
 
-        if (zonenIds.length === 0) {
-            return undefined;
+        if (ids.length === 0) {
+            return [];
         }
 
-        return zonenIds
-            .map(id => zonenMap.get(id))
-            .filter(zone => zone !== undefined);
+        return ids
+            .map(id => idEntityMap.get(id))
+            .filter(entity => entity !== undefined);
     }
 }

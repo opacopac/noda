@@ -46,6 +46,15 @@ export class NavBarComponent implements OnInit {
     }
 
 
+    public getLokalnetzCount(): number {
+        if (this.mapFeatureService.drData) {
+            return this.mapFeatureService.drData.lokalnetze.size;
+        } else {
+            return 0;
+        }
+    }
+
+
     public getZonenplanList(): Zonenplan[] {
         if (this.mapFeatureService.drData) {
             return Array.from(this.mapFeatureService.drData.zonenplaene.values());
@@ -67,6 +76,11 @@ export class NavBarComponent implements OnInit {
 
     public showKantenChange(event: Event) {
         this.mapFeatureService.showKanten = (event.target as HTMLInputElement).checked;
+    }
+
+
+    public showZonenSelect(value: boolean) {
+        this.mapFeatureService.showZonen = value;
     }
 
 

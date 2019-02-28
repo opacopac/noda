@@ -69,6 +69,7 @@ export interface NovaDrSchemaKante {
 export interface NovaDrSchemaZonenModell {
     zonenplaene: { zonenplan: NovaDrSchemaZonenplan[] };
     zonen: { zone: NovaDrSchemaZone[] };
+    lokalnetzen: { lokalnetz: NovaDrSchemaLokalnetz[] };
 }
 
 
@@ -81,6 +82,7 @@ export interface NovaDrSchemaZonenplan {
         bezeichnung: string;
         prioritaet: string;
         zonen: string;
+        lokalnetz: string;
         pruefeSubhaltestellen: string;
     }[];
 }
@@ -98,6 +100,18 @@ export interface NovaDrSchemaZone {
         kanteDefault: string;
         nachbarZone: string;
         zonenpreisfaktor: string;
+    }[];
+}
+
+export interface NovaDrSchemaLokalnetz {
+    '@_id': string;
+    version: {
+        '@_gueltigVon': string;
+        '@_gueltigBis': string;
+        '@_id': string;
+        code: string;
+        bezeichnung: string;
+        kanten: string;
     }[];
 }
 

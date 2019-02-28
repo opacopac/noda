@@ -4,13 +4,15 @@ import {DrData} from '../model/dr-data';
 import {OlKante} from '../ol-components/OlKante';
 import {OlHaltestelle} from '../ol-components/OlHaltestelle';
 import {OlMapCoords, OlMapService} from './ol-map.service';
-import {OlZone} from '../ol-components/OlZone';
+import {OlZonelike} from '../ol-components/OlZonelike';
 import {Extent2d} from '../geo/extent-2d';
 import {Haltestelle} from '../model/haltestelle';
 import {Kante} from '../model/kante';
 import {QuadTree} from '../geo/quad-tree';
 import {Zonenplan} from '../model/zonenplan';
 import {VoronoiHelper} from '../geo/voronoi-helper';
+import {Zone} from '../model/zone';
+import {Lokalnetz} from '../model/lokalnetz';
 
 
 @Injectable({
@@ -19,6 +21,7 @@ import {VoronoiHelper} from '../geo/voronoi-helper';
 export class MapStateService {
     public drData: DrData;
     private _showKanten = true;
+    private _showZonen = true;
     private _showHst = true;
     private _showHstLabels = false;
     private _selectedZonenplan: Zonenplan;
@@ -28,6 +31,17 @@ export class MapStateService {
     private kantenLayer: VectorLayer;
     private hstLayer: VectorLayer;
     private zonenLayer: VectorLayer;
+
+
+    public get showZonen(): boolean {
+        return this._showZonen;
+    }
+
+
+    public set showZonen(value: boolean) {
+        this._showZonen = value;
+        this.updateMap();
+    }
 
 
     public get showKanten(): boolean {
@@ -150,7 +164,11 @@ export class MapStateService {
         const kantenList = this._showKanten ? this.searchKanten(hstList) : [];
         this.drawKanten(kantenList);
 
-        this.drawZonen(this._selectedZonenplan);
+        if (this._showZonen) {
+            this.drawZonen(this._selectedZonenplan);
+        } else {
+            this.drawLokalnetze(this._selectedZonenplan);
+        }
     }
 
 
@@ -187,7 +205,20 @@ export class MapStateService {
         }
 
         zonenplan.zonen.forEach(zone => {
-            const olZone = new OlZone(zone, zonenplan, this.hstLayer.getSource());
+            const olZone = new OlZonelike(zone, zonenplan, this.hstLayer.getSource());
+        });
+    }
+
+
+    private drawLokalnetze(zonenplan: Zonenplan) {
+        this.zonenLayer.getSource().clear(true);
+
+        if (!zonenplan) {
+            return;
+        }
+
+        zonenplan.lokalnetze.forEach(lokalnetz => {
+            const olLokalnetz = new OlZonelike(lokalnetz, zonenplan, this.hstLayer.getSource());
         });
     }
 
