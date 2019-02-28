@@ -11,8 +11,7 @@ import {Kante} from '../model/kante';
 import {QuadTree} from '../geo/quad-tree';
 import {Zonenplan} from '../model/zonenplan';
 import {VoronoiHelper} from '../geo/voronoi-helper';
-import {Zone} from '../model/zone';
-import {Lokalnetz} from '../model/lokalnetz';
+import {Relationsgebiet} from '../model/relationsgebiet';
 
 
 @Injectable({
@@ -25,6 +24,7 @@ export class MapStateService {
     private _showHst = true;
     private _showHstLabels = false;
     private _selectedZonenplan: Zonenplan;
+    private _selectedRelationsgebiet: Relationsgebiet;
     private hstPrioList: Haltestelle[];
     private hstQuadTree: QuadTree<Haltestelle>;
     private mapCoords: OlMapCoords;
@@ -91,6 +91,12 @@ export class MapStateService {
         this._selectedZonenplan = zonenplan;
         this.drawZonen(zonenplan);
         this.updateMap();
+    }
+
+
+    public selectRelationsgebiet(relationsgebiet: Relationsgebiet) {
+        this._selectedRelationsgebiet = relationsgebiet;
+        // TODO: draw
     }
 
 

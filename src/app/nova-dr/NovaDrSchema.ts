@@ -7,6 +7,7 @@ export interface NovaDrSchemaRoot {
     metadata: NovaDrSchemaMetaData;
     subsystemNetz: NovaDrSchemaNetz;
     subsystemZonenModell: NovaDrSchemaZonenModell;
+    subsystemDVModell: NovaDrSchemaDvModell;
 }
 
 
@@ -112,6 +113,39 @@ export interface NovaDrSchemaLokalnetz {
         code: string;
         bezeichnung: string;
         kanten: string;
+    }[];
+}
+
+// endregion
+
+
+// region dv
+
+export interface NovaDrSchemaDvModell {
+    relationsgebiete: { relationsgebiet: NovaDrSchemaRelationsgebiet[] };
+    rtmRelationen: { rtmRelation: NovaDrSchemaRtmRelation[] };
+}
+
+
+export interface NovaDrSchemaRelationsgebiet {
+    '@_id': string;
+    version: {
+        '@_gueltigVon': string;
+        '@_gueltigBis': string;
+        bezeichnung: string;
+        nummer: string;
+    }[];
+}
+
+
+export interface NovaDrSchemaRtmRelation {
+    '@_id': string;
+    version: {
+        '@_gueltigVon': string;
+        '@_gueltigBis': string;
+        haltestelle1: string;
+        haltestelle2: string;
+        relationsgebiet: string;
     }[];
 }
 

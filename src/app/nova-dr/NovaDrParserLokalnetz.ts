@@ -5,7 +5,7 @@ import {Lokalnetz} from '../model/lokalnetz';
 
 
 export class NovaDrParserLokalnetz {
-    public static parseLokalnetzList(jsonDr: NovaDrSchema, stichdatum: string, kanteMap: Map<string, Kante>): Map<string, Lokalnetz> {
+    public static parse(jsonDr: NovaDrSchema, stichdatum: string, kanteMap: Map<string, Kante>): Map<string, Lokalnetz> {
         const drLokalnetzList = jsonDr.datenrelease.subsystemZonenModell.lokalnetzen.lokalnetz;
         const lokalnetzMap: Map<string, Lokalnetz> = new Map<string, Lokalnetz>();
 

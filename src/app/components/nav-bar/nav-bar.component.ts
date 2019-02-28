@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Zonenplan} from '../../model/zonenplan';
 import {OlMapService} from '../../services/ol-map.service';
 import {MapStateService} from '../../services/map-state.service';
+import {Relationsgebiet} from '../../model/relationsgebiet';
 
 @Component({
     selector: 'app-nav-bar',
@@ -20,47 +21,42 @@ export class NavBarComponent implements OnInit {
 
 
     public getHstCount(): number {
-        if (this.mapFeatureService.drData) {
-            return this.mapFeatureService.drData.haltestellen.size;
-        } else {
-            return 0;
-        }
+        return this.mapFeatureService.drData ? this.mapFeatureService.drData.haltestellen.size : 0;
     }
 
 
     public getKantenCount(): number {
-        if (this.mapFeatureService.drData) {
-            return this.mapFeatureService.drData.kanten.size;
-        } else {
-            return 0;
-        }
+        return this.mapFeatureService.drData ? this.mapFeatureService.drData.kanten.size : 0;
     }
 
 
     public getZonenCount(): number {
-        if (this.mapFeatureService.drData) {
-            return this.mapFeatureService.drData.zonen.size;
-        } else {
-            return 0;
-        }
+        return this.mapFeatureService.drData ? this.mapFeatureService.drData.zonen.size : 0;
     }
 
 
     public getLokalnetzCount(): number {
-        if (this.mapFeatureService.drData) {
-            return this.mapFeatureService.drData.lokalnetze.size;
-        } else {
-            return 0;
-        }
+        return this.mapFeatureService.drData ? this.mapFeatureService.drData.lokalnetze.size : 0;
+    }
+
+
+    public getZonenplanCount(): number {
+        return this.mapFeatureService.drData ? this.mapFeatureService.drData.zonenplaene.size : 0;
     }
 
 
     public getZonenplanList(): Zonenplan[] {
-        if (this.mapFeatureService.drData) {
-            return Array.from(this.mapFeatureService.drData.zonenplaene.values());
-        } else {
-            return [];
-        }
+        return this.mapFeatureService.drData ? Array.from(this.mapFeatureService.drData.zonenplaene.values()) : [];
+    }
+
+
+    public getRelationsgebietCount(): number {
+        return this.mapFeatureService.drData ? this.mapFeatureService.drData.relationsgebiete.size : 0;
+    }
+
+
+    public getRelationsgebietList(): Relationsgebiet[] {
+        return this.mapFeatureService.drData ? Array.from(this.mapFeatureService.drData.relationsgebiete.values()) : [];
     }
 
 
@@ -88,5 +84,12 @@ export class NavBarComponent implements OnInit {
         const idx = parseInt((event.target as HTMLSelectElement).value, 10);
         const zonenplan = idx >= 0 ? this.getZonenplanList()[idx] : undefined;
         this.mapFeatureService.selectZonenplan(zonenplan);
+    }
+
+
+    public relationsgebietChange(event: Event) {
+        const idx = parseInt((event.target as HTMLSelectElement).value, 10);
+        const relationsgebiet = idx >= 0 ? this.getRelationsgebietList()[idx] : undefined;
+        this.mapFeatureService.selectRelationsgebiet(relationsgebiet);
     }
 }

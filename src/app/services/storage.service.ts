@@ -59,7 +59,8 @@ export class StorageService {
             kanten: Array.from(drData.kanten.entries()),
             zonen: Array.from(drData.zonen.entries()),
             lokalnetze: Array.from(drData.lokalnetze.entries()),
-            zonenplaene: Array.from(drData.zonenplaene.entries())
+            zonenplaene: Array.from(drData.zonenplaene.entries()),
+            relationsgebiete: Array.from(drData.relationsgebiete.entries())
         });
     }
 
@@ -77,7 +78,8 @@ export class StorageService {
             new Map(drDataJson.kanten),
             new Map(drDataJson.zonen),
             new Map(drDataJson.lokalnetze),
-            new Map(drDataJson.zonenplaene)
+            new Map(drDataJson.zonenplaene),
+            new Map(drDataJson.relationsgebiete)
         );
     }
 }

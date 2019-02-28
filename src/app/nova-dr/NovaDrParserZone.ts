@@ -5,7 +5,7 @@ import {isArray} from 'util';
 
 
 export class NovaDrParserZone {
-    public static parseZoneList(jsonDr: NovaDrSchema, stichdatum: string, kanteMap: Map<string, Kante>): Map<string, Zone> {
+    public static parse(jsonDr: NovaDrSchema, stichdatum: string, kanteMap: Map<string, Kante>): Map<string, Zone> {
         const drZonenList = jsonDr.datenrelease.subsystemZonenModell.zonen.zone;
         const zonenMap: Map<string, Zone> = new Map<string, Zone>();
 

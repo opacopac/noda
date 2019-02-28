@@ -1,11 +1,11 @@
 import {NovaDrSchema, NovaDrSchemaKante} from './NovaDrSchema';
 import {Haltestelle} from '../model/haltestelle';
 import {Kante} from '../model/kante';
-import {isArray} from "util";
+import {isArray} from 'util';
 
 
 export class NovaDrParserKante {
-    public static parseKanteList(jsonDr: NovaDrSchema, stichdatum: string, hstMap: Map<string, Haltestelle>): Map<string, Kante> {
+    public static parse(jsonDr: NovaDrSchema, stichdatum: string, hstMap: Map<string, Haltestelle>): Map<string, Kante> {
         const drKanteList = jsonDr.datenrelease.subsystemNetz.kanten.kante;
         const kanteMap: Map<string, Kante> = new Map<string, Kante>();
 

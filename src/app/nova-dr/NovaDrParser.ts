@@ -8,6 +8,7 @@ import {NovaDrParserKante} from './NovaDrParserKante';
 import {NovaDrParserZone} from './NovaDrParserZone';
 import {NovaDrParserZonenplan} from './NovaDrParserZonenplan';
 import {NovaDrParserLokalnetz} from './NovaDrParserLokalnetz';
+import {NovaDrParserRelationsgebiet} from './NovaDrParserRelationsgebiet';
 
 
 export class NovaDrParser {
@@ -21,26 +22,38 @@ export class NovaDrParser {
         console.log('DR id: ' + drId);
 
         console.log('parsing haltestellen...');
-        const hstMap = NovaDrParserHaltestelle.parseHaltestelleList(drJson, stichdatum);
+        const hstMap = NovaDrParserHaltestelle.parse(drJson, stichdatum);
         console.log('parsing haltestellen completed (' + hstMap.size + ')');
 
         console.log('parsing kanten...');
-        const kantenMap = NovaDrParserKante.parseKanteList(drJson, stichdatum, hstMap);
+        const kantenMap = NovaDrParserKante.parse(drJson, stichdatum, hstMap);
         console.log('parsing kanten completed (' + kantenMap.size + ')');
 
         console.log('parsing zonen...');
-        const zonenMap = NovaDrParserZone.parseZoneList(drJson, stichdatum, kantenMap);
+        const zonenMap = NovaDrParserZone.parse(drJson, stichdatum, kantenMap);
         console.log('parsing zonen completed (' + zonenMap.size + ')');
 
         console.log('parsing lokalnetze...');
-        const lokalnetzMap = NovaDrParserLokalnetz.parseLokalnetzList(drJson, stichdatum, kantenMap);
+        const lokalnetzMap = NovaDrParserLokalnetz.parse(drJson, stichdatum, kantenMap);
         console.log('parsing lokalnetze completed (' + lokalnetzMap.size + ')');
 
         console.log('parsing zonenpläne...');
-        const zonenplanMap = NovaDrParserZonenplan.parseZonenplanList(drJson, stichdatum, zonenMap, lokalnetzMap);
+        const zonenplanMap = NovaDrParserZonenplan.parse(drJson, stichdatum, zonenMap, lokalnetzMap);
         console.log('parsing zonenpläne completed (' + zonenplanMap.size + ')');
 
-        return new DrData(drId, hstMap, kantenMap, zonenMap, lokalnetzMap, zonenplanMap);
+        console.log('parsing relationsgebiete...');
+        const relationsgebietMap = NovaDrParserRelationsgebiet.parse(drJson, stichdatum);
+        console.log('parsing relationsgebiete completed (' + relationsgebietMap.size + ')');
+
+        return new DrData(
+            drId,
+            hstMap,
+            kantenMap,
+            zonenMap,
+            lokalnetzMap,
+            zonenplanMap,
+            relationsgebietMap
+        );
     }
 
 

@@ -6,12 +6,12 @@ import {Lokalnetz} from '../model/lokalnetz';
 
 
 export class NovaDrParserZonenplan {
-    public static parseZonenplanList(jsonDr: NovaDrSchema, stichdatum: string, zonenMap: Map<string, Zone>, lokalnetzMap: Map<string, Lokalnetz>): Map<string, Zonenplan> {
+    public static parse(jsonDr: NovaDrSchema, stichdatum: string, zonenMap: Map<string, Zone>, lokalnetzMap: Map<string, Lokalnetz>): Map<string, Zonenplan> {
         const drZonenplanList = jsonDr.datenrelease.subsystemZonenModell.zonenplaene.zonenplan;
         const zonenplanMap: Map<string, Zonenplan> = new Map<string, Zonenplan>();
 
         for (const drZonenplan of drZonenplanList) {
-            const id = this.parseZonenplanId(drZonenplan);
+            const id = this.parseId(drZonenplan);
             const zonenplan = this.parseZonenplan(drZonenplan, stichdatum, zonenMap, lokalnetzMap);
 
             if (id && zonenplan) {
@@ -23,7 +23,7 @@ export class NovaDrParserZonenplan {
     }
 
 
-    private static parseZonenplanId(drZonenplan: NovaDrSchemaZonenplan): string {
+    private static parseId(drZonenplan: NovaDrSchemaZonenplan): string {
         return drZonenplan['@_id'];
     }
 

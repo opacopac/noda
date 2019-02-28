@@ -5,7 +5,7 @@ import {isArray} from 'util';
 
 
 export class NovaDrParserHaltestelle {
-    public static parseHaltestelleList(jsonDr: NovaDrSchema, stichdatum: string): Map<string, Haltestelle> {
+    public static parse(jsonDr: NovaDrSchema, stichdatum: string): Map<string, Haltestelle> {
         const drHstList = jsonDr.datenrelease.subsystemNetz.haltestellen.haltestelle;
         const hstList: Map<string, Haltestelle> = new Map<string, Haltestelle>();
 
