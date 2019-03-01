@@ -4,7 +4,7 @@ import {DataItem} from './data-item';
 
 
 export class Relationsgebiet implements DataItem {
-    public haltestellenLut: Haltestelle[];
+    public haltestellenLut: Haltestelle[] = [];
 
 
     public constructor(

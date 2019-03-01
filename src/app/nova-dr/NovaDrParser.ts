@@ -9,6 +9,7 @@ import {NovaDrParserZone} from './NovaDrParserZone';
 import {NovaDrParserZonenplan} from './NovaDrParserZonenplan';
 import {NovaDrParserLokalnetz} from './NovaDrParserLokalnetz';
 import {NovaDrParserRelationsgebiet} from './NovaDrParserRelationsgebiet';
+import {NovaDrParserRelation} from './NovaDrParserRelation';
 
 
 export class NovaDrParser {
@@ -44,6 +45,10 @@ export class NovaDrParser {
         console.log('parsing relationsgebiete...');
         const relationsgebietMap = NovaDrParserRelationsgebiet.parse(drJson, stichdatum);
         console.log('parsing relationsgebiete completed (' + relationsgebietMap.size + ')');
+
+        console.log('parsing relationen...');
+        NovaDrParserRelation.parse(drJson, stichdatum, hstMap, relationsgebietMap);
+        console.log('parsing relationen completed');
 
         return new DrData(
             drId,

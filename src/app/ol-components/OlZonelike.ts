@@ -8,6 +8,7 @@ import {OlZonelikeHelper} from './OlZonelikeHelper';
 import {Position2d} from '../geo/position-2d';
 import {Haltestelle} from '../model/haltestelle';
 import {DataItemType} from '../model/data-item-type';
+import {HstKanteZoneHelper} from '../model/hst-kante-zone-helper';
 
 
 export class OlZonelike extends OlComponentBase {
@@ -57,8 +58,8 @@ export class OlZonelike extends OlComponentBase {
     private getHstPolygonListFromZone(zonelike: Zonelike, zonenplan: Zonenplan): Position2d[][] {
         const hstList: Haltestelle[] = [];
 
-        const kantenWithOneZone = OlZonelikeHelper.getKantenLinkedToNOtherZonen(zonelike, zonenplan, 0);
-        kantenWithOneZone.forEach(kanteWzonen => OlZonelikeHelper.addUniqueKante(hstList, kanteWzonen.kante));
+        const kantenWithOneZone = HstKanteZoneHelper.getKantenLinkedToNOtherZonen(zonelike, zonenplan, 0);
+        kantenWithOneZone.forEach(kanteWzonen => HstKanteZoneHelper.addUniqueKante(hstList, kanteWzonen.kante));
 
         /*const kantenWithTwoZonen = this.getKantenLinkedToNOtherZonen(zone, zonenplan, 1);
         const commonHst = this.getCommonHaltestellenList(kantenWithTwoZonen, zone, zonenplan);
@@ -71,7 +72,7 @@ export class OlZonelike extends OlComponentBase {
     private getHstPolygonListFromLokalnetz(zonelike: Zonelike): Position2d[][] {
         const hstList: Haltestelle[] = [];
 
-        zonelike.kanten.forEach(kante => OlZonelikeHelper.addUniqueKante(hstList, kante));
+        zonelike.kanten.forEach(kante => HstKanteZoneHelper.addUniqueKante(hstList, kante));
 
         return hstList.map(hst => hst.polygon);
     }

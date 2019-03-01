@@ -12,6 +12,7 @@ import {QuadTree} from '../geo/quad-tree';
 import {Zonenplan} from '../model/zonenplan';
 import {VoronoiHelper} from '../geo/voronoi-helper';
 import {Relationsgebiet} from '../model/relationsgebiet';
+import {OlRelationsgebiet} from '../ol-components/OlRelationsgebiet';
 
 
 @Injectable({
@@ -31,6 +32,7 @@ export class MapStateService {
     private kantenLayer: VectorLayer;
     private hstLayer: VectorLayer;
     private zonenLayer: VectorLayer;
+    private relationsgebietLayer: VectorLayer;
 
 
     public get showZonen(): boolean {
@@ -96,7 +98,8 @@ export class MapStateService {
 
     public selectRelationsgebiet(relationsgebiet: Relationsgebiet) {
         this._selectedRelationsgebiet = relationsgebiet;
-        // TODO: draw
+        this.drawRelationsgebiet(relationsgebiet);
+        this.updateMap();
     }
 
 
@@ -155,7 +158,7 @@ export class MapStateService {
             return;
         }
 
-        if (!this.hstLayer || !this.kantenLayer || !this.zonenLayer) {
+        if (!this.hstLayer || !this.kantenLayer || !this.zonenLayer || !this.relationsgebietLayer) {
             this.initLayers();
         }
 
@@ -179,9 +182,10 @@ export class MapStateService {
 
 
     private initLayers() {
-        this.zonenLayer = this.mapService.addVectorLayer(true);
-        this.kantenLayer = this.mapService.addVectorLayer(true);
         this.hstLayer = this.mapService.addVectorLayer(true);
+        this.kantenLayer = this.mapService.addVectorLayer(true);
+        this.zonenLayer = this.mapService.addVectorLayer(true);
+        this.relationsgebietLayer = this.mapService.addVectorLayer(true);
     }
 
 
@@ -211,7 +215,7 @@ export class MapStateService {
         }
 
         zonenplan.zonen.forEach(zone => {
-            const olZone = new OlZonelike(zone, zonenplan, this.hstLayer.getSource());
+            const olZone = new OlZonelike(zone, zonenplan, this.zonenLayer.getSource());
         });
     }
 
@@ -224,8 +228,19 @@ export class MapStateService {
         }
 
         zonenplan.lokalnetze.forEach(lokalnetz => {
-            const olLokalnetz = new OlZonelike(lokalnetz, zonenplan, this.hstLayer.getSource());
+            const olLokalnetz = new OlZonelike(lokalnetz, zonenplan, this.zonenLayer.getSource());
         });
+    }
+
+
+    private drawRelationsgebiet(relationsgebiet: Relationsgebiet) {
+        this.relationsgebietLayer.getSource().clear(true);
+
+        if (!relationsgebiet) {
+            return;
+        }
+
+        const olRelationsgebiet = new OlRelationsgebiet(relationsgebiet, this.relationsgebietLayer.getSource());
     }
 
 
