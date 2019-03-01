@@ -1,5 +1,5 @@
 import {isArray} from 'util';
-import {NovaDrSchema, NovaDrSchemaRtmRelation} from './NovaDrSchema';
+import {NovaDrSchema, NovaDrSchemaRtmRelation, NovaDrSchemaRtmRelationsSchluessel} from './NovaDrSchema';
 import {Relationsgebiet} from '../model/relationsgebiet';
 import {HstKanteZoneHelper} from '../model/hst-kante-zone-helper';
 import {Haltestelle} from '../model/haltestelle';
@@ -45,6 +45,11 @@ export class NovaDrParserRelation {
                 continue;
             }
 
+            const relKey = isArray(drRelationVer.relationsschluessel) ? drRelationVer.relationsschluessel[0] : [drRelationVer.relationsschluessel as any][0];
+            if (!relKey || !relKey['@_type'] || !relKey['@_type'].endsWith('AtomicRelationsschluessel')) {
+                continue;
+            }
+
             const relationsgebiet = relationsgebietMap.get(drRelationVer.relationsgebiet);
             const hst1 = hstMap.get(drRelationVer.haltestelle1);
             const hst2 = hstMap.get(drRelationVer.haltestelle2);
@@ -53,8 +58,10 @@ export class NovaDrParserRelation {
                 continue;
             }
 
-            HstKanteZoneHelper.addUniqueHst(relationsgebiet.haltestellenLut, hst1);
-            HstKanteZoneHelper.addUniqueHst(relationsgebiet.haltestellenLut, hst2);
+            relationsgebiet.atomicKantenLut.push([hst1, hst2]);
+
+            // HstKanteZoneHelper.addUniqueHst(relationsgebiet.haltestellenLut, hst1);
+            // HstKanteZoneHelper.addUniqueHst(relationsgebiet.haltestellenLut, hst2);
         }
 
         return undefined;

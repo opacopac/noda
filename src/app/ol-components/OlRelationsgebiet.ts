@@ -7,7 +7,7 @@ import {Relationsgebiet} from '../model/relationsgebiet';
 
 
 export class OlRelationsgebiet extends OlComponentBase {
-    private readonly olFeature: Feature;
+    // private readonly olFeature: Feature;
 
 
     get isSelectable(): boolean {
@@ -21,11 +21,19 @@ export class OlRelationsgebiet extends OlComponentBase {
 
         super();
 
-        this.olFeature = this.createFeature(relationsgebiet);
+        const style = this.createStyle();
+        relationsgebiet.atomicKantenLut.forEach(atomicKante => {
+            const olFeature = this.createFeature(relationsgebiet);
+            olFeature.setStyle(style);
+            this.setLineGeometry(olFeature, [atomicKante[0].position, atomicKante[1].position]);
+            this.source.addFeature(olFeature);
+        });
+
+        /*this.olFeature = this.createFeature(relationsgebiet);
         this.olFeature.setStyle(this.createStyle());
         const hstList = this.getHstList(relationsgebiet);
         this.setLineGeometry(this.olFeature, hstList);
-        this.source.addFeature(this.olFeature);
+        this.source.addFeature(this.olFeature);*/
     }
 
 

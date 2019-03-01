@@ -145,8 +145,14 @@ export interface NovaDrSchemaRtmRelation {
         '@_gueltigBis': string;
         haltestelle1: string;
         haltestelle2: string;
+        relationsschluessel: NovaDrSchemaRtmRelationsSchluessel[];
         relationsgebiet: string;
     }[];
+}
+
+
+export interface NovaDrSchemaRtmRelationsSchluessel {
+    '@_type': string;
 }
 
 // endregion
