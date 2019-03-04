@@ -32,5 +32,13 @@
                         [value]="i">{{ relationsgebiet.bezeichnung }}</option>
             </select>
         </td>
+        <td>
+            {{ this.getInterbereichCount() }} Interbereiche:
+            <select (change)="this.interbereichChange($event)" [value]="-1">
+                <option [value]="-1">(empty)</option>
+                <option *ngFor="let interbereich of this.getInterbereicheList(); let i = index;"
+                        [value]="i">{{ interbereich.name }}</option>
+            </select>
+        </td>
     </tr>
 </table>

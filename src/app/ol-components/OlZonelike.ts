@@ -4,7 +4,7 @@ import {Circle, Fill, Icon, Stroke, Style, Text} from 'ol/style';
 import {OlComponentBase} from './OlComponentBase';
 import {Zonenplan} from '../model/zonenplan';
 import {Zonelike} from '../model/zonelike';
-import {OlZonelikeHelper} from './OlZonelikeHelper';
+import {OlHelper} from './OlHelper';
 import {Position2d} from '../geo/position-2d';
 import {Haltestelle} from '../model/haltestelle';
 import {DataItemType} from '../model/data-item-type';
@@ -37,18 +37,19 @@ export class OlZonelike extends OlComponentBase {
 
 
     private createStyle(zonelike: Zonelike): Style {
+        const colorIdx = zonelike.code % 10;
         return new Style({
             fill: new Fill({
-                color: OlZonelikeHelper.getColorString(zonelike, 0.5)
+                color: OlHelper.getRgbaFromColorIndex(colorIdx, 0.5)
             }),
             stroke: new Stroke({
-                color: 'rgba(255, 255, 255, 0.2)', // this.getColorString(zone, 0.1),
+                color: 'rgba(255, 255, 255, 0.2)', // this.getRgbaFromColorIndex(zone, 0.1),
                 width: 1,
             }),
             text: new Text({
                 font: 'bold 18px Calibri,sans-serif',
                 text: zonelike.code.toString(),
-                fill: new Fill({ color: OlZonelikeHelper.getColorString(zonelike, 1.0) }),
+                fill: new Fill({ color: OlHelper.getRgbaFromColorIndex(colorIdx, 1.0) }),
                 stroke: new Stroke({ color: '#FFFFFF', width: 2 }),
             })
         });

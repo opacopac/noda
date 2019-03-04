@@ -4,6 +4,7 @@ export enum DataItemType {
     Zone,
     Lokalnetz,
     Zonenplan,
+    Interbereich,
     Relationsgebiet,
     Relation
 }

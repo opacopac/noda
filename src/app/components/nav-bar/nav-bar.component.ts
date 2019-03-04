@@ -3,6 +3,7 @@ import {Zonenplan} from '../../model/zonenplan';
 import {OlMapService} from '../../services/ol-map.service';
 import {MapStateService} from '../../services/map-state.service';
 import {Relationsgebiet} from '../../model/relationsgebiet';
+import {Interbereich} from '../../model/interbereich';
 
 @Component({
     selector: 'app-nav-bar',
@@ -50,8 +51,18 @@ export class NavBarComponent implements OnInit {
     }
 
 
+    public getInterbereichCount(): number {
+        return this.mapFeatureService.drData ? this.mapFeatureService.drData.interbereiche.size : 0;
+    }
+
+
     public getRelationsgebietCount(): number {
         return this.mapFeatureService.drData ? this.mapFeatureService.drData.relationsgebiete.size : 0;
+    }
+
+
+    public getInterbereicheList(): Interbereich[] {
+        return this.mapFeatureService.drData ? Array.from(this.mapFeatureService.drData.interbereiche.values()) : [];
     }
 
 
@@ -84,6 +95,13 @@ export class NavBarComponent implements OnInit {
         const idx = parseInt((event.target as HTMLSelectElement).value, 10);
         const zonenplan = idx >= 0 ? this.getZonenplanList()[idx] : undefined;
         this.mapFeatureService.selectZonenplan(zonenplan);
+    }
+
+
+    public interbereichChange(event: Event) {
+        const idx = parseInt((event.target as HTMLSelectElement).value, 10);
+        const interbereich = idx >= 0 ? this.getInterbereicheList()[idx] : undefined;
+        this.mapFeatureService.selectInterbereich(interbereich);
     }
 
 

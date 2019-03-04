@@ -10,6 +10,7 @@ import {NovaDrParserZonenplan} from './NovaDrParserZonenplan';
 import {NovaDrParserLokalnetz} from './NovaDrParserLokalnetz';
 import {NovaDrParserRelationsgebiet} from './NovaDrParserRelationsgebiet';
 import {NovaDrParserRelation} from './NovaDrParserRelation';
+import {NovaDrParserInterbereich} from './NovaDrParserInterbereich';
 
 
 export class NovaDrParser {
@@ -42,6 +43,10 @@ export class NovaDrParser {
         const zonenplanMap = NovaDrParserZonenplan.parse(drJson, stichdatum, zonenMap, lokalnetzMap);
         console.log('parsing zonenpläne completed (' + zonenplanMap.size + ')');
 
+        console.log('parsing interbereiche...');
+        const interbereichMap = NovaDrParserInterbereich.parse(drJson, stichdatum, kantenMap);
+        console.log('parsing interbereiche completed (' + interbereichMap.size + ')');
+
         console.log('parsing relationsgebiete...');
         const relationsgebietMap = NovaDrParserRelationsgebiet.parse(drJson, stichdatum);
         console.log('parsing relationsgebiete completed (' + relationsgebietMap.size + ')');
@@ -57,6 +62,7 @@ export class NovaDrParser {
             zonenMap,
             lokalnetzMap,
             zonenplanMap,
+            interbereichMap,
             relationsgebietMap
         );
     }

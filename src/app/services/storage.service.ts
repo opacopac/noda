@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {map} from 'rxjs/operators';
 import {environment} from '../../environments/environment';
 import {DrData} from '../model/dr-data';
 import {Observable, of} from 'rxjs';
@@ -60,6 +59,7 @@ export class StorageService {
             zonen: Array.from(drData.zonen.entries()),
             lokalnetze: Array.from(drData.lokalnetze.entries()),
             zonenplaene: Array.from(drData.zonenplaene.entries()),
+            interbereiche: Array.from(drData.interbereiche.entries()),
             relationsgebiete: Array.from(drData.relationsgebiete.entries())
         });
     }
@@ -79,6 +79,7 @@ export class StorageService {
             new Map(drDataJson.zonen),
             new Map(drDataJson.lokalnetze),
             new Map(drDataJson.zonenplaene),
+            new Map(drDataJson.interbereiche),
             new Map(drDataJson.relationsgebiete)
         );
     }

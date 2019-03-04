@@ -13,6 +13,8 @@ import {Zonenplan} from '../model/zonenplan';
 import {VoronoiHelper} from '../geo/voronoi-helper';
 import {Relationsgebiet} from '../model/relationsgebiet';
 import {OlRelationsgebiet} from '../ol-components/OlRelationsgebiet';
+import {Interbereich} from '../model/interbereich';
+import {OlInterbereich} from '../ol-components/OlInterbereich';
 
 
 @Injectable({
@@ -25,6 +27,7 @@ export class MapStateService {
     private _showHst = true;
     private _showHstLabels = false;
     private _selectedZonenplan: Zonenplan;
+    private _selectedInterbereich: Interbereich;
     private _selectedRelationsgebiet: Relationsgebiet;
     private hstPrioList: Haltestelle[];
     private hstQuadTree: QuadTree<Haltestelle>;
@@ -32,6 +35,7 @@ export class MapStateService {
     private kantenLayer: VectorLayer;
     private hstLayer: VectorLayer;
     private zonenLayer: VectorLayer;
+    private interbereichLayer: VectorLayer;
     private relationsgebietLayer: VectorLayer;
 
 
@@ -92,6 +96,13 @@ export class MapStateService {
     public selectZonenplan(zonenplan: Zonenplan) {
         this._selectedZonenplan = zonenplan;
         this.drawZonen(zonenplan);
+        this.updateMap();
+    }
+
+
+    public selectInterbereich(interbereich: Interbereich) {
+        this._selectedInterbereich = interbereich;
+        this.drawInterbereich(interbereich);
         this.updateMap();
     }
 
@@ -185,6 +196,7 @@ export class MapStateService {
         this.hstLayer = this.mapService.addVectorLayer(true);
         this.kantenLayer = this.mapService.addVectorLayer(true);
         this.zonenLayer = this.mapService.addVectorLayer(true);
+        this.interbereichLayer = this.mapService.addVectorLayer(true);
         this.relationsgebietLayer = this.mapService.addVectorLayer(true);
     }
 
@@ -230,6 +242,17 @@ export class MapStateService {
         zonenplan.lokalnetze.forEach(lokalnetz => {
             const olLokalnetz = new OlZonelike(lokalnetz, zonenplan, this.zonenLayer.getSource());
         });
+    }
+
+
+    private drawInterbereich(interbereich: Interbereich) {
+        this.interbereichLayer.getSource().clear(true);
+
+        if (!interbereich) {
+            return;
+        }
+
+        const olInterbereich = new OlInterbereich(interbereich, this.interbereichLayer.getSource());
     }
 
 

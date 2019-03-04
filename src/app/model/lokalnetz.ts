@@ -5,9 +5,9 @@ import {Zonelike} from './zonelike';
 
 export class Lokalnetz extends Zonelike {
     public constructor(
-        public code: number,
-        public kanten: Kante[],
-        public bezeichnung: string,
+        code: number,
+        kanten: Kante[],
+        bezeichnung: string,
     ) {
         super(code, kanten, bezeichnung);
     }

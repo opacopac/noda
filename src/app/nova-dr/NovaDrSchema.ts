@@ -8,6 +8,7 @@ export interface NovaDrSchemaRoot {
     subsystemNetz: NovaDrSchemaNetz;
     subsystemZonenModell: NovaDrSchemaZonenModell;
     subsystemDVModell: NovaDrSchemaDvModell;
+    subsystemInterModell: NovaDrSchemaInterModell
 }
 
 
@@ -113,6 +114,27 @@ export interface NovaDrSchemaLokalnetz {
         code: string;
         bezeichnung: string;
         kanten: string;
+    }[];
+}
+
+// endregion
+
+
+// region inter
+
+export interface NovaDrSchemaInterModell {
+    interBereiche: { interBereich: NovaDrSchemaInterbereich[] };
+}
+
+
+export interface NovaDrSchemaInterbereich {
+    '@_id': string;
+    version: {
+        '@_gueltigVon': string;
+        '@_gueltigBis': string;
+        name: string;
+        dvKanten: string;
+        ivKanten: string;
     }[];
 }
 
