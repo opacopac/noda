@@ -6,7 +6,7 @@ import {KanteWithZonen} from '../ol-components/OlHelper';
 
 
 export class HstKanteZoneHelper {
-    public static addUniqueKante(hstList: Haltestelle[], kante: Kante) {
+    public static addUniqueKantenHst(hstList: Haltestelle[], kante: Kante) {
         this.addUniqueHst(hstList, kante.haltestelle1);
         this.addUniqueHst(hstList, kante.haltestelle2);
     }

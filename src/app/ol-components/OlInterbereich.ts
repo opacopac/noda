@@ -10,6 +10,9 @@ import {Haltestelle} from '../model/haltestelle';
 import {DataItemType} from '../model/data-item-type';
 import {HstKanteZoneHelper} from '../model/hst-kante-zone-helper';
 import {Interbereich} from '../model/interbereich';
+import {Ring2d} from '../geo/ring-2d';
+import {Polygon2d} from '../geo/polygon-2d';
+import {MultiPolygon2d} from '../geo/multi-polygon-2d';
 
 
 export class OlInterbereich extends OlComponentBase {
@@ -56,11 +59,11 @@ export class OlInterbereich extends OlComponentBase {
     }
 
 
-    private getHstPolygonListFromKanten(interbereich: Interbereich): Position2d[][] {
+    private getHstPolygonListFromKanten(interbereich: Interbereich): MultiPolygon2d {
         const hstList: Haltestelle[] = [];
 
-        interbereich.kanten.forEach(kante => HstKanteZoneHelper.addUniqueKante(hstList, kante));
+        interbereich.kanten.forEach(kante => HstKanteZoneHelper.addUniqueKantenHst(hstList, kante));
 
-        return hstList.map(hst => hst.polygon);
+        return new MultiPolygon2d(hstList.map(hst => new Polygon2d(hst.ring)));
     }
 }

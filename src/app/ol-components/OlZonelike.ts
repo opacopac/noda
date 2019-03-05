@@ -5,10 +5,11 @@ import {OlComponentBase} from './OlComponentBase';
 import {Zonenplan} from '../model/zonenplan';
 import {Zonelike} from '../model/zonelike';
 import {OlHelper} from './OlHelper';
-import {Position2d} from '../geo/position-2d';
 import {Haltestelle} from '../model/haltestelle';
 import {DataItemType} from '../model/data-item-type';
 import {HstKanteZoneHelper} from '../model/hst-kante-zone-helper';
+import {Polygon2d} from '../geo/polygon-2d';
+import {MultiPolygon2d} from '../geo/multi-polygon-2d';
 
 
 export class OlZonelike extends OlComponentBase {
@@ -56,25 +57,25 @@ export class OlZonelike extends OlComponentBase {
     }
 
 
-    private getHstPolygonListFromZone(zonelike: Zonelike, zonenplan: Zonenplan): Position2d[][] {
+    private getHstPolygonListFromZone(zonelike: Zonelike, zonenplan: Zonenplan): MultiPolygon2d {
         const hstList: Haltestelle[] = [];
 
         const kantenWithOneZone = HstKanteZoneHelper.getKantenLinkedToNOtherZonen(zonelike, zonenplan, 0);
-        kantenWithOneZone.forEach(kanteWzonen => HstKanteZoneHelper.addUniqueKante(hstList, kanteWzonen.kante));
+        kantenWithOneZone.forEach(kanteWzonen => HstKanteZoneHelper.addUniqueKantenHst(hstList, kanteWzonen.kante));
 
         /*const kantenWithTwoZonen = this.getKantenLinkedToNOtherZonen(zone, zonenplan, 1);
         const commonHst = this.getCommonHaltestellenList(kantenWithTwoZonen, zone, zonenplan);
         commonHst.forEach(hst => this.addUniqueHst(hstList, hst));*/
 
-        return hstList.map(hst => hst.polygon);
+        return new MultiPolygon2d(hstList.map(hst => new Polygon2d(hst.ring)));
     }
 
 
-    private getHstPolygonListFromLokalnetz(zonelike: Zonelike): Position2d[][] {
+    private getHstPolygonListFromLokalnetz(zonelike: Zonelike): MultiPolygon2d {
         const hstList: Haltestelle[] = [];
 
-        zonelike.kanten.forEach(kante => HstKanteZoneHelper.addUniqueKante(hstList, kante));
+        zonelike.kanten.forEach(kante => HstKanteZoneHelper.addUniqueKantenHst(hstList, kante));
 
-        return hstList.map(hst => hst.polygon);
+        return new MultiPolygon2d(hstList.map(hst => new Polygon2d(hst.ring)));
     }
 }

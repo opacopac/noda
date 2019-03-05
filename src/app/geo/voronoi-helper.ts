@@ -1,5 +1,6 @@
 import {Haltestelle} from '../model/haltestelle';
 import {Position2d} from './position-2d';
+import {Ring2d} from './ring-2d';
 
 
 export class VoronoiHelper {
@@ -50,7 +51,7 @@ export class VoronoiHelper {
             });
 
             const hst = cell.site.ext_ref as Haltestelle;
-            hst.polygon = posList;
+            hst.ring = new Ring2d(posList);
         }
     }
 }

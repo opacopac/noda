@@ -3,11 +3,12 @@ import {DataItem} from './data-item';
 import {DataItemType} from './data-item-type';
 import {Kante} from './kante';
 import {Positionable} from '../geo/positionable';
+import {Ring2d} from '../geo/ring-2d';
 
 
 export class Haltestelle implements DataItem, Positionable {
     public kantenLut: Kante[] = [];
-    public polygon: Position2d[] = [];
+    public ring: Ring2d;
 
 
     public constructor(

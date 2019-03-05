@@ -3,9 +3,12 @@ import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import LineString from 'ol/geom/LineString';
 import Polygon from 'ol/geom/Polygon';
+import MultiPolygon from 'ol/geom/MultiPolygon';
 import {Position2d} from '../geo/position-2d';
 import {DataItem} from '../model/data-item';
 import {OlPos} from '../geo/ol-pos';
+import {Polygon2d} from '../geo/polygon-2d';
+import {MultiPolygon2d} from '../geo/multi-polygon-2d';
 
 
 export abstract class OlComponentBase {
@@ -67,56 +70,53 @@ export abstract class OlComponentBase {
     protected setPointGeometry(feature: Feature, position: Position2d) {
         if (!position) {
             this.hideFeature(feature);
-        } else {
-            const newPos = OlPos.getMercator(position);
-            const olPoint = (feature.getGeometry() as Point);
-            if (!olPoint) {
-                feature.setGeometry(new Point(newPos));
-            } else {
-                olPoint.setCoordinates(newPos);
-            }
+            return;
         }
+
+        const newPos = OlPos.getMercator(position);
+        feature.setGeometry(new Point(newPos));
     }
 
 
     protected setLineGeometry(feature: Feature, positionList: Position2d[]) {
         if (!positionList) {
             this.hideFeature(feature);
+            return;
         }
+
         const mercatorPosList = positionList ? positionList.map((pos) => OlPos.getMercator(pos)) : undefined;
-        const olLine = (feature.getGeometry() as LineString);
-        if (!olLine) {
-            feature.setGeometry(new LineString(mercatorPosList));
-        } else {
-            olLine.setCoordinates(mercatorPosList);
-        }
+
+        feature.setGeometry(new LineString(mercatorPosList));
     }
 
 
-    protected setPolygonGeometry(feature: Feature, positionList: Position2d[]) {
-        if (!positionList) {
+    protected setPolygonGeometry(feature: Feature, polygon: Polygon2d) {
+        if (!polygon || !polygon.outerBoundary || polygon.outerBoundary.positionList.length === 0) {
             this.hideFeature(feature);
+            return;
         }
-        const mercatorPosList = positionList ? positionList.map((pos) => OlPos.getMercator(pos)) : undefined;
-        const olPolygon = (feature.getGeometry() as Polygon);
-        if (!olPolygon) {
-            feature.setGeometry(new Polygon([mercatorPosList]));
-        } else {
-            olPolygon.setCoordinates([mercatorPosList]);
-        }
+
+        const mercatorBoundaryPosList = polygon.outerBoundary.positionList.map((pos) => OlPos.getMercator(pos));
+        const mercatorHolePosLists = polygon.holes.map(hole => hole.positionList.map(pos => OlPos.getMercator(pos)));
+
+        feature.setGeometry(new Polygon([mercatorBoundaryPosList, ...mercatorHolePosLists]));
     }
 
 
-    protected setMultiPolygonGeometry(feature: Feature, polygonList: Position2d[][]) {
-        if (!polygonList) {
+    protected setMultiPolygonGeometry(feature: Feature, multipolygon: MultiPolygon2d) {
+        if (!multipolygon || !multipolygon.polygonList || multipolygon.polygonList.length === 0) {
             this.hideFeature(feature);
+            return;
         }
-        const newPolygon = polygonList ? polygonList.map(polygon => polygon.map(pos => OlPos.getMercator(pos))) : undefined;
-        const olPolygon = (feature.getGeometry() as Polygon);
-        if (!olPolygon) {
-            feature.setGeometry(new Polygon(newPolygon));
-        } else {
-            olPolygon.setCoordinates(newPolygon);
-        }
+
+        const olMultiPolygon = new MultiPolygon([]);
+        multipolygon.polygonList.forEach(polygon => {
+            const mercatorBoundaryPosList = polygon.outerBoundary.positionList.map((pos) => OlPos.getMercator(pos));
+            const mercatorHolePosLists = polygon.holes.map(hole => hole.positionList.map(pos => OlPos.getMercator(pos)));
+
+            olMultiPolygon.appendPolygon(new Polygon([mercatorBoundaryPosList, ...mercatorHolePosLists]));
+        });
+
+        feature.setGeometry(olMultiPolygon);
     }
 }

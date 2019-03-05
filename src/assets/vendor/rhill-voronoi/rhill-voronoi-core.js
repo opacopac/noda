@@ -58,7 +58,7 @@ Voronoi.Edge object:
 Voronoi.Cell object:
   site: the Voronoi site object associated with the Voronoi cell.
   halfedges: an array of Voronoi.Halfedge objects, ordered counterclockwise,
-    defining the polygon for this Voronoi cell.
+    defining the ring for this Voronoi cell.
 
 Voronoi.Halfedge object:
   site: the Voronoi site object owning this Voronoi.Halfedge object.
@@ -522,11 +522,11 @@ Voronoi.prototype.Cell.prototype.getBbox = function() {
 //    1: point is inside the perimeter of the cell
 //
 Voronoi.prototype.Cell.prototype.pointIntersection = function(x, y) {
-    // Check if point in polygon. Since all polygons of a Voronoi
+    // Check if point in ring. Since all polygons of a Voronoi
     // diagram are convex, then:
     // http://paulbourke.net/geometry/polygonmesh/
     // Solution 3 (2D):
-    //   "If the polygon is convex then one can consider the polygon
+    //   "If the ring is convex then one can consider the ring
     //   "as a 'path' from the first vertex. A point is on the interior
     //   "of this polygons if it is always on the same side of all the
     //   "line segments making up the path. ...
