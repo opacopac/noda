@@ -21,11 +21,13 @@ export class PolygonMerger {
     private static getUniqueEdges(ringList: Ring2d[]): Map<string, Edge2d[]> {
         const edgeMap: Map<string, Edge2d[]> = new Map<string, Edge2d[]>();
 
-        ringList.forEach(ring => {
-            ring.getEdgeList().forEach(edge => {
-                this.addEdgeOrRemoveReverseDuplicate(edgeMap, edge);
+        ringList
+            .filter(ring => ring !== undefined)
+            .forEach(ring => {
+                ring.getEdgeList().forEach(edge => {
+                    this.addEdgeOrRemoveReverseDuplicate(edgeMap, edge);
+                });
             });
-        });
 
         return edgeMap;
     }
@@ -75,9 +77,15 @@ export class PolygonMerger {
         const rings: Ring2d[] = [];
 
         while (edgeMap.size > 0) {
-            const firstEdge = edgeMap.values().next().value[0];
+            const firstEdgeKey = edgeMap.keys().next().value;
+            const firstEdgeList = edgeMap.get(firstEdgeKey);
+            if (firstEdgeList.length === 0) {
+                edgeMap.delete(firstEdgeKey);
+                continue;
+            }
+
             const edgeList: Edge2d[] = [];
-            this.followEdge(edgeMap, edgeList, firstEdge);
+            this.followEdge(edgeMap, edgeList, firstEdgeList[0]);
             rings.push(Ring2d.fromEdgeList(edgeList));
         }
 

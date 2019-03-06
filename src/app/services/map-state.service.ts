@@ -9,12 +9,15 @@ import {Extent2d} from '../geo/extent-2d';
 import {Haltestelle} from '../model/haltestelle';
 import {Kante} from '../model/kante';
 import {QuadTree} from '../geo/quad-tree';
+import {Zone} from '../model/zone';
 import {Zonenplan} from '../model/zonenplan';
 import {VoronoiHelper} from '../geo/voronoi-helper';
 import {Relationsgebiet} from '../model/relationsgebiet';
 import {OlRelationsgebiet} from '../ol-components/OlRelationsgebiet';
 import {Interbereich} from '../model/interbereich';
 import {OlInterbereich} from '../ol-components/OlInterbereich';
+import {HstKanteZoneHelper} from '../model/hst-kante-zone-helper';
+import {PolygonMerger} from '../geo/polygon-merger';
 
 
 @Injectable({
@@ -139,6 +142,10 @@ export class MapStateService {
         console.log('calculating voronoi...');
         this.calcVoronoi(this.drData.haltestellen);
         console.log('calculating voronoi completed');
+
+        console.log('calculating zone polygons...');
+        this.calcZonePolygons(this.drData.zonen);
+        console.log('calculating zone polygons completed');
     }
 
 
@@ -159,7 +166,7 @@ export class MapStateService {
 
     private createZonenplanLut() {
         this.drData.zonenplaene.forEach(zonenplan => {
-            zonenplan.zonen.forEach(zone => zone.zonenplanLut.push(zonenplan));
+            zonenplan.zonen.forEach(zone => zone.zonenplan = zonenplan);
         });
     }
 
@@ -316,5 +323,22 @@ export class MapStateService {
 
     private calcVoronoi(hstMap: Map<string, Haltestelle>) {
         VoronoiHelper.calculate(Array.from(hstMap.values()));
+    }
+
+
+    private calcZonePolygons(zoneMap: Map<string, Zone>) {
+        const zoneList = Array.from(zoneMap.values());
+
+        zoneList.forEach(zone => {
+            const hstList: Haltestelle[] = [];
+            const kantenWithOneZone = HstKanteZoneHelper.getKantenLinkedToNOtherZonen(zone, 0);
+            kantenWithOneZone
+                .map(kantZon => kantZon.kante)
+                .forEach(kante => HstKanteZoneHelper.addUniqueKantenHst(hstList, kante));
+
+            if (hstList.length > 0) {
+                zone.polygon = PolygonMerger.unionAdjacentRings(hstList.map(hst => hst.ring));
+            }
+        });
     }
 }

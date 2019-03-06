@@ -13,19 +13,19 @@ export class KanteWithZonen {
 
 export class OlHelper {
     private static readonly colorList = [
-        '#e6194B',
-        '#f58231',
-        '#ffe119',
-        // '#bfef45',
-        '#3cb44b',
-        '#42d4f4',
         '#4363d8',
+        '#42d4f4',
+        '#3cb44b',
+        '#ffe119',
+        '#f58231',
+        '#e6194B',
+        // '#bfef45',
         // '#911eb4',
         '#f032e6',
         '#800000',
         '#9A6324',
-        // '#808000',
         '#000075',
+        // '#808000',
     ];
 
 

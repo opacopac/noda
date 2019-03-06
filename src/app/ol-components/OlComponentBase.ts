@@ -104,7 +104,9 @@ export abstract class OlComponentBase {
 
 
     protected setMultiPolygonGeometry(feature: Feature, multipolygon: MultiPolygon2d) {
-        if (!multipolygon || !multipolygon.polygonList || multipolygon.polygonList.length === 0) {
+        if (!multipolygon || !multipolygon.polygonList || multipolygon.polygonList.length === 0 ||
+            !multipolygon.polygonList[0].outerBoundary || !multipolygon.polygonList[0].outerBoundary.positionList ||
+            multipolygon.polygonList[0].outerBoundary.positionList.length === 0) {
             this.hideFeature(feature);
             return;
         }

@@ -13,7 +13,8 @@ import {MultiPolygon2d} from '../geo/multi-polygon-2d';
 
 
 export class OlZonelike extends OlComponentBase {
-    private readonly olFeature: Feature;
+    private readonly olFeatureInner: Feature;
+    private readonly olFeatureBorder: Feature;
 
 
     get isSelectable(): boolean {
@@ -28,12 +29,17 @@ export class OlZonelike extends OlComponentBase {
 
         super();
 
-        this.olFeature = this.createFeature(zonelike);
-        this.olFeature.setStyle(this.createStyle(zonelike));
-        const hstPolyList = zonelike.getType() === DataItemType.Zone ?
-            this.getHstPolygonListFromZone(zonelike, zonenplan) : this.getHstPolygonListFromLokalnetz(zonelike);
-        this.setMultiPolygonGeometry(this.olFeature, hstPolyList);
-        this.source.addFeature(this.olFeature);
+        this.olFeatureInner = this.createFeature(zonelike);
+        this.olFeatureInner.setStyle(this.createStyle(zonelike));
+        const hstMultiPolygon = zonelike.getType() === DataItemType.Zone ?
+            this.getHstPolygonListFromZone(zonelike) : this.getHstPolygonListFromLokalnetz(zonelike);
+        this.setMultiPolygonGeometry(this.olFeatureInner, hstMultiPolygon);
+        this.source.addFeature(this.olFeatureInner);
+
+        this.olFeatureBorder = this.createFeature(zonelike);
+        this.olFeatureBorder.setStyle(this.createBorderStyle(zonelike));
+        this.setMultiPolygonGeometry(this.olFeatureBorder, zonelike.polygon);
+        this.source.addFeature(this.olFeatureBorder);
     }
 
 
@@ -47,6 +53,17 @@ export class OlZonelike extends OlComponentBase {
                 color: 'rgba(255, 255, 255, 0.2)', // this.getRgbaFromColorIndex(zone, 0.1),
                 width: 1,
             }),
+        });
+    }
+
+
+    private createBorderStyle(zonelike: Zonelike): Style {
+        const colorIdx = zonelike.code % 10;
+        return new Style({
+            stroke: new Stroke({
+                color: OlHelper.getRgbaFromColorIndex(colorIdx, 0.8),
+                width: 3,
+            }),
             text: new Text({
                 font: 'bold 18px Calibri,sans-serif',
                 text: zonelike.code.toString(),
@@ -57,10 +74,10 @@ export class OlZonelike extends OlComponentBase {
     }
 
 
-    private getHstPolygonListFromZone(zonelike: Zonelike, zonenplan: Zonenplan): MultiPolygon2d {
+    private getHstPolygonListFromZone(zonelike: Zonelike): MultiPolygon2d {
         const hstList: Haltestelle[] = [];
 
-        const kantenWithOneZone = HstKanteZoneHelper.getKantenLinkedToNOtherZonen(zonelike, zonenplan, 0);
+        const kantenWithOneZone = HstKanteZoneHelper.getKantenLinkedToNOtherZonen(zonelike, 0);
         kantenWithOneZone.forEach(kanteWzonen => HstKanteZoneHelper.addUniqueKantenHst(hstList, kanteWzonen.kante));
 
         /*const kantenWithTwoZonen = this.getKantenLinkedToNOtherZonen(zone, zonenplan, 1);

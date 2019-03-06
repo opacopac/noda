@@ -19,16 +19,16 @@ export class HstKanteZoneHelper {
     }
 
 
-    public static getKantenLinkedToNOtherZonen(zone: Zone, zonenplan: Zonenplan, otherZoneCount: number): KanteWithZonen[] {
+    public static getKantenLinkedToNOtherZonen(zone: Zone, otherZoneCount: number): KanteWithZonen[] {
         return zone.kanten
-            .map(kante => new KanteWithZonen(kante, this.getLinkedOtherZonen(kante, zone, zonenplan)))
+            .map(kante => new KanteWithZonen(kante, this.getLinkedOtherZonen(kante, zone)))
             .filter(kanteWZonen => kanteWZonen.zonen.length === otherZoneCount);
     }
 
 
-    private static getLinkedOtherZonen(kante: Kante, zone: Zone, zonenplan: Zonenplan): Zone[] {
+    private static getLinkedOtherZonen(kante: Kante, zone: Zone): Zone[] {
         return kante.zonenLut
-            .filter(otherZone => otherZone !== zone && zonenplan.zonen.indexOf(otherZone) >= 0);
+            .filter(otherZone => otherZone !== zone && zone.zonenplan.zonen.indexOf(otherZone) >= 0);
     }
 
 
