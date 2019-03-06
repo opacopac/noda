@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UploadDrComponent } from './upload-dr.component';
 
-describe('UploadDrComponent', () => {
+xdescribe('UploadDrComponent', () => {
   let component: UploadDrComponent;
   let fixture: ComponentFixture<UploadDrComponent>;
 
@@ -19,7 +19,7 @@ describe('UploadDrComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  xit('should create', () => {
     expect(component).toBeTruthy();
   });
 });

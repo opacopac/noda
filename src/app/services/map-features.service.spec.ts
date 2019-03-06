@@ -1,7 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 import {MapStateService} from './map-state.service';
 
-describe('MapStateService', () => {
+xdescribe('MapStateService', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
     it('should be created', () => {

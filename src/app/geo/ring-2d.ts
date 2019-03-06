@@ -1,10 +1,34 @@
 import {Position2d} from './position-2d';
+import {Edge2d} from './edge-2d';
 
 
 export class Ring2d {
     public constructor(
         public positionList: Position2d[],
     ) {
+    }
+
+
+    public static fromEdgeList(edgeList: Edge2d[]): Ring2d {
+        const posList = [];
+
+        posList.push(edgeList[0].pos1);
+        for (let i = 0; i < edgeList.length; i++) {
+            posList.push(edgeList[i].pos2);
+        }
+
+        return new Ring2d(posList);
+    }
+
+
+    public getEdgeList(): Edge2d[] {
+        const edgeList: Edge2d[] = [];
+
+        for (let i = 0; i < this.positionList.length - 1; i++) {
+            edgeList.push(new Edge2d(this.positionList[i], this.positionList[i + 1]));
+        }
+
+        return edgeList;
     }
     
 
@@ -18,5 +42,38 @@ export class Ring2d {
         }
 
         return areaSum > 0;
+    }
+
+
+    // using ray casting method, source: http://alienryderflex.com/polygon/
+    public containsPoint(point: Position2d): boolean {
+        let j = this.positionList.length - 1;
+        let oddNodes = false;
+
+        for (let i = 0; i < this.positionList.length; i++) {
+            if (this.positionList[i].latitude < point.latitude && this.positionList[j].latitude >= point.latitude ||
+                this.positionList[j].latitude < point.latitude && this.positionList[i].latitude >= point.latitude
+            ) {
+                if (this.positionList[i].longitude + (point.latitude - this.positionList[i].latitude) / (this.positionList[j].latitude
+                    - this.positionList[i].latitude) * (this.positionList[j].longitude - this.positionList[i].longitude) < point.longitude
+                ) {
+                    oddNodes = !oddNodes;
+                }
+            }
+            j = i;
+        }
+
+        return oddNodes;
+    }
+
+
+    public containsAllPoints(pointList: Position2d[]): boolean {
+        for (const point of pointList) {
+            if (!this.containsPoint(point)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
