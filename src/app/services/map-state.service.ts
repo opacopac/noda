@@ -18,6 +18,9 @@ import {Interbereich} from '../model/interbereich';
 import {OlInterbereich} from '../ol-components/OlInterbereich';
 import {HstKanteZoneHelper} from '../model/hst-kante-zone-helper';
 import {PolygonMerger} from '../geo/polygon-merger';
+import {MultiPolygon2d} from '../geo/multi-polygon-2d';
+import {Polygon2d} from '../geo/polygon-2d';
+import {Lokalnetz} from '../model/lokalnetz';
 
 
 @Injectable({
@@ -143,9 +146,11 @@ export class MapStateService {
         this.calcVoronoi(this.drData.haltestellen);
         console.log('calculating voronoi completed');
 
-        console.log('calculating zone polygons...');
+        console.log('calculating polygons...');
         this.calcZonePolygons(this.drData.zonen);
-        console.log('calculating zone polygons completed');
+        this.calcLokalnetzPolygons(this.drData.lokalnetze);
+        this.calcInterbereichPolygons(this.drData.interbereiche);
+        console.log('calculating polygons completed');
     }
 
 
@@ -338,6 +343,37 @@ export class MapStateService {
 
             if (hstList.length > 0) {
                 zone.polygon = PolygonMerger.unionAdjacentRings(hstList.map(hst => hst.ring));
+                zone.hstPolygon = new MultiPolygon2d(hstList.map(hst => new Polygon2d(hst.ring)));
+            }
+        });
+    }
+
+
+    private calcLokalnetzPolygons(lokalnetzMap: Map<string, Lokalnetz>) {
+        const lokalnetzList = Array.from(lokalnetzMap.values());
+
+        lokalnetzList.forEach(lokalnetz => {
+            const hstList: Haltestelle[] = [];
+            lokalnetz.kanten.forEach(kante => HstKanteZoneHelper.addUniqueKantenHst(hstList, kante));
+
+            if (hstList.length > 0) {
+                lokalnetz.polygon = PolygonMerger.unionAdjacentRings(hstList.map(hst => hst.ring));
+                lokalnetz.hstPolygon = new MultiPolygon2d(hstList.map(hst => new Polygon2d(hst.ring)));
+            }
+        });
+    }
+
+
+    private calcInterbereichPolygons(interbereichMap: Map<string, Interbereich>) {
+        const interbereichList = Array.from(interbereichMap.values());
+
+        interbereichList.forEach(interbereich => {
+            const hstList: Haltestelle[] = [];
+            interbereich.kanten.forEach(kante => HstKanteZoneHelper.addUniqueKantenHst(hstList, kante));
+
+            if (hstList.length > 0) {
+                interbereich.polygon = PolygonMerger.unionAdjacentRings(hstList.map(hst => hst.ring));
+                interbereich.hstPolygon = new MultiPolygon2d(hstList.map(hst => new Polygon2d(hst.ring)));
             }
         });
     }

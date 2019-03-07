@@ -17,6 +17,7 @@ import {MultiPolygon2d} from '../geo/multi-polygon-2d';
 
 export class OlInterbereich extends OlComponentBase {
     private readonly olFeature: Feature;
+    private readonly olFeatureBorder: Feature;
 
 
     get isSelectable(): boolean {
@@ -31,14 +32,19 @@ export class OlInterbereich extends OlComponentBase {
         super();
 
         this.olFeature = this.createFeature(interbereich);
-        this.olFeature.setStyle(this.createStyle(interbereich));
-        const hstPolyList = this.getHstPolygonListFromKanten(interbereich);
-        this.setMultiPolygonGeometry(this.olFeature, hstPolyList);
+        this.olFeature.setStyle(this.createHstPolygonStyle(interbereich));
+        this.setMultiPolygonGeometry(this.olFeature, interbereich.hstPolygon);
         this.source.addFeature(this.olFeature);
+
+
+        this.olFeatureBorder = this.createFeature(interbereich);
+        this.olFeatureBorder.setStyle(this.createOuterPolygonStyle(interbereich));
+        this.setMultiPolygonGeometry(this.olFeatureBorder, interbereich.polygon);
+        this.source.addFeature(this.olFeatureBorder);
     }
 
 
-    private createStyle(interbereich: Interbereich): Style {
+    private createHstPolygonStyle(interbereich: Interbereich): Style {
         const colorHex = '#FF6666';
         const colorHexBg = '#FFFFFF';
         return new Style({
@@ -49,21 +55,24 @@ export class OlInterbereich extends OlComponentBase {
                 color: OlHelper.getRgbaFromHex(colorHexBg, 0.2),
                 width: 1,
             }),
-            text: new Text({
-                font: 'bold 18px Calibri,sans-serif',
-                text: interbereich.name,
-                fill: new Fill({ color: OlHelper.getRgbaFromHex(colorHex, 1.0), }),
-                stroke: new Stroke({ color: OlHelper.getRgbaFromHex(colorHexBg, 1.0), width: 2 }),
-            })
         });
     }
 
 
-    private getHstPolygonListFromKanten(interbereich: Interbereich): MultiPolygon2d {
-        const hstList: Haltestelle[] = [];
-
-        interbereich.kanten.forEach(kante => HstKanteZoneHelper.addUniqueKantenHst(hstList, kante));
-
-        return new MultiPolygon2d(hstList.map(hst => new Polygon2d(hst.ring)));
+    private createOuterPolygonStyle(interbereich: Interbereich): Style {
+        const colorHex = '#FF6666';
+        const colorHexBg = '#FFFFFF';
+        return new Style({
+            stroke: new Stroke({
+                color: OlHelper.getRgbaFromHex(colorHex, 0.8),
+                width: 3,
+            }),
+            text: new Text({
+                font: 'bold 18px Calibri,sans-serif',
+                text: interbereich.name,
+                fill: new Fill({ color: colorHex, }),
+                stroke: new Stroke({ color: colorHexBg, width: 2 }),
+            })
+        });
     }
 }

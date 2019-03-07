@@ -8,6 +8,7 @@ import {MultiPolygon2d} from '../geo/multi-polygon-2d';
 export abstract class Zonelike implements DataItem {
     public zonenplan: Zonenplan;
     public polygon: MultiPolygon2d;
+    public hstPolygon: MultiPolygon2d;
 
 
     public constructor(
