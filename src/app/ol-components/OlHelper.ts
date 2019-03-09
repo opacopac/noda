@@ -194,7 +194,123 @@ export class OlHelper {
         },
         {
             zonenplaene: [
-                'ZVV Abo &amp; Billett'
+                'Schwyzerpass Abo &amp; Billett',
+                'Schwyzerpass City-Ticket',
+                'Schwyzerpass Kombi Abo Schwyz/Zug',
+                'Schwyzerpass Modul-Abo',
+            ],
+            colors: [
+                {color: '#84C779', zones: [670, 673, 682, 686, 688, 692]},
+                {color: '#BFE1C2', zones: [677, 681, 684, 689, 691]},
+                {color: '#FFF56D', zones: [672, 675, 675, 678, 685, 687]},
+                {color: '#F8A084', zones: [671, 674, 676, 679, 683]},
+            ]
+        },
+        {
+            zonenplaene: [
+                'TNW Billett',
+            ],
+            colors: [
+                {color: '#FFFFFF', zones: [10]},
+                {color: '#E0BF94', zones: [11, 14, 20, 22, 33, 35, 40, 42, 55, 57, 58, 70]},
+                {color: '#FFE596', zones: [12, 15, 24, 28, 34, 41, 50, 51, 56, 62, 73, 78]},
+                {color: '#C0D678', zones: [13, 21, 23, 26, 27, 32, 37, 43, 53, 59, 60, 66, 75]},
+                {color: '#CAE7EA', zones: [25, 30, 36, 44, 45, 52, 54, 61, 65, 74, 76]},
+            ]
+        },
+        {
+            zonenplaene: [
+                'Unireso Abo &amp; Billett',
+                'Unireso Abo@Swisspass Unireso',
+                'Unireso City-Ticket',
+                'Unireso Modul-Abo',
+                'Unireso Unireso Tout Genève'
+            ],
+            colors: [
+                {color: '#F2F3F4', zones: [10]},
+                {color: '#FEDAB3', zones: [21]},
+                {color: '#C8E9F0', zones: [22]},
+                {color: '#FDE7DC', zones: [81]},
+                {color: '#D4E1F2', zones: [82]},
+                {color: '#E7EEAE', zones: [84]},
+                {color: '#CCD2C0', zones: [85]},
+                {color: '#DFCCE3', zones: [87]},
+                {color: '#D3D0B2', zones: [88]},
+                {color: '#FEF0C6', zones: [90]},
+            ]
+        },
+        {
+            zonenplaene: [
+                'Vagabond Abo',
+                'Vagabond City-Ticket',
+                'Vagabond Modul-Abo',
+
+            ],
+            colors: [
+                {color: '#DFBCAC', zones: [10]},
+                {color: '#A2C0C1', zones: [11]},
+                {color: '#B7C9E2', zones: [12]},
+                {color: '#A3B4D6', zones: [13]},
+                {color: '#EEDDA0', zones: [14]},
+                {color: '#A0DBF1', zones: [15]},
+                {color: '#9CBFD5', zones: [20]},
+                {color: '#9DCFBE', zones: [21]},
+                {color: '#F1CBC6', zones: [22]},
+                {color: '#BBDFCB', zones: [23]},
+                {color: '#E4B1AF', zones: [24]},
+                {color: '#E1DFC2', zones: [30]},
+                {color: '#DAB2CB', zones: [40]},
+                {color: '#EDB7A4', zones: [41]},
+                {color: '#E5C0B2', zones: [42]},
+            ]
+        },
+        {
+            zonenplaene: [
+                'Z-Pass A-Welle-ZVV Abo &amp; Billett',
+                'Z-Pass Ostwind-ZVV Abo &amp; Billett',
+                'Z-Pass Schwyz/Zug-ZVV Abo &amp; Billett',
+
+            ],
+            colors: [
+                {color: '#F6F6F6', zones: [110, 120]},
+                {color: '#EAF3FC', zones: [112, 124, 131, 141, 156, 170, 172]},
+                {color: '#D4E6F7', zones: [111, 118, 123, 130, 132, 150, 153, 161, 163, 171, 173, 184]},
+                {color: '#BCD9F3', zones: [113, 115, 117, 122, 133, 140, 142, 152, 155, 162, 164, 180]},
+                {color: '#A3CCEE', zones: [114, 116, 121, 134, 135, 143, 151, 154, 160, 181]},
+                {color: '#5BC5F2', zones: [182, 183]},
+                {color: '#FCE0D3', zones: [510, 512, 533, 551, 561, 570]},
+                {color: '#FACAB6', zones: [513, 522, 530, 534, 550, 564, 572]},
+                {color: '#F7B399', zones: [518, 531, 552, 560, 562, 573]},
+                {color: '#F18D6E', zones: [511, 514, 532, 535, 563, 565, 571, 574]},
+                {color: '#FFF5DE', zones: [830, 838, 906, 907, 908, 909, 911, 916, 917, 920, 923, 925, 976, 991, 995]},
+                {color: '#FFEDC7', zones: [810, 834, 902, 921, 953, 975, 993, 998]},
+                {color: '#FFE6AF', zones: [833, 835, 840, 904, 908, 919, 922, 958, 977, 990, 994, 999]},
+                {color: '#FFDC88', zones: [820, 845, 848, 901, 903, 905, 910, 912, 915, 918, 924, 954, 974, 992, 997]},
+                {color: '#E1EFDE', zones: [623, 631, 670, 672, 677, 679, 684, 691]},
+                {color: '#CBE3C6', zones: [612, 622, 625, 674, 676, 680, 682, 686, 689]},
+                {color: '#B4D7AE', zones: [613, 621, 624, 626, 673, 683, 687]},
+                {color: '#8DC689', zones: [610, 611, 632, 671, 675, 678, 681, 685, 688, 692]},
+            ]
+        },
+        {
+            zonenplaene: [
+                'Zugerpass Abo &amp; Billett',
+                'Zugerpass City-Ticket',
+                'Zugerpass Modul-Abo'
+
+            ],
+            colors: [
+                {color: '#80C88E', zones: [610, 613, 621, 624, 637]},
+                {color: '#BFE1C2', zones: [611, 623, 626, 631, 636, 638]},
+                {color: '#FFE982', zones: [612, 622, 625, 632, 633, 639]},
+            ]
+        },
+        {
+            zonenplaene: [
+                'ZVV Abo &amp; Billett',
+                'ZVV Albis-Tageskarte',
+                'ZVV City-Ticket &amp;  Modul-Abo',
+
             ],
             colors: [
                 {color: '#F6F6F6', zones: [110, 120]},
