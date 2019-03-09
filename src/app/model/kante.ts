@@ -19,4 +19,12 @@ export class Kante implements DataItem {
     public getType(): DataItemType {
         return DataItemType.Kante;
     }
+
+
+    public getScore(): number {
+        const lonDiff = this.haltestelle2.position.longitude - this.haltestelle1.position.longitude;
+        const latDiff = this.haltestelle2.position.latitude - this.haltestelle1.position.latitude;
+
+        return Math.sqrt(lonDiff * lonDiff + latDiff * latDiff);
+    }
 }

@@ -8,7 +8,7 @@ import {OlZonelike} from '../ol-components/OlZonelike';
 import {Extent2d} from '../geo/extent-2d';
 import {Haltestelle} from '../model/haltestelle';
 import {Kante} from '../model/kante';
-import {QuadTree} from '../geo/quad-tree';
+import {QuadTree} from '../quadtree/quad-tree';
 import {Zonenplan} from '../model/zonenplan';
 import {Relationsgebiet} from '../model/relationsgebiet';
 import {OlRelationsgebiet} from '../ol-components/OlRelationsgebiet';
@@ -153,11 +153,11 @@ export class MapStateService {
 
 
     private initLayers() {
-        this.hstLayer = this.mapService.addVectorLayer(true);
-        this.kantenLayer = this.mapService.addVectorLayer(true);
         this.zonenLayer = this.mapService.addVectorLayer(true);
         this.interbereichLayer = this.mapService.addVectorLayer(true);
         this.relationsgebietLayer = this.mapService.addVectorLayer(true);
+        this.kantenLayer = this.mapService.addVectorLayer(true);
+        this.hstLayer = this.mapService.addVectorLayer(true);
     }
 
 
@@ -228,6 +228,11 @@ export class MapStateService {
 
 
     private searchHaltestellen(extent: Extent2d, maxResults: number): Haltestelle[] {
+        return this.hstQuadTree.searchItems(extent, maxResults);
+    }
+
+
+    /*private searchHaltestellen(extent: Extent2d, maxResults: number): Haltestelle[] {
         const hstResult: Haltestelle[] = [];
 
         for (const hst of this.hstPrioList) {
@@ -239,7 +244,7 @@ export class MapStateService {
         }
 
         return hstResult;
-    }
+    }*/
 
 
     private searchKanten(hstResult: Haltestelle[]): Kante[] {

@@ -21,18 +21,59 @@ export class Extent2d {
     }
 
 
-    public containsPoint(point: Position2d): boolean {
-        return (this.minLon <= point.longitude
-            && this.minLat <= point.latitude
-            && this.maxLon >= point.longitude
-            && this.maxLat >= point.latitude);
+    public get midPos(): Position2d {
+        return new Position2d(
+            (this.maxLon + this.minLon) / 2,
+            (this.maxLat + this.minLat) / 2);
     }
 
 
-    public containsExtent(extent: Extent2d): boolean {
-        return (this.minLon <= extent.minLon
-            && this.minLat <= extent.minLat
-            && this.maxLon >= extent.maxLon
-            && this.maxLat >= extent.maxLat);
+    public get width(): number {
+        return this.maxLon - this.minLon;
+    }
+
+
+    public get height(): number {
+        return this.maxLat - this.minLat;
+    }
+
+
+    public containsPoint(point: Position2d, inclUpperBoundary = true): boolean {
+        if (inclUpperBoundary) {
+            return (point.longitude >= this.minLon
+                && point.latitude >= this.minLat
+                && point.longitude <= this.maxLon
+                && point.latitude <= this.maxLat);
+        } else {
+            return (point.longitude >= this.minLon
+                && point.latitude >= this.minLat
+                && point.longitude < this.maxLon
+                && point.latitude < this.maxLat);
+        }
+    }
+
+
+    public containsExtent(extent: Extent2d, inclUpperBoundary = true): boolean {
+        return (this.containsPoint(extent.minPos, inclUpperBoundary)
+            && this.containsPoint(extent.maxPos, inclUpperBoundary));
+    }
+
+
+    public intersectsExtent(extent: Extent2d, inclUpperBoundary = true): boolean {
+        if (inclUpperBoundary) {
+            return !(
+                extent.maxLon < this.minLon
+                || extent.minLon > this.maxLon
+                || extent.maxLat < this.minLat
+                || extent.minLat > this.maxLat
+            );
+        } else {
+            return !(
+                extent.maxLon <= this.minLon
+                || extent.minLon >= this.maxLon
+                || extent.maxLat <= this.minLat
+                || extent.minLat >= this.maxLat
+            );
+        }
     }
 }

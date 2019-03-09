@@ -1,6 +1,6 @@
 import {DrData} from './dr-data';
 import {Haltestelle} from './haltestelle';
-import {QuadTree} from '../geo/quad-tree';
+import {QuadTree} from '../quadtree/quad-tree';
 import {VoronoiHelper} from '../geo/voronoi-helper';
 import {Zone} from './zone';
 import {HstKanteZoneHelper} from './hst-kante-zone-helper';
@@ -9,6 +9,8 @@ import {MultiPolygon2d} from '../geo/multi-polygon-2d';
 import {Polygon2d} from '../geo/polygon-2d';
 import {Lokalnetz} from './lokalnetz';
 import {Interbereich} from './interbereich';
+import {Extent2d} from '../geo/extent-2d';
+import {fromArray} from 'rxjs/internal/observable/fromArray';
 
 export class PrecalcHelper {
     private constructor() {}
@@ -66,18 +68,19 @@ export class PrecalcHelper {
     }
 
     private static createHstQuadTree(hstMap: Map<string, Haltestelle>): QuadTree<Haltestelle> {
-        const quad = new QuadTree<Haltestelle>(undefined, 5, 10, 45, 50);
+        const extent = new Extent2d(5, 45, 10, 50); // TODO
+        const quadTree = new QuadTree<Haltestelle>(extent, 10); // TODO
 
-        hstMap.forEach(hst => quad.addItem(hst));
+        hstMap.forEach(hst => quadTree.addItem(hst));
 
-        return quad;
+        return quadTree;
     }
 
 
     private static getHstPrioList(hstMap: Map<string, Haltestelle>): Haltestelle[] {
         const hstPrioList = Array.from(hstMap.values());
         hstPrioList.sort((hst1: Haltestelle, hst2: Haltestelle) => {
-            return hst2.kantenLut.length - hst1.kantenLut.length;
+            return hst2.getScore() - hst1.getScore();
         });
 
         return hstPrioList;
@@ -85,7 +88,10 @@ export class PrecalcHelper {
 
 
     private static calcVoronoi(hstMap: Map<string, Haltestelle>) {
-        VoronoiHelper.calculate(Array.from(hstMap.values()));
+        const hstList = Array.from(hstMap.values())
+            .filter(hst => hst.kantenLut.length > 0);
+
+        VoronoiHelper.calculate(hstList);
     }
 
 

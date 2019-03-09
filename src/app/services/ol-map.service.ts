@@ -73,7 +73,8 @@ export class OlMapService {
     private createEmptyVectorLayer(imageRenderMode: boolean = false): Vector {
         return new VectorLayer({
             source: new Vector({}),
-            renderMode: imageRenderMode ? 'image' : undefined
+            renderMode: imageRenderMode ? 'image' : undefined,
+            // declutter: true
         });
     }
 
