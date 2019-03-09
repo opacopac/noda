@@ -1,6 +1,6 @@
 import {NovaDrSchema, NovaDrSchemaKante} from './NovaDrSchema';
 import {Haltestelle} from '../model/haltestelle';
-import {Kante} from '../model/kante';
+import {Kante, VerkehrsmittelTyp} from '../model/kante';
 import {isArray} from 'util';
 
 
@@ -55,10 +55,21 @@ export class NovaDrParserKante {
             return new Kante(
                 hst1,
                 hst2,
-                drKanteVer.verkehrsmittelTyp
+                this.parseVerkehrsmittelTpy(drKanteVer)
             );
         }
 
         return undefined;
+    }
+
+
+    private static parseVerkehrsmittelTpy(drKanteVer): VerkehrsmittelTyp {
+        switch (drKanteVer.verkehrsmittelTyp) {
+            case 'BUS': return VerkehrsmittelTyp.BUS;
+            case 'SCHIFF': return VerkehrsmittelTyp.SCHIFF;
+            case 'BAHN': return VerkehrsmittelTyp.BAHN;
+            case 'FUSSWEG': return VerkehrsmittelTyp.FUSSWEG;
+            default: return VerkehrsmittelTyp.UNKNOWN;
+        }
     }
 }

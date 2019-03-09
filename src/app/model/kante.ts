@@ -4,6 +4,15 @@ import {Haltestelle} from './haltestelle';
 import {Zone} from './zone';
 
 
+export enum VerkehrsmittelTyp {
+    BUS,
+    SCHIFF,
+    BAHN,
+    FUSSWEG,
+    UNKNOWN
+}
+
+
 export class Kante implements DataItem {
     public zonenLut: Zone[] = [];
 
@@ -11,7 +20,7 @@ export class Kante implements DataItem {
     public constructor(
         public haltestelle1: Haltestelle,
         public haltestelle2: Haltestelle,
-        public verkehrsmittelTyp: string,
+        public verkehrsmittelTyp: VerkehrsmittelTyp,
     ) {
     }
 

@@ -1,7 +1,6 @@
 import {DrData} from './dr-data';
 import {Haltestelle} from './haltestelle';
 import {QuadTree} from '../quadtree/quad-tree';
-import {VoronoiHelper} from '../geo/voronoi-helper';
 import {Zone} from './zone';
 import {HstKanteZoneHelper} from './hst-kante-zone-helper';
 import {PolygonMerger} from '../geo/polygon-merger';
@@ -10,13 +9,14 @@ import {Polygon2d} from '../geo/polygon-2d';
 import {Lokalnetz} from './lokalnetz';
 import {Interbereich} from './interbereich';
 import {Extent2d} from '../geo/extent-2d';
-import {fromArray} from 'rxjs/internal/observable/fromArray';
+import {VerkehrsmittelTyp} from './kante';
+import {VoronoiHelper} from '../geo/voronoi-helper';
 
 export class PrecalcHelper {
     private constructor() {}
 
 
-    public static precalc(drData: DrData): [QuadTree<Haltestelle>, Haltestelle[]] {
+    public static precalc(drData: DrData): QuadTree<Haltestelle> {
         console.log('creating LUTs...');
         this.createKantenLut(drData);
         this.createZonenLut(drData);
@@ -26,10 +26,6 @@ export class PrecalcHelper {
         console.log('creating hst quad tree...');
         const hstQuadTree = this.createHstQuadTree(drData.haltestellen);
         console.log('creating hst quad tree completed');
-
-        console.log('creating hst prio list...');
-        const hstPrioList = this.getHstPrioList(drData.haltestellen);
-        console.log('creating hst prio list completed');
 
         console.log('calculating voronoi...');
         this.calcVoronoi(drData.haltestellen);
@@ -42,7 +38,7 @@ export class PrecalcHelper {
         console.log('calculating polygons completed');
 
 
-        return [hstQuadTree, hstPrioList];
+        return hstQuadTree;
     }
 
 
@@ -77,19 +73,11 @@ export class PrecalcHelper {
     }
 
 
-    private static getHstPrioList(hstMap: Map<string, Haltestelle>): Haltestelle[] {
-        const hstPrioList = Array.from(hstMap.values());
-        hstPrioList.sort((hst1: Haltestelle, hst2: Haltestelle) => {
-            return hst2.getScore() - hst1.getScore();
-        });
-
-        return hstPrioList;
-    }
-
-
     private static calcVoronoi(hstMap: Map<string, Haltestelle>) {
+        // skip hst without kanten or with only fusswege
         const hstList = Array.from(hstMap.values())
-            .filter(hst => hst.kantenLut.length > 0);
+            .filter(hst => hst.kantenLut.length > 0)
+            .filter(hst => hst.kantenLut.some(kante => kante.verkehrsmittelTyp !== VerkehrsmittelTyp.FUSSWEG));
 
         VoronoiHelper.calculate(hstList);
     }

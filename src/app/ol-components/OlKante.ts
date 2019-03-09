@@ -1,8 +1,8 @@
 import Vector from 'ol/source';
 import Feature from 'ol/Feature';
-import {Style, Icon, Fill, Circle, Text, Stroke} from 'ol/style';
+import {Circle, Fill, Icon, Stroke, Style, Text} from 'ol/style';
 import {OlComponentBase} from './OlComponentBase';
-import {Kante} from '../model/kante';
+import {Kante, VerkehrsmittelTyp} from '../model/kante';
 
 
 export class OlKante extends OlComponentBase {
@@ -35,7 +35,7 @@ export class OlKante extends OlComponentBase {
             stroke: new Stroke({
                 color: this.getKanteColor(kante),
                 width: 3,
-                lineDash: this.isFussweg(kante) ? [10, 7] : undefined
+                lineDash: kante.verkehrsmittelTyp === VerkehrsmittelTyp.FUSSWEG ? [10, 7] : undefined
             })
         });
     }
@@ -43,16 +43,11 @@ export class OlKante extends OlComponentBase {
 
     private getKanteColor(kante: Kante): string {
         switch (kante.verkehrsmittelTyp) {
-            case 'BUS': return '#FFFF00';
-            case 'SCHIFF': return '#6666FF';
-            case 'BAHN': return '#111111';
-            case 'FUSSWEG':
+            case VerkehrsmittelTyp.BUS: return '#FFFF00';
+            case VerkehrsmittelTyp.SCHIFF: return '#6666FF';
+            case VerkehrsmittelTyp.BAHN: return '#111111';
+            case VerkehrsmittelTyp.FUSSWEG:
             default: return '#000099';
         }
-    }
-
-
-    private isFussweg(kante: Kante): boolean {
-        return kante.verkehrsmittelTyp === 'FUSSWEG';
     }
 }

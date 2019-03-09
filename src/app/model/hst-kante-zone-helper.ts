@@ -2,7 +2,14 @@ import {Haltestelle} from './haltestelle';
 import {Kante} from './kante';
 import {Zone} from './zone';
 import {Zonenplan} from './zonenplan';
-import {KanteWithZonen} from '../ol-components/OlHelper';
+
+
+class KanteWithZonen {
+    constructor(
+        public kante: Kante,
+        public zonen: Zone[]
+    ) {}
+}
 
 
 export class HstKanteZoneHelper {

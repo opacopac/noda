@@ -41,7 +41,8 @@ export class OlZonelike extends OlComponentBase {
         const colorHexBg = '#FFFFFF';
         return new Style({
             fill: new Fill({
-                color: OlHelper.getRgbaFromColorIndex(colorIdx, 0.5)
+                // color: OlHelper.getRgbaFromColorIndex(colorIdx, 0.5)
+                color: OlHelper.getRgbaFromVerbundZone(zonelike.zonenplan.bezeichnung, zonelike.code, 0.75)
             }),
             stroke: new Stroke({
                 color: OlHelper.getRgbaFromHex(colorHexBg, 0.2),
@@ -60,13 +61,18 @@ export class OlZonelike extends OlComponentBase {
         }
         return new Style({
             stroke: new Stroke({
-                color: OlHelper.getRgbaFromColorIndex(colorIdx, 0.8),
+                // color: OlHelper.getRgbaFromColorIndex(colorIdx, 0.8),
+                color: OlHelper.getRgbaFromVerbundZone(zonelike.zonenplan.bezeichnung, zonelike.code, 0.9),
                 width: 3,
             }),
             text: new Text({
                 font: 'bold 18px Calibri,sans-serif',
                 text: text,
-                fill: new Fill({ color: OlHelper.getRgbaFromColorIndex(colorIdx, 1.0) }),
+                fill: new Fill({
+                    // color: OlHelper.getRgbaFromColorIndex(colorIdx, 1.0)
+                    // color: OlHelper.getRgbaFromVerbundZone(zonelike.zonenplan.bezeichnung, zonelike.code, 1.0)
+                    color: '#000000'
+                }),
                 stroke: new Stroke({ color: colorHexBg, width: 2 }),
             })
         });

@@ -40,7 +40,8 @@ export class OlMapService {
         this.mapLayer = new Tile({
             source: new XYZ({
                 url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-            })
+            }),
+            opacity: 0.4
         });
 
         this.map = new Map({

@@ -29,7 +29,6 @@ export class MapStateService {
     private _selectedZonenplan: Zonenplan;
     private _selectedInterbereich: Interbereich;
     private _selectedRelationsgebiet: Relationsgebiet;
-    private hstPrioList: Haltestelle[];
     private hstQuadTree: QuadTree<Haltestelle>;
     private mapCoords: OlMapCoords;
     private kantenLayer: VectorLayer;
@@ -116,9 +115,7 @@ export class MapStateService {
 
     public updateDrData(drData: DrData) {
         this.drData = drData;
-        const quadHstList = PrecalcHelper.precalc(drData);
-        this.hstQuadTree = quadHstList[0];
-        this.hstPrioList = quadHstList[1];
+        this.hstQuadTree = PrecalcHelper.precalc(drData);
         this.updateMap();
     }
 
@@ -230,21 +227,6 @@ export class MapStateService {
     private searchHaltestellen(extent: Extent2d, maxResults: number): Haltestelle[] {
         return this.hstQuadTree.searchItems(extent, maxResults);
     }
-
-
-    /*private searchHaltestellen(extent: Extent2d, maxResults: number): Haltestelle[] {
-        const hstResult: Haltestelle[] = [];
-
-        for (const hst of this.hstPrioList) {
-            if (hstResult.length >= maxResults) {
-                break;
-            } else if (extent.containsPoint(hst.position)) {
-                hstResult.push(hst);
-            }
-        }
-
-        return hstResult;
-    }*/
 
 
     private searchKanten(hstResult: Haltestelle[]): Kante[] {
