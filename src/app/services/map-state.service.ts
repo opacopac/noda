@@ -94,6 +94,7 @@ export class MapStateService {
 
     public selectZonenplan(zonenplan: Zonenplan) {
         this._selectedZonenplan = zonenplan;
+        this.mapService.setExtent(zonenplan.getExtent());
         this.drawZonen(zonenplan);
         this.updateMap();
     }
@@ -101,6 +102,7 @@ export class MapStateService {
 
     public selectInterbereich(interbereich: Interbereich) {
         this._selectedInterbereich = interbereich;
+        this.mapService.setExtent(interbereich.getExtent());
         this.drawInterbereich(interbereich);
         this.updateMap();
     }
@@ -108,6 +110,7 @@ export class MapStateService {
 
     public selectRelationsgebiet(relationsgebiet: Relationsgebiet) {
         this._selectedRelationsgebiet = relationsgebiet;
+        this.mapService.setExtent(relationsgebiet.getExtent());
         this.drawRelationsgebiet(relationsgebiet);
         this.updateMap();
     }

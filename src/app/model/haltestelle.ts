@@ -5,6 +5,7 @@ import {Kante} from './kante';
 import {QuadTreeIndexable} from '../quadtree/quadTreeIndexable';
 import {Ring2d} from '../geo/ring-2d';
 import {JsonSerializable} from '../shared/json-serializable';
+import {Extent2d} from '../geo/extent-2d';
 
 
 export interface HaltestelleJson {

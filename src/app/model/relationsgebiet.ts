@@ -3,6 +3,7 @@ import {Haltestelle, HaltestelleJson} from './haltestelle';
 import {DataItem} from './data-item';
 import {JsonSerializable} from '../shared/json-serializable';
 import {StringMap} from '../shared/string-map';
+import {Extent2d} from '../geo/extent-2d';
 
 
 export interface RelationsgebietJson {
@@ -63,4 +64,10 @@ export class Relationsgebiet implements DataItem, JsonSerializable<Relationsgebi
     }
 
 
+    public getExtent(): Extent2d {
+        return this.atomicKantenLut.reduce(
+            (acc, hstPair) => Extent2d.getFromPosPair(hstPair[0].position, hstPair[1].position).getEnvelope(acc),
+            undefined as Extent2d
+        );
+    }
 }

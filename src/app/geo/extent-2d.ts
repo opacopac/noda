@@ -38,6 +38,16 @@ export class Extent2d {
     }
 
 
+    public static getFromPosPair(pos1: Position2d, pos2: Position2d): Extent2d {
+        return new Extent2d(
+            Math.min(pos1.longitude, pos2.longitude),
+            Math.min(pos1.latitude, pos2.latitude),
+            Math.max(pos1.longitude, pos2.longitude),
+            Math.max(pos1.latitude, pos2.latitude),
+        );
+    }
+
+
     public containsPoint(point: Position2d, inclUpperBoundary = true): boolean {
         if (inclUpperBoundary) {
             return (point.longitude >= this.minLon
@@ -73,6 +83,20 @@ export class Extent2d {
                 || extent.minLon >= this.maxLon
                 || extent.maxLat <= this.minLat
                 || extent.minLat >= this.maxLat
+            );
+        }
+    }
+
+
+    public getEnvelope(extent: Extent2d): Extent2d {
+        if (!extent) {
+            return this;
+        } else {
+            return new Extent2d(
+                Math.min(this.minLon, extent.minLon),
+                Math.min(this.minLat, extent.minLat),
+                Math.max(this.maxLon, extent.maxLon),
+                Math.max(this.maxLat, extent.maxLat),
             );
         }
     }

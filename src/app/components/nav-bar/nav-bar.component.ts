@@ -71,6 +71,11 @@ export class NavBarComponent implements OnInit {
     }
 
 
+    public getDisplayText(bezeichnung: string): string {
+        return bezeichnung.replace(/\&amp\;/, '&');
+    }
+
+
     public showHaltestellenChange(event: Event) {
         this.mapFeatureService.showHst = (event.target as HTMLInputElement).checked;
     }

@@ -4,6 +4,7 @@ import {DataItem} from './data-item';
 import {MultiPolygon2d} from '../geo/multi-polygon-2d';
 import {JsonSerializable} from '../shared/json-serializable';
 import {StringMap} from '../shared/string-map';
+import {Extent2d} from '../geo/extent-2d';
 
 
 export interface InterbereichJson {
@@ -42,5 +43,13 @@ export class Interbereich implements DataItem, JsonSerializable<InterbereichJson
             name: this.name,
             kantenIds: this.kanten.map(kante => kante.id)
         };
+    }
+
+
+    public getExtent(): Extent2d {
+        return this.kanten.reduce(
+            (acc, kante) => kante.getExtent().getEnvelope(acc),
+            undefined as Extent2d
+        );
     }
 }

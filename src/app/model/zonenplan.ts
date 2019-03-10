@@ -5,6 +5,7 @@ import {Lokalnetz} from './lokalnetz';
 import {JsonSerializable} from '../shared/json-serializable';
 import {ZoneLikeJson} from './zonelike';
 import {StringMap} from '../shared/string-map';
+import {Extent2d} from '../geo/extent-2d';
 
 
 export interface ZonenplanJson {
@@ -47,5 +48,13 @@ export class Zonenplan implements DataItem, JsonSerializable<ZonenplanJson> {
             zonenIds: this.zonen.map(zone => zone.id),
             lokalnetzIds: this.lokalnetze.map(lokalnetz => lokalnetz.id)
         };
+    }
+
+
+    public getExtent(): Extent2d {
+        return this.zonen.reduce(
+            (acc, zone) => zone.getExtent().getEnvelope(acc),
+            undefined as Extent2d
+        );
     }
 }

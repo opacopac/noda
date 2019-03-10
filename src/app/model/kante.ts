@@ -4,6 +4,7 @@ import {Haltestelle, HaltestelleJson} from './haltestelle';
 import {Zone} from './zone';
 import {JsonSerializable} from '../shared/json-serializable';
 import {StringMap} from '../shared/string-map';
+import {Extent2d} from '../geo/extent-2d';
 
 
 export enum VerkehrsmittelTyp {
@@ -66,5 +67,15 @@ export class Kante implements DataItem, JsonSerializable<KanteJson> {
             hsId2: this.haltestelle2.id,
             typ: VerkehrsmittelTyp[this.verkehrsmittelTyp]
         };
+    }
+
+
+    public getExtent(): Extent2d {
+        return new Extent2d(
+            Math.min(this.haltestelle1.position.longitude, this.haltestelle2.position.longitude),
+            Math.min(this.haltestelle1.position.latitude, this.haltestelle2.position.latitude),
+            Math.max(this.haltestelle1.position.longitude, this.haltestelle2.position.longitude),
+            Math.max(this.haltestelle1.position.latitude, this.haltestelle2.position.latitude)
+        );
     }
 }

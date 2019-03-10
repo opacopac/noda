@@ -23,7 +23,7 @@
                 <select (change)="this.zonenplanChange($event)" [value]="-1">
                     <option [value]="-1">(empty)</option>
                     <option *ngFor="let zonenplan of this.getZonenplanList(); let i = index;"
-                            [value]="i">{{ zonenplan.bezeichnung }}</option>
+                            [value]="i">{{ this.getDisplayText(zonenplan.bezeichnung) }}</option>
                 </select>
                 <br>
                 <input type="radio" name="zonlok" [value]="1" checked
