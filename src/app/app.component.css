@@ -1,0 +1,19 @@
+.flex-container {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+}
+
+app-nav-bar {
+    height: 150px;
+    flex: 0 0 auto;
+}
+
+
+app-base-map {
+    height: calc(100% - 150px);
+    flex: 1 1 auto;
+}

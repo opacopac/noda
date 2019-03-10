@@ -1,44 +1,52 @@
-<table>
-    <tr valign="top">
-        <td>
-            upload stammdaten.xml/.json: <app-upload-dr></app-upload-dr><br>
-            convert stammdaten.xml to json: <app-convert-dr-to-json></app-convert-dr-to-json>
-        </td>
-        <td>
-            <input type="checkbox" (change)="this.showHaltestellenChange($event)" checked>
-            {{ this.getHstCount() }} Haltestellen<br>
-            <input type="checkbox" (change)="this.showHaltestellenLabelsChange($event)"> show Labels
-        </td>
-        <td>
-            <input type="checkbox" (change)="this.showKantenChange($event)" checked>
-            {{ this.getKantenCount() }} Kanten
-        </td>
-        <td>
-            {{ this.getZonenplanCount() }} Zonenpläne:
-            <select (change)="this.zonenplanChange($event)" [value]="-1">
-                <option [value]="-1">(empty)</option>
-                <option *ngFor="let zonenplan of this.getZonenplanList(); let i = index;"
-                        [value]="i">{{ zonenplan.bezeichnung }}</option>
-            </select>
-            <br>
-            <input type="radio" name="zonlok" [value]="1" checked (change)="this.showZonenSelect(true)">{{ this.getZonenCount() }} Zonen<br>
-            <input type="radio" name="zonlok" [value]="2" (change)="this.showZonenSelect(false)">{{ this.getLokalnetzCount() }} Lokalnetze<br>
-        </td>
-        <td>
-            {{ this.getRelationsgebietCount() }} Relationsgebiete:
-            <select (change)="this.relationsgebietChange($event)" [value]="-1">
-                <option [value]="-1">(empty)</option>
-                <option *ngFor="let relationsgebiet of this.getRelationsgebietList(); let i = index;"
-                        [value]="i">{{ relationsgebiet.bezeichnung }}</option>
-            </select>
-        </td>
-        <td>
-            {{ this.getInterbereichCount() }} Interbereiche:
-            <select (change)="this.interbereichChange($event)" [value]="-1">
-                <option [value]="-1">(empty)</option>
-                <option *ngFor="let interbereich of this.getInterbereicheList(); let i = index;"
-                        [value]="i">{{ interbereich.name }}</option>
-            </select>
-        </td>
-    </tr>
-</table>
+<div class="navbar">
+    <h1>NODA</h1>
+    <table>
+        <tr valign="top">
+            <td>
+                upload stammdaten.xml/.json:
+                <app-upload-dr></app-upload-dr>
+                <br>
+                <!--convert stammdaten.xml to json:
+                <app-convert-dr-to-json></app-convert-dr-to-json>-->
+            </td>
+            <td>
+                <input type="checkbox" (change)="this.showHaltestellenChange($event)" checked>
+                {{ this.getHstCount() }} Haltestellen<br>
+                <input type="checkbox" (change)="this.showHaltestellenLabelsChange($event)"> show Labels
+            </td>
+            <td>
+                <input type="checkbox" (change)="this.showKantenChange($event)" checked>
+                {{ this.getKantenCount() }} Kanten
+            </td>
+            <td>
+                {{ this.getZonenplanCount() }} Zonenpläne:
+                <select (change)="this.zonenplanChange($event)" [value]="-1">
+                    <option [value]="-1">(empty)</option>
+                    <option *ngFor="let zonenplan of this.getZonenplanList(); let i = index;"
+                            [value]="i">{{ zonenplan.bezeichnung }}</option>
+                </select>
+                <br>
+                <input type="radio" name="zonlok" [value]="1" checked
+                       (change)="this.showZonenSelect(true)">{{ this.getZonenCount() }} Zonen<br>
+                <input type="radio" name="zonlok" [value]="2"
+                       (change)="this.showZonenSelect(false)">{{ this.getLokalnetzCount() }} Lokalnetze<br>
+            </td>
+            <td>
+                {{ this.getRelationsgebietCount() }} Relationsgebiete:
+                <select (change)="this.relationsgebietChange($event)" [value]="-1">
+                    <option [value]="-1">(empty)</option>
+                    <option *ngFor="let relationsgebiet of this.getRelationsgebietList(); let i = index;"
+                            [value]="i">{{ relationsgebiet.bezeichnung }}</option>
+                </select>
+            </td>
+            <td>
+                {{ this.getInterbereichCount() }} Interbereiche:
+                <select (change)="this.interbereichChange($event)" [value]="-1">
+                    <option [value]="-1">(empty)</option>
+                    <option *ngFor="let interbereich of this.getInterbereicheList(); let i = index;"
+                            [value]="i">{{ interbereich.name }}</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+</div>
