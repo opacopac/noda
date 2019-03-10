@@ -1,7 +1,9 @@
 import {DataItem} from './data-item';
 import {DataItemType} from './data-item-type';
-import {Haltestelle} from './haltestelle';
+import {Haltestelle, HaltestelleJson} from './haltestelle';
 import {Zone} from './zone';
+import {JsonSerializable} from '../shared/json-serializable';
+import {StringMap} from '../shared/string-map';
 
 
 export enum VerkehrsmittelTyp {
@@ -13,15 +15,34 @@ export enum VerkehrsmittelTyp {
 }
 
 
-export class Kante implements DataItem {
+export interface KanteJson {
+    id: string;
+    hsId1: string;
+    hsId2: string;
+    typ: string;
+}
+
+
+export class Kante implements DataItem, JsonSerializable<KanteJson> {
     public zonenLut: Zone[] = [];
 
 
     public constructor(
+        public id: string,
         public haltestelle1: Haltestelle,
         public haltestelle2: Haltestelle,
         public verkehrsmittelTyp: VerkehrsmittelTyp,
     ) {
+    }
+
+
+    public static fromJSON(json: KanteJson, hstMap: StringMap<Haltestelle, HaltestelleJson>): Kante {
+        return new Kante(
+            json.id,
+            hstMap.get(json.hsId1),
+            hstMap.get(json.hsId2),
+            VerkehrsmittelTyp[json.typ]
+        );
     }
 
 
@@ -35,5 +56,15 @@ export class Kante implements DataItem {
         const latDiff = this.haltestelle2.position.latitude - this.haltestelle1.position.latitude;
 
         return Math.sqrt(lonDiff * lonDiff + latDiff * latDiff);
+    }
+
+
+    public toJSON(key: string): KanteJson {
+        return {
+            id: this.id,
+            hsId1: this.haltestelle1.id,
+            hsId2: this.haltestelle2.id,
+            typ: VerkehrsmittelTyp[this.verkehrsmittelTyp]
+        };
     }
 }

@@ -1,17 +1,22 @@
 import {NovaDrSchema, NovaDrSchemaKante} from './NovaDrSchema';
-import {Haltestelle} from '../model/haltestelle';
-import {Kante, VerkehrsmittelTyp} from '../model/kante';
+import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
+import {Kante, KanteJson, VerkehrsmittelTyp} from '../model/kante';
 import {isArray} from 'util';
+import {StringMap} from '../shared/string-map';
 
 
 export class NovaDrParserKante {
-    public static parse(jsonDr: NovaDrSchema, stichdatum: string, hstMap: Map<string, Haltestelle>): Map<string, Kante> {
+    public static parse(
+        jsonDr: NovaDrSchema,
+        stichdatum: string,
+        hstMap: StringMap<Haltestelle, HaltestelleJson>
+    ): StringMap<Kante, KanteJson> {
         const drKanteList = jsonDr.datenrelease.subsystemNetz.kanten.kante;
-        const kanteMap: Map<string, Kante> = new Map<string, Kante>();
+        const kanteMap: StringMap<Kante, KanteJson> = new StringMap<Kante, KanteJson>();
 
         for (const drKante of drKanteList) {
             const id = this.parseKanteId(drKante);
-            const kante = this.parseKante(drKante, stichdatum, hstMap);
+            const kante = this.parseKante(id, drKante, stichdatum, hstMap);
 
             if (id && kante) {
                 kanteMap.set(id, kante);
@@ -27,7 +32,12 @@ export class NovaDrParserKante {
     }
 
 
-    private static parseKante(drKante: NovaDrSchemaKante, stichdatum: string, hstMap: Map<string, Haltestelle>): Kante {
+    private static parseKante(
+        kanteId: string,
+        drKante: NovaDrSchemaKante,
+        stichdatum: string,
+        hstMap: StringMap<Haltestelle, HaltestelleJson>
+    ): Kante {
         if (!drKante.version) {
             return undefined;
         }
@@ -53,6 +63,7 @@ export class NovaDrParserKante {
             }
 
             return new Kante(
+                kanteId,
                 hst1,
                 hst2,
                 this.parseVerkehrsmittelTpy(drKanteVer)

@@ -14,7 +14,7 @@ import {NovaDrParserInterbereich} from './NovaDrParserInterbereich';
 
 
 export class NovaDrParser {
-    public static processContent(xmlText: string): DrData {
+    public static processXmlContent(xmlText: string): DrData {
         console.log('parsing xml...');
         const drJson = this.parseXmlText(xmlText);
         console.log('parsing xml completed');

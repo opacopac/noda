@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {DrData} from '../model/dr-data';
 import {Observable, of} from 'rxjs';
+import {saveAs} from 'file-saver';
 
 
 @Injectable({
@@ -18,6 +19,13 @@ export class StorageService {
 
     public downloadTextFile(url: string): Observable<string> {
         return this.http.get<string>(url, { responseType: 'text' as 'json'});
+    }
+
+
+    public exportStammdatenJson(drData: DrData, fileName: string) {
+        const serDrData = this.serializeDrData(drData);
+        const blob = new Blob([serDrData], {type: 'application/json;charset=utf-8'});
+        saveAs(blob, fileName);
     }
 
 
@@ -51,36 +59,14 @@ export class StorageService {
             );*/
     }
 
-    private serializeDrData(drData: DrData): string {
-        return JSON.stringify({
-            drId: drData.drId,
-            haltestellen: Array.from(drData.haltestellen.entries()),
-            kanten: Array.from(drData.kanten.entries()),
-            zonen: Array.from(drData.zonen.entries()),
-            lokalnetze: Array.from(drData.lokalnetze.entries()),
-            zonenplaene: Array.from(drData.zonenplaene.entries()),
-            interbereiche: Array.from(drData.interbereiche.entries()),
-            relationsgebiete: Array.from(drData.relationsgebiete.entries())
-        });
+
+    public serializeDrData(drData: DrData): string {
+        return JSON.stringify(drData);
     }
 
 
-    private deserializeDrData(drDataString: any): DrData {
-        if (!drDataString) {
-            return undefined;
-        }
-
-        // const drDataJson = JSON.parse(drDataString);
-        const drDataJson = drDataString;
-        return new DrData(
-            drDataJson.drId,
-            new Map(drDataJson.haltestellen),
-            new Map(drDataJson.kanten),
-            new Map(drDataJson.zonen),
-            new Map(drDataJson.lokalnetze),
-            new Map(drDataJson.zonenplaene),
-            new Map(drDataJson.interbereiche),
-            new Map(drDataJson.relationsgebiete)
-        );
+    public deserializeDrData(drDataString: string): DrData {
+        const drDataJson = JSON.parse(drDataString);
+        return DrData.fromJSON(drDataJson);
     }
 }

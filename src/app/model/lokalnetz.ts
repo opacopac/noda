@@ -1,15 +1,27 @@
 import {DataItemType} from './data-item-type';
-import {Kante} from './kante';
-import {Zonelike} from './zonelike';
+import {Kante, KanteJson} from './kante';
+import {Zonelike, ZoneLikeJson} from './zonelike';
+import {StringMap} from '../shared/string-map';
 
 
 export class Lokalnetz extends Zonelike {
     public constructor(
+        id: string,
         code: number,
         kanten: Kante[],
         bezeichnung: string,
     ) {
-        super(code, kanten, bezeichnung);
+        super(id, code, kanten, bezeichnung);
+    }
+
+
+    public static fromJSON(json: ZoneLikeJson, kantenMap: StringMap<Kante, KanteJson>): Lokalnetz {
+        return new Lokalnetz(
+            json.id,
+            json.code,
+            json.kantenIds ? json.kantenIds.map(ktid => kantenMap.get(ktid)) : [],
+            json.bez
+        );
     }
 
 

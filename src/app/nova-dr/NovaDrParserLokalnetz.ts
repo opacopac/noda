@@ -1,17 +1,20 @@
 import {NovaDrSchema, NovaDrSchemaLokalnetz} from './NovaDrSchema';
-import {Kante} from '../model/kante';
+import {Kante, KanteJson} from '../model/kante';
 import {isArray} from 'util';
 import {Lokalnetz} from '../model/lokalnetz';
+import {StringMap} from '../shared/string-map';
+import {Zone} from '../model/zone';
+import {ZoneLikeJson} from '../model/zonelike';
 
 
 export class NovaDrParserLokalnetz {
-    public static parse(jsonDr: NovaDrSchema, stichdatum: string, kanteMap: Map<string, Kante>): Map<string, Lokalnetz> {
+    public static parse(jsonDr: NovaDrSchema, stichdatum: string, kanteMap: StringMap<Kante, KanteJson>): StringMap<Lokalnetz, ZoneLikeJson> {
         const drLokalnetzList = jsonDr.datenrelease.subsystemZonenModell.lokalnetzen.lokalnetz;
-        const lokalnetzMap: Map<string, Lokalnetz> = new Map<string, Lokalnetz>();
+        const lokalnetzMap = new StringMap<Lokalnetz, ZoneLikeJson>();
 
         for (const drLokalnetz of drLokalnetzList) {
             const id = this.parseLokalnetzId(drLokalnetz);
-            const lokalnetz = this.parseLokalnetz(drLokalnetz, stichdatum, kanteMap);
+            const lokalnetz = this.parseLokalnetz(id, drLokalnetz, stichdatum, kanteMap);
 
             if (id && lokalnetz) {
                 lokalnetzMap.set(id, lokalnetz);
@@ -27,7 +30,7 @@ export class NovaDrParserLokalnetz {
     }
 
 
-    private static parseLokalnetz(drLokalnetz: NovaDrSchemaLokalnetz, stichdatum: string, kantenMap: Map<string, Kante>): Lokalnetz {
+    private static parseLokalnetz(lokalnetzId: string, drLokalnetz: NovaDrSchemaLokalnetz, stichdatum: string, kantenMap: StringMap<Kante, KanteJson>): Lokalnetz {
         if (!drLokalnetz.version) {
             return undefined;
         }
@@ -51,6 +54,7 @@ export class NovaDrParserLokalnetz {
             }
 
             return new Lokalnetz(
+                lokalnetzId,
                 parseInt(drLokalnetzVer.code, 10),
                 kantenList,
                 drLokalnetzVer.bezeichnung
@@ -61,7 +65,7 @@ export class NovaDrParserLokalnetz {
     }
 
 
-    private static parseKantenList(idString: string, kantenMap: Map<string, Kante>): Kante[] {
+    private static parseKantenList(idString: string, kantenMap: StringMap<Kante, KanteJson>): Kante[] {
         const kantenIds = idString.split(' ');
 
         if (kantenIds.length === 0) {

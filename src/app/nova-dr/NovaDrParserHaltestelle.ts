@@ -1,17 +1,18 @@
 import {NovaDrSchema, NovaDrSchemaHaltestelle} from './NovaDrSchema';
-import {Haltestelle} from '../model/haltestelle';
+import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
 import {Position2d} from '../geo/position-2d';
 import {isArray} from 'util';
+import {StringMap} from '../shared/string-map';
 
 
 export class NovaDrParserHaltestelle {
-    public static parse(jsonDr: NovaDrSchema, stichdatum: string): Map<string, Haltestelle> {
+    public static parse(jsonDr: NovaDrSchema, stichdatum: string): StringMap<Haltestelle, HaltestelleJson> {
         const drHstList = jsonDr.datenrelease.subsystemNetz.haltestellen.haltestelle;
-        const hstList: Map<string, Haltestelle> = new Map<string, Haltestelle>();
+        const hstList: StringMap<Haltestelle, HaltestelleJson> = new StringMap<Haltestelle, HaltestelleJson>();
 
         for (const drHst of drHstList) {
             const id = this.parseHaltestelleId(drHst);
-            const hst = this.parseHaltestelle(drHst, stichdatum);
+            const hst = this.parseHaltestelle(id, drHst, stichdatum);
 
             if (id && hst) {
                 hstList.set(id, hst);
@@ -27,7 +28,7 @@ export class NovaDrParserHaltestelle {
     }
 
 
-    private static parseHaltestelle(drHst: NovaDrSchemaHaltestelle, stichdatum: string): Haltestelle {
+    private static parseHaltestelle(hstId: string, drHst: NovaDrSchemaHaltestelle, stichdatum: string): Haltestelle {
         if (!drHst.version) {
             return undefined;
         }
@@ -46,6 +47,7 @@ export class NovaDrParserHaltestelle {
             }
 
             return new Haltestelle(
+                hstId,
                 parseInt(drHstVer.uic, 10),
                 drHstVer.bavName,
                 Position2d.fromChLv03(

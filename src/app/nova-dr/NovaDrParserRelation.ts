@@ -1,17 +1,22 @@
 import {isArray} from 'util';
-import {NovaDrSchema, NovaDrSchemaRtmRelation, NovaDrSchemaRtmRelationsSchluessel} from './NovaDrSchema';
-import {Relationsgebiet} from '../model/relationsgebiet';
-import {HstKanteZoneHelper} from '../model/hst-kante-zone-helper';
-import {Haltestelle} from '../model/haltestelle';
+import {NovaDrSchema, NovaDrSchemaRtmRelation} from './NovaDrSchema';
+import {Relationsgebiet, RelationsgebietJson} from '../model/relationsgebiet';
+import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
+import {StringMap} from '../shared/string-map';
 
 
 export class NovaDrParserRelation {
-    public static parse(jsonDr: NovaDrSchema, stichdatum, hstMap: Map<string, Haltestelle>, relationsgebietMap: Map<string, Relationsgebiet>) {
+    public static parse(
+        jsonDr: NovaDrSchema,
+        stichdatum: string,
+        hstMap: StringMap<Haltestelle, HaltestelleJson>,
+        relationsgebietMap: StringMap<Relationsgebiet, RelationsgebietJson>
+    ) {
         const drRelationList = jsonDr.datenrelease.subsystemDVModell.rtmRelationen.rtmRelation;
 
         for (const drRelations of drRelationList) {
             const id = this.parseId(drRelations);
-            const relationsgebiet = this.parseRelationsgebiet(drRelations, stichdatum, hstMap, relationsgebietMap);
+            const relationsgebiet = this.parseRelation(id, drRelations, stichdatum, hstMap, relationsgebietMap);
 
             if (id && relationsgebiet) {
                 relationsgebietMap.set(id, relationsgebiet);
@@ -27,7 +32,13 @@ export class NovaDrParserRelation {
     }
 
 
-    private static parseRelationsgebiet(drRelation: NovaDrSchemaRtmRelation, stichdatum: string, hstMap: Map<string, Haltestelle>, relationsgebietMap: Map<string, Relationsgebiet>) {
+    private static parseRelation(
+        relationId: string,
+        drRelation: NovaDrSchemaRtmRelation,
+        stichdatum: string,
+        hstMap: StringMap<Haltestelle, HaltestelleJson>,
+        relationsgebietMap: StringMap<Relationsgebiet, RelationsgebietJson>
+    ) {
         if (!drRelation.version) {
             return undefined;
         }
@@ -45,7 +56,8 @@ export class NovaDrParserRelation {
                 continue;
             }
 
-            const relKey = isArray(drRelationVer.relationsschluessel) ? drRelationVer.relationsschluessel[0] : [drRelationVer.relationsschluessel as any][0];
+            const relKey = isArray(drRelationVer.relationsschluessel) ?
+                drRelationVer.relationsschluessel[0] : [drRelationVer.relationsschluessel as any][0];
             if (!relKey || !relKey['@_type'] || !relKey['@_type'].endsWith('AtomicRelationsschluessel')) {
                 continue;
             }

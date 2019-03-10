@@ -1,14 +1,18 @@
 import {isArray} from 'util';
 import {NovaDrSchema, NovaDrSchemaInterbereich} from './NovaDrSchema';
-import {Kante} from '../model/kante';
-import {Interbereich} from '../model/interbereich';
-
+import {Kante, KanteJson} from '../model/kante';
+import {Interbereich, InterbereichJson} from '../model/interbereich';
+import {StringMap} from '../shared/string-map';
 
 
 export class NovaDrParserInterbereich {
-    public static parse(jsonDr: NovaDrSchema, stichdatum: string, kanteMap: Map<string, Kante>): Map<string, Interbereich> {
+    public static parse(
+        jsonDr: NovaDrSchema,
+        stichdatum: string,
+        kanteMap: StringMap<Kante, KanteJson>
+    ): StringMap<Interbereich, InterbereichJson> {
         const drInterbereichList = jsonDr.datenrelease.subsystemInterModell.interBereiche.interBereich;
-        const interbereichMap: Map<string, Interbereich> = new Map<string, Interbereich>();
+        const interbereichMap = new StringMap<Interbereich, InterbereichJson>();
 
         for (const drInterbereich of drInterbereichList) {
             const id = this.parseId(drInterbereich);
@@ -28,7 +32,11 @@ export class NovaDrParserInterbereich {
     }
 
 
-    private static parseInterbereich(drInterbereich: NovaDrSchemaInterbereich, stichdatum: string, kantenMap: Map<string, Kante>): Interbereich {
+    private static parseInterbereich(
+        drInterbereich: NovaDrSchemaInterbereich,
+        stichdatum: string,
+        kantenMap: StringMap<Kante, KanteJson>
+    ): Interbereich {
         if (!drInterbereich.version) {
             return undefined;
         }
@@ -63,7 +71,7 @@ export class NovaDrParserInterbereich {
     }
 
 
-    private static parseKantenList(idString: string, kantenMap: Map<string, Kante>): Kante[] {
+    private static parseKantenList(idString: string, kantenMap: StringMap<Kante, KanteJson>): Kante[] {
         if (!idString) {
             return [];
         }

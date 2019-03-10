@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DownloadDrComponent } from './download-dr.component';
+import { ConvertDrToJsonComponent } from './convert-dr-to-json.component';
 
-xdescribe('DownloadDrComponent', () => {
-  let component: DownloadDrComponent;
-  let fixture: ComponentFixture<DownloadDrComponent>;
+xdescribe('ConvertDrToJsonComponent', () => {
+  let component: ConvertDrToJsonComponent;
+  let fixture: ComponentFixture<ConvertDrToJsonComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DownloadDrComponent ]
+      declarations: [ ConvertDrToJsonComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DownloadDrComponent);
+    fixture = TestBed.createComponent(ConvertDrToJsonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

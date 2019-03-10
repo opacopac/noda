@@ -1,14 +1,22 @@
 import {NovaDrSchema, NovaDrSchemaZonenplan} from './NovaDrSchema';
 import {Zone} from '../model/zone';
-import {Zonenplan} from '../model/zonenplan';
+import {Zonenplan, ZonenplanJson} from '../model/zonenplan';
 import {isArray} from 'util';
 import {Lokalnetz} from '../model/lokalnetz';
+import {StringMap} from '../shared/string-map';
+import {ZoneLikeJson} from '../model/zonelike';
+import {JsonSerializable} from '../shared/json-serializable';
 
 
 export class NovaDrParserZonenplan {
-    public static parse(jsonDr: NovaDrSchema, stichdatum: string, zonenMap: Map<string, Zone>, lokalnetzMap: Map<string, Lokalnetz>): Map<string, Zonenplan> {
+    public static parse(
+        jsonDr: NovaDrSchema,
+        stichdatum: string,
+        zonenMap: StringMap<Zone, ZoneLikeJson>,
+        lokalnetzMap: StringMap<Lokalnetz, ZoneLikeJson>
+    ): StringMap<Zonenplan, ZonenplanJson> {
         const drZonenplanList = jsonDr.datenrelease.subsystemZonenModell.zonenplaene.zonenplan;
-        const zonenplanMap: Map<string, Zonenplan> = new Map<string, Zonenplan>();
+        const zonenplanMap = new StringMap<Zonenplan, ZonenplanJson>();
 
         for (const drZonenplan of drZonenplanList) {
             const id = this.parseId(drZonenplan);
@@ -28,7 +36,7 @@ export class NovaDrParserZonenplan {
     }
 
 
-    private static parseZonenplan(drZonenplan: NovaDrSchemaZonenplan, stichdatum: string, zonenMap: Map<string, Zone>, lokalnetzMap: Map<string, Lokalnetz>): Zonenplan {
+    private static parseZonenplan(drZonenplan: NovaDrSchemaZonenplan, stichdatum: string, zonenMap: StringMap<Zone, ZoneLikeJson>, lokalnetzMap: StringMap<Lokalnetz, ZoneLikeJson>): Zonenplan {
         if (!drZonenplan.version) {
             return undefined;
         }
@@ -60,7 +68,7 @@ export class NovaDrParserZonenplan {
     }
 
 
-    private static parseIdList<T>(idString: string, idEntityMap: Map<string, T>): T[] {
+    private static parseIdList<T extends JsonSerializable<ZoneLikeJson>>(idString: string, idEntityMap: StringMap<T, ZoneLikeJson>): T[] {
         if (!idString) {
             return [];
         }

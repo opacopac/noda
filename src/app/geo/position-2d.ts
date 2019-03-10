@@ -1,7 +1,14 @@
 import {ChWgsConverter} from './ch-wgs-converter';
+import {JsonSerializable} from '../shared/json-serializable';
 
 
-export class Position2d {
+export interface Position2dJson {
+    lon: number;
+    lat: number;
+}
+
+
+export class Position2d implements JsonSerializable<Position2dJson> {
     public constructor(
         public longitude: number,
         public latitude: number
@@ -15,6 +22,11 @@ export class Position2d {
     }
 
 
+    public static fromJSON(json: Position2dJson): Position2d {
+        return new Position2d(json.lon, json.lat);
+    }
+
+
     public equals(pos: Position2d): boolean {
         return (this.longitude === pos.longitude && this.latitude === pos.latitude);
     }
@@ -22,5 +34,10 @@ export class Position2d {
 
     public clone(): Position2d {
         return new Position2d(this.longitude, this.latitude);
+    }
+
+
+    public toJSON(key: string): Position2dJson {
+        return { lon: this.longitude, lat: this.latitude };
     }
 }

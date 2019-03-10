@@ -1,5 +1,5 @@
 import {DrData} from './dr-data';
-import {Haltestelle} from './haltestelle';
+import {Haltestelle, HaltestelleJson} from './haltestelle';
 import {QuadTree} from '../quadtree/quad-tree';
 import {Zone} from './zone';
 import {HstKanteZoneHelper} from './hst-kante-zone-helper';
@@ -7,10 +7,12 @@ import {PolygonMerger} from '../geo/polygon-merger';
 import {MultiPolygon2d} from '../geo/multi-polygon-2d';
 import {Polygon2d} from '../geo/polygon-2d';
 import {Lokalnetz} from './lokalnetz';
-import {Interbereich} from './interbereich';
+import {Interbereich, InterbereichJson} from './interbereich';
 import {Extent2d} from '../geo/extent-2d';
 import {VerkehrsmittelTyp} from './kante';
 import {VoronoiHelper} from '../geo/voronoi-helper';
+import {StringMap} from '../shared/string-map';
+import {ZoneLikeJson} from './zonelike';
 
 export class PrecalcHelper {
     private constructor() {}
@@ -63,7 +65,7 @@ export class PrecalcHelper {
         });
     }
 
-    private static createHstQuadTree(hstMap: Map<string, Haltestelle>): QuadTree<Haltestelle> {
+    private static createHstQuadTree(hstMap: StringMap<Haltestelle, HaltestelleJson>): QuadTree<Haltestelle> {
         const extent = new Extent2d(5, 45, 10, 50); // TODO
         const quadTree = new QuadTree<Haltestelle>(extent, 10); // TODO
 
@@ -73,7 +75,7 @@ export class PrecalcHelper {
     }
 
 
-    private static calcVoronoi(hstMap: Map<string, Haltestelle>) {
+    private static calcVoronoi(hstMap: StringMap<Haltestelle, HaltestelleJson>) {
         // skip hst without kanten or with only fusswege
         const hstList = Array.from(hstMap.values())
             .filter(hst => hst.kantenLut.length > 0)
@@ -83,7 +85,7 @@ export class PrecalcHelper {
     }
 
 
-    private static calcZonePolygons(zoneMap: Map<string, Zone>) {
+    private static calcZonePolygons(zoneMap: StringMap<Zone, ZoneLikeJson>) {
         const zoneList = Array.from(zoneMap.values());
 
         zoneList.forEach(zone => {
@@ -101,7 +103,7 @@ export class PrecalcHelper {
     }
 
 
-    private static calcLokalnetzPolygons(lokalnetzMap: Map<string, Lokalnetz>) {
+    private static calcLokalnetzPolygons(lokalnetzMap: StringMap<Lokalnetz, ZoneLikeJson>) {
         const lokalnetzList = Array.from(lokalnetzMap.values());
 
         lokalnetzList.forEach(lokalnetz => {
@@ -116,7 +118,7 @@ export class PrecalcHelper {
     }
 
 
-    private static calcInterbereichPolygons(interbereichMap: Map<string, Interbereich>) {
+    private static calcInterbereichPolygons(interbereichMap: StringMap<Interbereich, InterbereichJson>) {
         const interbereichList = Array.from(interbereichMap.values());
 
         interbereichList.forEach(interbereich => {

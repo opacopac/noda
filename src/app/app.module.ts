@@ -5,7 +5,7 @@ import {AppComponent} from './app.component';
 import {UploadDrComponent} from './components/upload-dr/upload-dr.component';
 import {BaseMapComponent} from './components/base-map/base-map.component';
 import {NavBarComponent} from './components/nav-bar/nav-bar.component';
-import { DownloadDrComponent } from './components/download-dr/download-dr.component';
+import { ConvertDrToJsonComponent } from './components/download-dr/convert-dr-to-json.component';
 
 
 @NgModule({
@@ -14,7 +14,7 @@ import { DownloadDrComponent } from './components/download-dr/download-dr.compon
         UploadDrComponent,
         BaseMapComponent,
         NavBarComponent,
-        DownloadDrComponent
+        ConvertDrToJsonComponent
     ],
     imports: [
         BrowserModule,
