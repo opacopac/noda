@@ -65,6 +65,18 @@ export class ZoneColorHelper {
         },
         {
             zonenplaene: [
+                'BeoAbo Abo',
+                'BeoAbo Modul-Abo',
+            ],
+            colors: [
+                {color: '#EFF2F3', zones: [10, 30, 31, 32, 33, 34, 35, 50, 51, 53, 54, 71, 73, 75, 80, 92, 93, 94,
+                        100, 106, 107, 113, 114, 125, 130, 131, 133, 136, 145]},
+                {color: '#CCD5D9', zones: [20, 40, 41, 42, 44, 45, 60, 61, 63, 65, 81, 83, 90, 96, 97,
+                        101, 102, 103, 104, 110, 115, 116, 118, 120, 123, 135, 140, 143]},
+            ]
+        },
+        {
+            zonenplaene: [
                 'Frimobil Abo',
                 'Frimobil Billett',
                 'Frimobil City-Ticket',

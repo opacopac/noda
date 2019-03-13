@@ -62,6 +62,7 @@ export class PrecalcHelper {
     private static createZonenplanLut(drData: DrData) {
         drData.zonenplaene.forEach(zonenplan => {
             zonenplan.zonen.forEach(zone => zone.zonenplan = zonenplan);
+            zonenplan.lokalnetze.forEach(lokalnetz => lokalnetz.zonenplan = zonenplan);
         });
     }
 

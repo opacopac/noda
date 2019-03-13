@@ -113,10 +113,11 @@ export abstract class OlComponentBase {
 
         const olMultiPolygon = new MultiPolygon([]);
         multipolygon.polygonList.forEach(polygon => {
-            const mercatorBoundaryPosList = polygon.outerBoundary.positionList.map((pos) => OlPos.getMercator(pos));
-            const mercatorHolePosLists = polygon.holes.map(hole => hole.positionList.map(pos => OlPos.getMercator(pos)));
-
-            olMultiPolygon.appendPolygon(new Polygon([mercatorBoundaryPosList, ...mercatorHolePosLists]));
+            if (polygon.outerBoundary && polygon.outerBoundary.positionList) {
+                const mercatorBoundaryPosList = polygon.outerBoundary.positionList.map((pos) => OlPos.getMercator(pos));
+                const mercatorHolePosLists = polygon.holes.map(hole => hole.positionList.map(pos => OlPos.getMercator(pos)));
+                olMultiPolygon.appendPolygon(new Polygon([mercatorBoundaryPosList, ...mercatorHolePosLists]));
+            }
         });
 
         feature.setGeometry(olMultiPolygon);

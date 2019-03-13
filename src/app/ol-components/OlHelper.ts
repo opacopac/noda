@@ -36,7 +36,7 @@ export class OlHelper {
         let colorHex = ZoneColorHelper.getHexColor(zonenplan, zoneCode);
 
         if (!colorHex) {
-            colorHex = '#4363d8';
+            colorHex = this.colorList[zoneCode % 10];
         }
 
         return this.getRgbaFromHex(colorHex, opacity);
