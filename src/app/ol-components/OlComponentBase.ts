@@ -38,6 +38,32 @@ export abstract class OlComponentBase {
     }
 
 
+    protected static hideFeature2(feature: Feature) {
+        feature.setGeometry(undefined);
+    }
+
+
+    protected static setMultiPolygonGeometry2(feature: Feature, multipolygon: MultiPolygon2d) {
+        if (!multipolygon || !multipolygon.polygonList || multipolygon.polygonList.length === 0 ||
+            !multipolygon.polygonList[0].outerBoundary || !multipolygon.polygonList[0].outerBoundary.positionList ||
+            multipolygon.polygonList[0].outerBoundary.positionList.length === 0) {
+            this.hideFeature2(feature);
+            return;
+        }
+
+        const olMultiPolygon = new MultiPolygon([]);
+        multipolygon.polygonList.forEach(polygon => {
+            if (polygon.outerBoundary && polygon.outerBoundary.positionList) {
+                const mercatorBoundaryPosList = polygon.outerBoundary.positionList.map((pos) => OlPos.getMercator(pos));
+                const mercatorHolePosLists = polygon.holes.map(hole => hole.positionList.map(pos => OlPos.getMercator(pos)));
+                olMultiPolygon.appendPolygon(new Polygon([mercatorBoundaryPosList, ...mercatorHolePosLists]));
+            }
+        });
+
+        feature.setGeometry(olMultiPolygon);
+    }
+
+
     public abstract get isSelectable(): boolean;
 
 

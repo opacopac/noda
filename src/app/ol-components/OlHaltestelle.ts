@@ -10,7 +10,7 @@ export class OlHaltestelle extends OlComponentBase {
 
 
     get isSelectable(): boolean {
-        return true;
+        return false;
     }
 
 

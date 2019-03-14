@@ -15,6 +15,11 @@ import {Interbereich} from '../model/interbereich';
 import {OlInterbereich} from '../ol-components/OlInterbereich';
 import {PrecalcHelper} from '../model/precalc-helper';
 import {OlZonenplan} from '../ol-components/OlZonenplan';
+import {DataItem} from '../model/data-item';
+import {DataItemType} from '../model/data-item-type';
+import {Zonelike} from '../model/zonelike';
+import {Zone} from '../model/zone';
+import {OlZonelike} from '../ol-components/OlZonelike';
 
 
 @Injectable({
@@ -22,6 +27,7 @@ import {OlZonenplan} from '../ol-components/OlZonenplan';
 })
 export class MapStateService {
     public drData: DrData;
+    private currentMouseOverDataItem: DataItem;
     private _showKanten = true;
     private _showZonen = true;
     private _showHst = true;
@@ -37,6 +43,7 @@ export class MapStateService {
     private zonenOuterLayer: VectorLayer;
     private interbereichLayer: VectorLayer;
     private relationsgebietLayer: VectorLayer;
+    private selectedDataItemLayer: VectorLayer;
 
 
     public get showZonen(): boolean {
@@ -84,6 +91,7 @@ export class MapStateService {
 
 
     constructor(private mapService: OlMapService) {
+        this.mapService.onDataItemMouseOver.subscribe(this.onMouseOverDataItem.bind(this));
     }
 
 
@@ -124,7 +132,6 @@ export class MapStateService {
     }
 
 
-
     private updateMap() {
         if (!this.drData || !this.mapCoords) {
             return;
@@ -156,8 +163,23 @@ export class MapStateService {
         this.relationsgebietLayer = this.mapService.addVectorLayer(true);
         this.kantenLayer = this.mapService.addVectorLayer(true);
         this.hstLayer = this.mapService.addVectorLayer(true);
+
+        this.selectedDataItemLayer = this.mapService.addVectorLayer(true);
     }
 
+
+    public onMouseOverDataItem(dataItem: DataItem) {
+        if (dataItem === this.currentMouseOverDataItem) {
+            return;
+        } else {
+            this.currentMouseOverDataItem = dataItem;
+        }
+
+        this.drawSelectedItem(dataItem);
+    }
+
+
+    // region draw
 
     private drawKanten(kantenList: Kante[]) {
         this.kantenLayer.getSource().clear(true);
@@ -209,6 +231,22 @@ export class MapStateService {
 
         const olRelationsgebiet = new OlRelationsgebiet(relationsgebiet, this.relationsgebietLayer.getSource());
     }
+
+
+    private drawSelectedItem(dataItem: DataItem) {
+        this.selectedDataItemLayer.getSource().clear(true);
+
+        if (!dataItem) {
+            return;
+        }
+
+        switch (dataItem.getType()) {
+            case DataItemType.Zone: OlZonelike.drawSelection(dataItem as Zone, this.selectedDataItemLayer);
+        }
+    }
+
+
+    // endregion
 
 
     private searchHaltestellen(extent: Extent2d, maxResults: number): Haltestelle[] {
