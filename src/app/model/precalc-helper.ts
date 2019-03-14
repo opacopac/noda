@@ -79,8 +79,7 @@ export class PrecalcHelper {
     private static calcVoronoi(hstMap: StringMap<Haltestelle, HaltestelleJson>) {
         // skip hst without kanten or with only fusswege
         const hstList = Array.from(hstMap.values())
-            .filter(hst => hst.kantenLut.length > 0)
-            .filter(hst => hst.kantenLut.some(kante => kante.verkehrsmittelTyp !== VerkehrsmittelTyp.FUSSWEG));
+            .filter(hst => hst.hasNonFusswegKanten());
 
         VoronoiHelper.calculate(hstList);
     }

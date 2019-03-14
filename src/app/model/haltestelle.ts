@@ -1,7 +1,7 @@
 import {Position2d, Position2dJson} from '../geo/position-2d';
 import {DataItem} from './data-item';
 import {DataItemType} from './data-item-type';
-import {Kante} from './kante';
+import {Kante, VerkehrsmittelTyp} from './kante';
 import {QuadTreeIndexable} from '../quadtree/quadTreeIndexable';
 import {Ring2d} from '../geo/ring-2d';
 import {JsonSerializable} from '../shared/json-serializable';
@@ -40,22 +40,30 @@ export class Haltestelle implements DataItem, QuadTreeIndexable, JsonSerializabl
     }
 
 
-    getType(): DataItemType {
+    public getType(): DataItemType {
         return DataItemType.Haltestelle;
     }
 
 
-    getPosition(): Position2d {
+    public getPosition(): Position2d {
         return this.position;
     }
 
 
-    getScore(): number {
+    public getScore(): number {
         return this.kantenLut.reduce((score, kante) => score + kante.getScore(), 0);
     }
 
 
-    toJSON(key: string): HaltestelleJson {
+    public hasNonFusswegKanten(): boolean {
+        return (
+            this.kantenLut.length > 0 ||
+            this.kantenLut.some(kante => kante.verkehrsmittelTyp !== VerkehrsmittelTyp.FUSSWEG)
+        );
+    }
+
+
+    public toJSON(key: string): HaltestelleJson {
         return {
             id: this.id,
             uic: this.uic,

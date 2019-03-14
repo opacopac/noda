@@ -29,13 +29,18 @@ export class OlHaltestelle extends OlComponentBase {
 
 
     private createPointStyle(haltestelle: Haltestelle, showLabels: boolean): Style {
+        const isActive = haltestelle.hasNonFusswegKanten();
+
         return new Style({
             image: new Circle({
                 radius: 5,
                 fill: new Fill({
-                    color: '#CCCCCC'
+                    color: isActive ? '#CCCCCC' : '#666666'
                 }),
-                stroke: new Stroke({color: '#000000', width: 1}),
+                stroke: new Stroke({
+                    color: isActive ? '#000000' : '#000000',
+                    width: 1
+                }),
             }),
             text: showLabels ? new Text({
                 font: 'bold 14px Calibri,sans-serif',
