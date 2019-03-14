@@ -169,7 +169,8 @@ export class ZoneColorHelper {
                 'Ostwind Abo',
                 'Ostwind Billett',
                 'Ostwind City-Ticket',
-                'Ostwind Modul-Abo'
+                'Ostwind Modul-Abo',
+                'Vorarlberg OTV-VVV Abo &amp; Billett'
             ],
             colors: [
                 {color: '#FEDAAB', zones: [210, 228, 233, 235, 244, 255, 267, 270, 363, 379, 380, 389, 821, 834, 847, 848,
@@ -183,6 +184,9 @@ export class ZoneColorHelper {
                 {color: '#B8D989', zones: [301]},
                 {color: '#81C994', zones: [303, 307]},
                 {color: '#CDE5C1', zones: [305]},
+                {color: '#97CB59', zones: [711, 713, 714, 716, 718, 720, 726, 730, 731, 733, 735, 737]},
+                {color: '#CEE59A', zones: [710, 715, 723, 725, 732, 734]},
+                {color: '#F1F6D3', zones: [712, 717, 722, 729, 736]},
             ]
         },
         {
@@ -218,6 +222,7 @@ export class ZoneColorHelper {
         {
             zonenplaene: [
                 'TNW Billett',
+                'TNW Triregio Billett',
             ],
             colors: [
                 {color: '#FFFFFF', zones: [10]},
@@ -225,6 +230,10 @@ export class ZoneColorHelper {
                 {color: '#FFE596', zones: [12, 15, 24, 28, 34, 41, 50, 51, 56, 62, 73, 78]},
                 {color: '#C0D678', zones: [13, 21, 23, 26, 27, 32, 37, 43, 53, 59, 60, 66, 75]},
                 {color: '#CAE7EA', zones: [25, 30, 36, 44, 45, 52, 54, 61, 65, 74, 76]},
+                {color: '#97D2D3', zones: [100, 400, 700]},
+                {color: '#CDC9E6', zones: [200, 500]},
+                {color: '#BEDBF4', zones: [300]},
+                {color: '#8ECBF0', zones: [600]},
             ]
         },
         {

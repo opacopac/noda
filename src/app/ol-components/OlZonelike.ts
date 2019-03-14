@@ -1,5 +1,4 @@
-import Vector from 'ol/source';
-import Feature from 'ol/Feature';
+import VectorLayer from 'ol/layer/Vector';
 import {Circle, Fill, Icon, Stroke, Style, Text} from 'ol/style';
 import {OlComponentBase} from './OlComponentBase';
 import {Zonenplan} from '../model/zonenplan';
@@ -8,10 +7,6 @@ import {OlHelper} from './OlHelper';
 
 
 export class OlZonelike extends OlComponentBase {
-    private readonly olFeatureInner: Feature;
-    private readonly olFeatureBorder: Feature;
-
-
     get isSelectable(): boolean {
         return false;
     }
@@ -20,28 +15,29 @@ export class OlZonelike extends OlComponentBase {
     public constructor(
         zonelike: Zonelike,
         zonenplan: Zonenplan,
-        private readonly source: Vector) {
+        zoneFillingLayer: VectorLayer,
+        zoneBorderLayer: VectorLayer) {
 
         super();
 
-        this.olFeatureInner = this.createFeature(zonelike);
-        this.olFeatureInner.setStyle(this.createHstPolygonStyle(zonelike));
-        this.setMultiPolygonGeometry(this.olFeatureInner, zonelike.hstPolygon);
-        this.source.addFeature(this.olFeatureInner);
+        // filling
+        const olFeatureInner = this.createFeature(zonelike);
+        olFeatureInner.setStyle(this.createHstPolygonStyle(zonelike));
+        this.setMultiPolygonGeometry(olFeatureInner, zonelike.hstPolygon);
+        zoneFillingLayer.getSource().addFeature(olFeatureInner);
 
-        this.olFeatureBorder = this.createFeature(zonelike);
-        this.olFeatureBorder.setStyle(this.createOuterPolygonStyle(zonelike));
-        this.setMultiPolygonGeometry(this.olFeatureBorder, zonelike.polygon);
-        this.source.addFeature(this.olFeatureBorder);
+        // border
+        const olFeatureBorder = this.createFeature(zonelike);
+        olFeatureBorder.setStyle(this.createOuterPolygonStyle(zonelike));
+        this.setMultiPolygonGeometry(olFeatureBorder, zonelike.polygon);
+        zoneBorderLayer.getSource().addFeature(olFeatureBorder);
     }
 
 
     private createHstPolygonStyle(zonelike: Zonelike): Style {
-        const colorIdx = zonelike.code % 10;
         const colorHexBg = '#FFFFFF';
         return new Style({
             fill: new Fill({
-                // color: OlHelper.getRgbaFromColorIndex(colorIdx, 0.5)
                 color: OlHelper.getRgbaFromVerbundZone(zonelike.zonenplan.bezeichnung, zonelike.code, 0.75)
             }),
             stroke: new Stroke({
@@ -53,7 +49,6 @@ export class OlZonelike extends OlComponentBase {
 
 
     private createOuterPolygonStyle(zonelike: Zonelike): Style {
-        const colorIdx = zonelike.code % 10;
         const colorHexBg = '#FFFFFF';
         let text = zonelike.code.toString();
         if (zonelike.bezeichnung && zonelike.bezeichnung.length > 0) {
@@ -61,18 +56,13 @@ export class OlZonelike extends OlComponentBase {
         }
         return new Style({
             stroke: new Stroke({
-                // color: OlHelper.getRgbaFromColorIndex(colorIdx, 0.8),
                 color: OlHelper.getRgbaFromVerbundZone(zonelike.zonenplan.bezeichnung, zonelike.code, 0.9),
                 width: 3,
             }),
             text: new Text({
                 font: 'bold 18px Calibri,sans-serif',
                 text: text,
-                fill: new Fill({
-                    // color: OlHelper.getRgbaFromColorIndex(colorIdx, 1.0)
-                    // color: OlHelper.getRgbaFromVerbundZone(zonelike.zonenplan.bezeichnung, zonelike.code, 1.0)
-                    color: '#000000'
-                }),
+                fill: new Fill({ color: '#000000' }),
                 stroke: new Stroke({ color: colorHexBg, width: 2 }),
             })
         });

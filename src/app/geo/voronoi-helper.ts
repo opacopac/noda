@@ -15,10 +15,10 @@ export class VoronoiHelper {
 
     private static getBoundingBox(): BBox {
         return { // TODO
-            xl: 5, // 5,
-            xr: 10, // 10,
-            yb: 50, // 45,
-            yt: 45, // 50,
+            xl: 5,
+            xr: 15,
+            yb: 50,
+            yt: 45,
         };
     }
 

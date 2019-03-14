@@ -4,7 +4,6 @@ import {DrData} from '../model/dr-data';
 import {OlKante} from '../ol-components/OlKante';
 import {OlHaltestelle} from '../ol-components/OlHaltestelle';
 import {OlMapCoords, OlMapService} from './ol-map.service';
-import {OlZonelike} from '../ol-components/OlZonelike';
 import {Extent2d} from '../geo/extent-2d';
 import {Haltestelle} from '../model/haltestelle';
 import {Kante} from '../model/kante';
@@ -15,6 +14,7 @@ import {OlRelationsgebiet} from '../ol-components/OlRelationsgebiet';
 import {Interbereich} from '../model/interbereich';
 import {OlInterbereich} from '../ol-components/OlInterbereich';
 import {PrecalcHelper} from '../model/precalc-helper';
+import {OlZonenplan} from '../ol-components/OlZonenplan';
 
 
 @Injectable({
@@ -33,7 +33,8 @@ export class MapStateService {
     private mapCoords: OlMapCoords;
     private kantenLayer: VectorLayer;
     private hstLayer: VectorLayer;
-    private zonenLayer: VectorLayer;
+    private zonenfillerLayer: VectorLayer;
+    private zonenOuterLayer: VectorLayer;
     private interbereichLayer: VectorLayer;
     private relationsgebietLayer: VectorLayer;
 
@@ -95,7 +96,7 @@ export class MapStateService {
     public selectZonenplan(zonenplan: Zonenplan) {
         this._selectedZonenplan = zonenplan;
         this.mapService.setExtent(zonenplan.getExtent());
-        this.drawZonen(zonenplan);
+        this.drawZonenplan(zonenplan, !this._showZonen);
         this.updateMap();
     }
 
@@ -129,7 +130,7 @@ export class MapStateService {
             return;
         }
 
-        if (!this.hstLayer || !this.kantenLayer || !this.zonenLayer || !this.relationsgebietLayer) {
+        if (!this.hstLayer || !this.kantenLayer || !this.zonenfillerLayer || !this.relationsgebietLayer) {
             this.initLayers();
         }
 
@@ -144,16 +145,13 @@ export class MapStateService {
         const kantenList = this._showKanten ? this.searchKanten(hstList) : [];
         this.drawKanten(kantenList);
 
-        if (this._showZonen) {
-            this.drawZonen(this._selectedZonenplan);
-        } else {
-            this.drawLokalnetze(this._selectedZonenplan);
-        }
+        this.drawZonenplan(this._selectedZonenplan, !this._showZonen);
     }
 
 
     private initLayers() {
-        this.zonenLayer = this.mapService.addVectorLayer(true);
+        this.zonenfillerLayer = this.mapService.addVectorLayer(true);
+        this.zonenOuterLayer = this.mapService.addVectorLayer(true);
         this.interbereichLayer = this.mapService.addVectorLayer(true);
         this.relationsgebietLayer = this.mapService.addVectorLayer(true);
         this.kantenLayer = this.mapService.addVectorLayer(true);
@@ -179,29 +177,15 @@ export class MapStateService {
     }
 
 
-    private drawZonen(zonenplan: Zonenplan) {
-        this.zonenLayer.getSource().clear(true);
+    private drawZonenplan(zonenplan: Zonenplan, showLokalnetze: boolean) {
+        this.zonenfillerLayer.getSource().clear(true);
+        this.zonenOuterLayer.getSource().clear(true);
 
         if (!zonenplan) {
             return;
         }
 
-        zonenplan.zonen.forEach(zone => {
-            const olZone = new OlZonelike(zone, zonenplan, this.zonenLayer.getSource());
-        });
-    }
-
-
-    private drawLokalnetze(zonenplan: Zonenplan) {
-        this.zonenLayer.getSource().clear(true);
-
-        if (!zonenplan) {
-            return;
-        }
-
-        zonenplan.lokalnetze.forEach(lokalnetz => {
-            const olLokalnetz = new OlZonelike(lokalnetz, zonenplan, this.zonenLayer.getSource());
-        });
+        const olZonenplan = new OlZonenplan(zonenplan, showLokalnetze, this.zonenfillerLayer, this.zonenOuterLayer);
     }
 
 

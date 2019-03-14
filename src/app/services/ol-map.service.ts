@@ -48,8 +48,8 @@ export class OlMapService {
             target: targetElement,
             layers: [ this.mapLayer ],
             view: new View({
-                center: fromLonLat([7.0, 47.0]),
-                zoom: 7
+                center: fromLonLat([8.226667, 46.80111]), // center of CH
+                zoom: 9
             })
         });
 
