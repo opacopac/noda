@@ -83,11 +83,11 @@ export class OlMapService {
     }
 
 
-    private createEmptyVectorLayer(imageRenderMode: boolean = false): Vector {
+    private createEmptyVectorLayer(imageRenderMode: boolean = false, declutter: boolean = false): Vector {
         return new VectorLayer({
             source: new Vector({}),
             renderMode: imageRenderMode ? 'image' : undefined,
-            // declutter: true
+            declutter: declutter
         });
     }
 
@@ -148,9 +148,13 @@ export class OlMapService {
 
 
     private onSingleClick(event: MapBrowserEvent) {
-        /*const dataItem = this.getDataItemAtPixel(event.pixel, true);
-        const clickPos = OlPos.getLonLat(event.coordinate);
-        this.onMapClicked.emit({ clickPos: clickPos, dataItem: dataItem });*/
+        const olFeatureList = this.getFeaturesAtPixel(event.pixel, this.CLICK_TOLERANCE_PIXELS);
+        const dataItemList = this.getDataItemsFromFeatures(olFeatureList, true);
+
+        if (dataItemList.length > 0) {
+            const clickPos = OlPos.getLonLat(event.coordinate);
+            this.onMapClicked.emit({clickPos: clickPos, dataItem: dataItemList[0]});
+        }
     }
 
 
@@ -159,13 +163,13 @@ export class OlMapService {
             return;
         }
 
-        const olFeatureList = this.getFeatureList(event.pixel, this.MOUSOVER_TOLERANCE_PIXELS);
+        const olFeatureList = this.getFeaturesAtPixel(event.pixel, this.MOUSOVER_TOLERANCE_PIXELS);
         this.setCursorStyle(olFeatureList);
         this.emitMouseOver(olFeatureList);
     }
 
 
-    private getFeatureList(pixel: Pixel, hitTolerance: number): Feature[] {
+    private getFeaturesAtPixel(pixel: Pixel, hitTolerance: number): Feature[] {
         const olFeatureList: Feature[] = this.map.getFeaturesAtPixel(
             pixel,
             { layerFilter: this.isClickableLayer.bind(this), hitTolerance: hitTolerance }
@@ -175,13 +179,19 @@ export class OlMapService {
     }
 
 
-    private setCursorStyle(olFeatureList: Feature[]) {
-        const selectableDataItemList = olFeatureList
-            .filter(feature => OlComponentBase.isSelectable(feature))
+    private getDataItemsFromFeatures(olFeatureList: Feature[], onlySelectable: boolean): DataItem[] {
+        // TODO: sort order
+        return olFeatureList
+            .filter(feature => !onlySelectable || OlComponentBase.isSelectable(feature))
             .map(feature => OlComponentBase.getDataItem(feature))
             .filter(dataItem => dataItem !== undefined);
+    }
 
-        if (selectableDataItemList && selectableDataItemList.length > 0) {
+
+    private setCursorStyle(olFeatureList: Feature[]) {
+        const selectableDataItemList = this.getDataItemsFromFeatures(olFeatureList, true);
+
+        if (selectableDataItemList.length > 0) {
             const element = this.map.getTargetElement() as HTMLElement;
             element.style.cursor = 'pointer';
         } else {

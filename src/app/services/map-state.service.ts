@@ -20,6 +20,7 @@ import {DataItemType} from '../model/data-item-type';
 import {Zonelike} from '../model/zonelike';
 import {Zone} from '../model/zone';
 import {OlZonelike} from '../ol-components/OlZonelike';
+import {Lokalnetz} from '../model/lokalnetz';
 
 
 @Injectable({
@@ -241,7 +242,10 @@ export class MapStateService {
         }
 
         switch (dataItem.getType()) {
-            case DataItemType.Zone: OlZonelike.drawSelection(dataItem as Zone, this.selectedDataItemLayer);
+            case DataItemType.Zone:
+            case DataItemType.Lokalnetz:
+                OlZonelike.drawSelection(dataItem as Zonelike, this.selectedDataItemLayer);
+                break;
         }
     }
 

@@ -5,7 +5,6 @@ import {Kante, VerkehrsmittelTyp} from './kante';
 import {QuadTreeIndexable} from '../quadtree/quadTreeIndexable';
 import {Ring2d} from '../geo/ring-2d';
 import {JsonSerializable} from '../shared/json-serializable';
-import {Extent2d} from '../geo/extent-2d';
 
 
 export interface HaltestelleJson {
@@ -55,9 +54,9 @@ export class Haltestelle implements DataItem, QuadTreeIndexable, JsonSerializabl
     }
 
 
-    public hasNonFusswegKanten(): boolean {
+    public isActive(): boolean {
         return (
-            this.kantenLut.length > 0 ||
+            this.kantenLut.length > 0 &&
             this.kantenLut.some(kante => kante.verkehrsmittelTyp !== VerkehrsmittelTyp.FUSSWEG)
         );
     }

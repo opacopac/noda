@@ -29,7 +29,7 @@ export class OlHaltestelle extends OlComponentBase {
 
 
     private createPointStyle(haltestelle: Haltestelle, showLabels: boolean): Style {
-        const isActive = haltestelle.hasNonFusswegKanten();
+        const isActive = haltestelle.isActive();
 
         return new Style({
             image: new Circle({
