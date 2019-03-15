@@ -5,7 +5,6 @@ import {OlComponentBase} from './OlComponentBase';
 import {Zonenplan} from '../model/zonenplan';
 import {Zonelike} from '../model/zonelike';
 import {OlHelper} from './OlHelper';
-import {Zone} from '../model/zone';
 
 
 export class OlZonelike extends OlComponentBase {
@@ -58,7 +57,7 @@ export class OlZonelike extends OlComponentBase {
         const colorHexBg = '#FFFFFF';
         return new Style({
             fill: new Fill({
-                color: OlHelper.getRgbaFromVerbundZone(zonelike.zonenplan.bezeichnung, zonelike.code, 0.75)
+                color: OlHelper.getRgbaFromVerbundZone(zonelike.zonenplan.bezeichnung, zonelike.code, 0.6)
             }),
             stroke: new Stroke({
                 color: OlHelper.getRgbaFromHex(colorHexBg, 0.2),

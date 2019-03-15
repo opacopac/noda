@@ -18,9 +18,7 @@ import {OlZonenplan} from '../ol-components/OlZonenplan';
 import {DataItem} from '../model/data-item';
 import {DataItemType} from '../model/data-item-type';
 import {Zonelike} from '../model/zonelike';
-import {Zone} from '../model/zone';
 import {OlZonelike} from '../ol-components/OlZonelike';
-import {Lokalnetz} from '../model/lokalnetz';
 
 
 @Injectable({
@@ -40,6 +38,7 @@ export class MapStateService {
     private mapCoords: OlMapCoords;
     private kantenLayer: VectorLayer;
     private hstLayer: VectorLayer;
+    private hstLabelLayer: VectorLayer;
     private zonenfillerLayer: VectorLayer;
     private zonenOuterLayer: VectorLayer;
     private interbereichLayer: VectorLayer;
@@ -142,7 +141,7 @@ export class MapStateService {
             this.initLayers();
         }
 
-        const maxResults = this._showHstLabels ? 100 : 500;
+        const maxResults = 500; // this._showHstLabels ? 100 : 500;
         const hstList = this.searchHaltestellen(this.mapCoords.extent, maxResults);
         if (this._showHst)  {
             this.drawHaltestellen(hstList, this._showHstLabels);
@@ -164,6 +163,7 @@ export class MapStateService {
         this.relationsgebietLayer = this.mapService.addVectorLayer(true);
         this.kantenLayer = this.mapService.addVectorLayer(true);
         this.hstLayer = this.mapService.addVectorLayer(true);
+        this.hstLabelLayer = this.mapService.addVectorLayer(true, true);
 
         this.selectedDataItemLayer = this.mapService.addVectorLayer(true);
     }
@@ -186,16 +186,17 @@ export class MapStateService {
         this.kantenLayer.getSource().clear(true);
 
         kantenList.forEach(kante => {
-            const olKante = new OlKante(kante, this.kantenLayer.getSource());
+            const olKante = new OlKante(kante, this.kantenLayer);
         });
     }
 
 
     private drawHaltestellen(hstList: Haltestelle[], showLabels: boolean) {
         this.hstLayer.getSource().clear(true);
+        this.hstLabelLayer.getSource().clear(true);
 
         hstList.forEach(hst => {
-            const olHst = new OlHaltestelle(hst, this.hstLayer.getSource(), showLabels);
+            const olHst = new OlHaltestelle(hst, this.hstLayer, showLabels ? this.hstLabelLayer : undefined);
         });
     }
 
@@ -219,7 +220,7 @@ export class MapStateService {
             return;
         }
 
-        const olInterbereich = new OlInterbereich(interbereich, this.interbereichLayer.getSource());
+        const olInterbereich = new OlInterbereich(interbereich, this.interbereichLayer);
     }
 
 
@@ -230,7 +231,7 @@ export class MapStateService {
             return;
         }
 
-        const olRelationsgebiet = new OlRelationsgebiet(relationsgebiet, this.relationsgebietLayer.getSource());
+        const olRelationsgebiet = new OlRelationsgebiet(relationsgebiet, this.relationsgebietLayer);
     }
 
 

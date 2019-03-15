@@ -1,14 +1,10 @@
-import Vector from 'ol/source';
-import Feature from 'ol/Feature';
+import VectorLayer from 'ol/layer';
 import {Circle, Fill, Icon, Stroke, Style, Text} from 'ol/style';
 import {OlComponentBase} from './OlComponentBase';
 import {Kante, VerkehrsmittelTyp} from '../model/kante';
 
 
 export class OlKante extends OlComponentBase {
-    private readonly olFeature: Feature;
-
-
     get isSelectable(): boolean {
         return false;
     }
@@ -16,14 +12,14 @@ export class OlKante extends OlComponentBase {
 
     public constructor(
         kante: Kante,
-        private readonly source: Vector) {
+        layer: VectorLayer) {
 
         super();
 
-        this.olFeature = this.createFeature(kante);
-        this.olFeature.setStyle(this.createStyle(kante));
-        this.setLineGeometry(this.olFeature, [kante.haltestelle1.position, kante.haltestelle2.position]);
-        this.source.addFeature(this.olFeature);
+        const olFeature = this.createFeature(kante);
+        olFeature.setStyle(this.createStyle(kante));
+        this.setLineGeometry(olFeature, [kante.haltestelle1.position, kante.haltestelle2.position]);
+        layer.getSource().addFeature(olFeature);
     }
 
 

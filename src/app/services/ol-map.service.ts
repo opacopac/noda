@@ -73,8 +73,8 @@ export class OlMapService {
 
     // region layers
 
-    public addVectorLayer(imageRenderMode: boolean): VectorLayer {
-        const layer = this.createEmptyVectorLayer(imageRenderMode);
+    public addVectorLayer(imageRenderMode: boolean, declutter: boolean = false): VectorLayer {
+        const layer = this.createEmptyVectorLayer(imageRenderMode, declutter);
         this.customLayers.push(layer);
 
         this.map.addLayer(layer);
