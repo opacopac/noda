@@ -57,6 +57,10 @@ export class PrecalcHelper {
             kante.haltestelle1.kantenLut.push(kante);
             kante.haltestelle2.kantenLut.push(kante);
         });
+
+        drData.kanten.forEach(kante => {
+            kante.parallelKanteLut = this.getParallelKanten(kante);
+        });
     }
 
 
@@ -202,5 +206,11 @@ export class PrecalcHelper {
     private static getLinkedOtherZonen(kante: Kante, zone: Zone): Zone[] {
         return kante.zonenLut
             .filter(otherZone => otherZone !== zone && zone.zonenplan.zonen.indexOf(otherZone) >= 0);
+    }
+
+
+    private static getParallelKanten(kante: Kante): Kante[] {
+        return kante.haltestelle1.kantenLut
+            .filter(kt => kante.haltestelle2.kantenLut.indexOf(kt) >= 0);
     }
 }

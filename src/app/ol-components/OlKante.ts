@@ -5,6 +5,8 @@ import {Kante, VerkehrsmittelTyp} from '../model/kante';
 
 
 export class OlKante extends OlComponentBase {
+    private readonly DASH_LENGTH_PIXEL = 20;
+
     get isSelectable(): boolean {
         return false;
     }
@@ -24,14 +26,25 @@ export class OlKante extends OlComponentBase {
 
 
     private createStyle(kante: Kante): Style {
+        let dash, dashOffset;
+        const tot = kante.parallelKanteLut.length;
+        if (tot > 1) {
+            dash = [this.DASH_LENGTH_PIXEL, (tot - 1) * this.DASH_LENGTH_PIXEL];
+            dashOffset = this.DASH_LENGTH_PIXEL * kante.parallelKanteLut.indexOf(kante);
+        } else if (kante.verkehrsmittelTyp === VerkehrsmittelTyp.FUSSWEG) {
+            dash = [10, 7];
+            dashOffset = 0;
+        } else {
+            dash = [];
+            dashOffset = 0;
+        }
+
         return new Style({
-            /*fill: new Fill({
-                color: '#999999'
-            }),*/
             stroke: new Stroke({
                 color: this.getKanteColor(kante),
-                width: 3,
-                lineDash: kante.verkehrsmittelTyp === VerkehrsmittelTyp.FUSSWEG ? [10, 7] : undefined
+                width: 2,
+                lineDash: dash,
+                lineDashOffset: dashOffset
             })
         });
     }
@@ -39,7 +52,7 @@ export class OlKante extends OlComponentBase {
 
     private getKanteColor(kante: Kante): string {
         switch (kante.verkehrsmittelTyp) {
-            case VerkehrsmittelTyp.BUS: return '#FFFF00';
+            case VerkehrsmittelTyp.BUS: return '#FFCC00';
             case VerkehrsmittelTyp.SCHIFF: return '#6666FF';
             case VerkehrsmittelTyp.BAHN: return '#111111';
             case VerkehrsmittelTyp.FUSSWEG:

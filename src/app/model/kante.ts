@@ -26,6 +26,7 @@ export interface KanteJson {
 
 export class Kante implements DataItem, JsonSerializable<KanteJson> {
     public zonenLut: Zone[] = [];
+    public parallelKanteLut: Kante[] = [];
 
 
     public constructor(

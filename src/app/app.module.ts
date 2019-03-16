@@ -5,7 +5,7 @@ import {AppComponent} from './app.component';
 import {UploadDrComponent} from './components/upload-dr/upload-dr.component';
 import {BaseMapComponent} from './components/base-map/base-map.component';
 import {NavBarComponent} from './components/nav-bar/nav-bar.component';
-import { ConvertDrToJsonComponent } from './components/convert-dr-to-json/convert-dr-to-json.component';
+import { ExportDrComponent } from './components/export-dr/export-dr.component';
 import { LoadDrComponent } from './components/load-dr/load-dr.component';
 
 
@@ -15,7 +15,7 @@ import { LoadDrComponent } from './components/load-dr/load-dr.component';
         UploadDrComponent,
         BaseMapComponent,
         NavBarComponent,
-        ConvertDrToJsonComponent,
+        ExportDrComponent,
         LoadDrComponent
     ],
     imports: [
