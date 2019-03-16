@@ -1,6 +1,6 @@
 import {Kante, KanteJson} from './kante';
 import {JsonSerializable} from '../shared/json-serializable';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 import {Haltestelle, HaltestelleJson} from './haltestelle';
 
 
@@ -27,8 +27,8 @@ export class Ankerpunkt implements JsonSerializable<AnkerpunktJson> {
 
     public static fromJSON(
         json: AnkerpunktJson,
-        hstMap: StringMap<Haltestelle, HaltestelleJson>,
-        kantenMap: StringMap<Kante, KanteJson>
+        hstMap: StringMapSer<Haltestelle, HaltestelleJson>,
+        kantenMap: StringMapSer<Kante, KanteJson>
     ): Ankerpunkt {
         return new Ankerpunkt(
             json.name,

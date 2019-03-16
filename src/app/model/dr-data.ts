@@ -5,7 +5,7 @@ import {Zonenplan, ZonenplanJson} from './zonenplan';
 import {Lokalnetz} from './lokalnetz';
 import {Relationsgebiet, RelationsgebietJson} from './relationsgebiet';
 import {Interbereich, InterbereichJson} from './interbereich';
-import {StringMap, StringMapJson} from '../shared/string-map';
+import {StringMapSer, StringMapJson} from '../shared/string-map-ser';
 import {JsonSerializable} from '../shared/json-serializable';
 import {ZoneLikeJson} from './zonelike';
 
@@ -25,37 +25,37 @@ interface DrDataJson {
 export class DrData implements JsonSerializable<DrDataJson> {
     constructor(
         public drId: string,
-        public haltestellen: StringMap<Haltestelle, HaltestelleJson>,
-        public kanten: StringMap<Kante, KanteJson>,
-        public zonen: StringMap<Zone, ZoneLikeJson>,
-        public lokalnetze: StringMap<Lokalnetz, ZoneLikeJson>,
-        public zonenplaene: StringMap<Zonenplan, ZonenplanJson>,
-        public interbereiche: StringMap<Interbereich, InterbereichJson>,
-        public relationsgebiete: StringMap<Relationsgebiet, RelationsgebietJson>
+        public haltestellen: StringMapSer<Haltestelle, HaltestelleJson>,
+        public kanten: StringMapSer<Kante, KanteJson>,
+        public zonen: StringMapSer<Zone, ZoneLikeJson>,
+        public lokalnetze: StringMapSer<Lokalnetz, ZoneLikeJson>,
+        public zonenplaene: StringMapSer<Zonenplan, ZonenplanJson>,
+        public interbereiche: StringMapSer<Interbereich, InterbereichJson>,
+        public relationsgebiete: StringMapSer<Relationsgebiet, RelationsgebietJson>
     ) {
     }
 
 
     public static fromJSON(json: DrDataJson): DrData {
-        const hstMap = new StringMap<Haltestelle, HaltestelleJson>();
+        const hstMap = new StringMapSer<Haltestelle, HaltestelleJson>();
         json.haltestellen.map.forEach(entry => hstMap.set(entry.key, Haltestelle.fromJSON(entry.val)));
 
-        const kantenMap = new StringMap<Kante, KanteJson>();
+        const kantenMap = new StringMapSer<Kante, KanteJson>();
         json.kanten.map.forEach(entry => kantenMap.set(entry.key, Kante.fromJSON(entry.val, hstMap)));
 
-        const zonenMap = new StringMap<Zone, ZoneLikeJson>();
+        const zonenMap = new StringMapSer<Zone, ZoneLikeJson>();
         json.zonen.map.forEach(entry => zonenMap.set(entry.key, Zone.fromJSON(entry.val, kantenMap)));
 
-        const lokalnetzMap = new StringMap<Lokalnetz, ZoneLikeJson>();
+        const lokalnetzMap = new StringMapSer<Lokalnetz, ZoneLikeJson>();
         json.lokalnetze.map.forEach(entry => lokalnetzMap.set(entry.key, Lokalnetz.fromJSON(entry.val, kantenMap)));
 
-        const zonenplanMap = new StringMap<Zonenplan, ZonenplanJson>();
+        const zonenplanMap = new StringMapSer<Zonenplan, ZonenplanJson>();
         json.zonenplaene.map.forEach(entry => zonenplanMap.set(entry.key, Zonenplan.fromJSON(entry.val, zonenMap, lokalnetzMap)));
 
-        const interbereichMap = new StringMap<Interbereich, InterbereichJson>();
+        const interbereichMap = new StringMapSer<Interbereich, InterbereichJson>();
         json.interbereiche.map.forEach(entry => interbereichMap.set(entry.key, Interbereich.fromJSON(entry.val, hstMap, kantenMap)));
 
-        const relGebMap = new StringMap<Relationsgebiet, RelationsgebietJson>();
+        const relGebMap = new StringMapSer<Relationsgebiet, RelationsgebietJson>();
         json.relationsgebiete.map.forEach(entry => relGebMap.set(entry.key, Relationsgebiet.fromJSON(entry.val, hstMap)));
 
         return new DrData(

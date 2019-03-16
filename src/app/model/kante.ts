@@ -3,7 +3,7 @@ import {DataItemType} from './data-item-type';
 import {Haltestelle, HaltestelleJson} from './haltestelle';
 import {Zone} from './zone';
 import {JsonSerializable} from '../shared/json-serializable';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 import {Extent2d} from '../geo/extent-2d';
 
 
@@ -21,6 +21,7 @@ export interface KanteJson {
     hsId1: string;
     hsId2: string;
     typ: string;
+    betr: string;
 }
 
 
@@ -34,16 +35,18 @@ export class Kante implements DataItem, JsonSerializable<KanteJson> {
         public haltestelle1: Haltestelle,
         public haltestelle2: Haltestelle,
         public verkehrsmittelTyp: VerkehrsmittelTyp,
+        public betreiber: string,
     ) {
     }
 
 
-    public static fromJSON(json: KanteJson, hstMap: StringMap<Haltestelle, HaltestelleJson>): Kante {
+    public static fromJSON(json: KanteJson, hstMap: StringMapSer<Haltestelle, HaltestelleJson>): Kante {
         return new Kante(
             json.id,
             hstMap.get(json.hsId1),
             hstMap.get(json.hsId2),
-            VerkehrsmittelTyp[json.typ]
+            VerkehrsmittelTyp[json.typ],
+            json.betr
         );
     }
 
@@ -66,7 +69,8 @@ export class Kante implements DataItem, JsonSerializable<KanteJson> {
             id: this.id,
             hsId1: this.haltestelle1.id,
             hsId2: this.haltestelle2.id,
-            typ: VerkehrsmittelTyp[this.verkehrsmittelTyp]
+            typ: VerkehrsmittelTyp[this.verkehrsmittelTyp],
+            betr: this.betreiber
         };
     }
 

@@ -3,7 +3,7 @@ import {Kante, KanteJson} from './kante';
 import {DataItem} from './data-item';
 import {MultiPolygon2d} from '../geo/multi-polygon-2d';
 import {JsonSerializable} from '../shared/json-serializable';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 import {Extent2d} from '../geo/extent-2d';
 import {Haltestelle, HaltestelleJson} from './haltestelle';
 import {Ankerpunkt, AnkerpunktJson} from './ankerpunkt';
@@ -31,8 +31,8 @@ export class Interbereich implements DataItem, JsonSerializable<InterbereichJson
 
     public static fromJSON(
         json: InterbereichJson,
-        hstMap: StringMap<Haltestelle, HaltestelleJson>,
-        kantenMap: StringMap<Kante, KanteJson>
+        hstMap: StringMapSer<Haltestelle, HaltestelleJson>,
+        kantenMap: StringMapSer<Kante, KanteJson>
     ): Interbereich {
         return new Interbereich(
             json.name,

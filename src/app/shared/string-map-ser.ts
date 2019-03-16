@@ -12,8 +12,8 @@ export interface StringMapEntryJson<J> {
 }
 
 
-export class StringMap<T extends JsonSerializable<J>, J> implements JsonSerializable<StringMapJson<J>> {
-    private readonly map = new Map<string, T>();
+export class StringMap<T> {
+    protected readonly map = new Map<string, T>();
 
 
     constructor() {
@@ -68,8 +68,10 @@ export class StringMap<T extends JsonSerializable<J>, J> implements JsonSerializ
     public  values(): IterableIterator<T> {
         return this.map.values();
     }
+}
 
 
+export class StringMapSer<T extends JsonSerializable<J>, J> extends StringMap<T> implements JsonSerializable<StringMapJson<J>> {
     public toJSON(key: string): StringMapJson<J> {
         const entryList = Array.from(this.map.entries());
 

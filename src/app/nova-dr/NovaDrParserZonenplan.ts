@@ -2,7 +2,7 @@ import {NovaDrSchema, NovaDrSchemaZonenplan} from './NovaDrSchema';
 import {Zone} from '../model/zone';
 import {Zonenplan, ZonenplanJson} from '../model/zonenplan';
 import {Lokalnetz} from '../model/lokalnetz';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 import {ZoneLikeJson} from '../model/zonelike';
 import {NovaDrParserHelper} from './NovaDrParserHelper';
 
@@ -11,11 +11,11 @@ export class NovaDrParserZonenplan {
     public static parse(
         jsonDr: NovaDrSchema,
         stichdatum: string,
-        zonenMap: StringMap<Zone, ZoneLikeJson>,
-        lokalnetzMap: StringMap<Lokalnetz, ZoneLikeJson>
-    ): StringMap<Zonenplan, ZonenplanJson> {
+        zonenMap: StringMapSer<Zone, ZoneLikeJson>,
+        lokalnetzMap: StringMapSer<Lokalnetz, ZoneLikeJson>
+    ): StringMapSer<Zonenplan, ZonenplanJson> {
         const drZonenplanList = jsonDr.datenrelease.subsystemZonenModell.zonenplaene.zonenplan;
-        const zonenplanMap = new StringMap<Zonenplan, ZonenplanJson>();
+        const zonenplanMap = new StringMapSer<Zonenplan, ZonenplanJson>();
 
         for (const drZonenplan of drZonenplanList) {
             const id = NovaDrParserHelper.parseIdAttribute(drZonenplan);
@@ -30,14 +30,12 @@ export class NovaDrParserZonenplan {
     }
 
 
-    private static parseZonenplan(drZonenplan: NovaDrSchemaZonenplan, stichdatum: string, zonenMap: StringMap<Zone, ZoneLikeJson>, lokalnetzMap: StringMap<Lokalnetz, ZoneLikeJson>): Zonenplan {
+    private static parseZonenplan(drZonenplan: NovaDrSchemaZonenplan, stichdatum: string, zonenMap: StringMapSer<Zone, ZoneLikeJson>, lokalnetzMap: StringMapSer<Lokalnetz, ZoneLikeJson>): Zonenplan {
         if (!drZonenplan.version) {
             return undefined;
         }
 
-        drZonenplan.version = NovaDrParserHelper.asArray(drZonenplan.version);
-
-        for (const drZonenplanVer of drZonenplan.version) {
+        for (const drZonenplanVer of NovaDrParserHelper.asArray(drZonenplan.version)) {
             if (!drZonenplanVer || !drZonenplanVer.zonen) {
                 continue;
             }

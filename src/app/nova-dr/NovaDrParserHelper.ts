@@ -1,4 +1,4 @@
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 import {Kante, KanteJson} from '../model/kante';
 import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
 import {IdAttribute} from './NovaDrSchema';
@@ -30,27 +30,27 @@ export class NovaDrParserHelper {
     }
 
 
-    public static parseHaltestellenIds(idString: string, hstMap: StringMap<Haltestelle, HaltestelleJson>): Haltestelle[] {
+    public static parseHaltestellenIds(idString: string, hstMap: StringMapSer<Haltestelle, HaltestelleJson>): Haltestelle[] {
         return this.parseEntityIds<Haltestelle, HaltestelleJson>(idString, hstMap);
     }
 
 
-    public static parseKantenIds(idString: string, kantenMap: StringMap<Kante, KanteJson>): Kante[] {
+    public static parseKantenIds(idString: string, kantenMap: StringMapSer<Kante, KanteJson>): Kante[] {
         return this.parseEntityIds<Kante, KanteJson>(idString, kantenMap);
     }
 
 
-    public static parseZonenIds(idString: string, zonenMap: StringMap<Zone, ZoneLikeJson>): Zone[] {
+    public static parseZonenIds(idString: string, zonenMap: StringMapSer<Zone, ZoneLikeJson>): Zone[] {
         return this.parseEntityIds<Zone, ZoneLikeJson>(idString, zonenMap);
     }
 
 
-    public static parseLokalnetzIds(idString: string, lokalnetzMap: StringMap<Lokalnetz, ZoneLikeJson>): Lokalnetz[] {
+    public static parseLokalnetzIds(idString: string, lokalnetzMap: StringMapSer<Lokalnetz, ZoneLikeJson>): Lokalnetz[] {
         return this.parseEntityIds<Lokalnetz, ZoneLikeJson>(idString, lokalnetzMap);
     }
 
 
-    private static parseEntityIds<T extends JsonSerializable<K>, K>(idString: string, idEntityMap: StringMap<T, K>): T[] {
+    private static parseEntityIds<T extends JsonSerializable<K>, K>(idString: string, idEntityMap: StringMapSer<T, K>): T[] {
         const ids = this.parseIdList(idString);
 
         return ids

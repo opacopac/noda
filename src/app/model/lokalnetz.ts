@@ -1,7 +1,7 @@
 import {DataItemType} from './data-item-type';
 import {Kante, KanteJson} from './kante';
 import {Zonelike, ZoneLikeJson} from './zonelike';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 
 
 export class Lokalnetz extends Zonelike {
@@ -15,7 +15,7 @@ export class Lokalnetz extends Zonelike {
     }
 
 
-    public static fromJSON(json: ZoneLikeJson, kantenMap: StringMap<Kante, KanteJson>): Lokalnetz {
+    public static fromJSON(json: ZoneLikeJson, kantenMap: StringMapSer<Kante, KanteJson>): Lokalnetz {
         return new Lokalnetz(
             json.id,
             json.code,

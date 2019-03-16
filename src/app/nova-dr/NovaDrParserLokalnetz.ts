@@ -2,7 +2,7 @@ import {NovaDrSchema, NovaDrSchemaLokalnetz} from './NovaDrSchema';
 import {Kante, KanteJson} from '../model/kante';
 import {isArray} from 'util';
 import {Lokalnetz} from '../model/lokalnetz';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 import {ZoneLikeJson} from '../model/zonelike';
 import {NovaDrParserHelper} from './NovaDrParserHelper';
 
@@ -11,10 +11,10 @@ export class NovaDrParserLokalnetz {
     public static parse(
         jsonDr: NovaDrSchema,
         stichdatum: string,
-        kanteMap: StringMap<Kante, KanteJson>
-    ): StringMap<Lokalnetz, ZoneLikeJson> {
+        kanteMap: StringMapSer<Kante, KanteJson>
+    ): StringMapSer<Lokalnetz, ZoneLikeJson> {
         const drLokalnetzList = jsonDr.datenrelease.subsystemZonenModell.lokalnetzen.lokalnetz;
-        const lokalnetzMap = new StringMap<Lokalnetz, ZoneLikeJson>();
+        const lokalnetzMap = new StringMapSer<Lokalnetz, ZoneLikeJson>();
 
         for (const drLokalnetz of drLokalnetzList) {
             const id = NovaDrParserHelper.parseIdAttribute(drLokalnetz);
@@ -33,15 +33,13 @@ export class NovaDrParserLokalnetz {
         lokalnetzId: string,
         drLokalnetz: NovaDrSchemaLokalnetz,
         stichdatum: string,
-        kantenMap: StringMap<Kante, KanteJson>
+        kantenMap: StringMapSer<Kante, KanteJson>
     ): Lokalnetz {
         if (!drLokalnetz.version) {
             return undefined;
         }
 
-        drLokalnetz.version = NovaDrParserHelper.asArray(drLokalnetz.version);
-
-        for (const drLokalnetzVer of drLokalnetz.version) {
+        for (const drLokalnetzVer of NovaDrParserHelper.asArray(drLokalnetz.version)) {
             if (!drLokalnetzVer || !drLokalnetzVer.kanten) {
                 continue;
             }

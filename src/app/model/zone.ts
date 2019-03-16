@@ -1,7 +1,7 @@
 import {DataItemType} from './data-item-type';
 import {Kante, KanteJson} from './kante';
 import {Zonelike, ZoneLikeJson} from './zonelike';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 import {Extent2d} from '../geo/extent-2d';
 
 
@@ -16,7 +16,7 @@ export class Zone extends Zonelike {
     }
 
 
-    public static fromJSON(json: ZoneLikeJson, kantenMap: StringMap<Kante, KanteJson>): Zone {
+    public static fromJSON(json: ZoneLikeJson, kantenMap: StringMapSer<Kante, KanteJson>): Zone {
         return new Zone(
             json.id,
             json.code,

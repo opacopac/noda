@@ -29,7 +29,8 @@ export class LoadDrComponent implements OnInit {
 
     private loadPreparedDr() {
         console.log('loading prepared dr...');
-        this.storageService.downloadTextFile(this.PREPARED_DR_URL).subscribe(response => {
+        const url = this.PREPARED_DR_URL + '?ver=' + Date.now();
+        this.storageService.downloadTextFile(url).subscribe(response => {
             console.log('loading prepared dr completed');
 
             const drData = this.storageService.deserializeDrData(response);

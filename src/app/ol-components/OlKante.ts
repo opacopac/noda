@@ -2,6 +2,7 @@ import VectorLayer from 'ol/layer';
 import {Circle, Fill, Icon, Stroke, Style, Text} from 'ol/style';
 import {OlComponentBase} from './OlComponentBase';
 import {Kante, VerkehrsmittelTyp} from '../model/kante';
+import {Position2d} from '../geo/position-2d';
 
 
 export class OlKante extends OlComponentBase {
@@ -14,7 +15,8 @@ export class OlKante extends OlComponentBase {
 
     public constructor(
         kante: Kante,
-        layer: VectorLayer) {
+        layer: VectorLayer,
+        labelLayer: VectorLayer) {
 
         super();
 
@@ -22,6 +24,14 @@ export class OlKante extends OlComponentBase {
         olFeature.setStyle(this.createStyle(kante));
         this.setLineGeometry(olFeature, [kante.haltestelle1.position, kante.haltestelle2.position]);
         layer.getSource().addFeature(olFeature);
+
+
+        if (labelLayer !== undefined) {
+            const olLabelFeature = this.createFeature(kante);
+            olLabelFeature.setStyle(this.createLabelStyle(kante));
+            this.setPointGeometry(olLabelFeature, Position2d.calcMidPoint(kante.haltestelle1.position, kante.haltestelle2.position));
+            labelLayer.getSource().addFeature(olLabelFeature);
+        }
     }
 
 
@@ -45,6 +55,25 @@ export class OlKante extends OlComponentBase {
                 width: 2,
                 lineDash: dash,
                 lineDashOffset: dashOffset
+            })
+        });
+    }
+
+
+    private createLabelStyle(kante: Kante): Style {
+        let betreiber: string;
+        if (kante.parallelKanteLut.length > 1 && kante.parallelKanteLut.indexOf(kante) === 0) {
+            betreiber = kante.parallelKanteLut.reduce((totVal, kte) => totVal + '\n' + kte.betreiber, '');
+        } else {
+            betreiber = kante.betreiber;
+        }
+
+        return new Style({
+            text: new Text({
+                font: 'bold 10px Calibri,sans-serif',
+                text: betreiber,
+                fill: new Fill({ color: '#000000' }),
+                stroke: new Stroke({ color: '#FFFFFF', width: 2 }),
             })
         });
     }

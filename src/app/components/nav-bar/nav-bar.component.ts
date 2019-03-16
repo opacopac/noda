@@ -91,6 +91,11 @@ export class NavBarComponent implements OnInit {
     }
 
 
+    public showKantenLabelsChange(event: Event) {
+        this.mapFeatureService.showKantenLabels = (event.target as HTMLInputElement).checked;
+    }
+
+
     public showZonenSelect(value: boolean) {
         this.mapFeatureService.showZonen = value;
     }

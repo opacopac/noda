@@ -31,12 +31,14 @@ export class MapStateService {
     private _showZonen = true;
     private _showHst = true;
     private _showHstLabels = false;
+    private _showKantenLabels = false;
     private _selectedZonenplan: Zonenplan;
     private _selectedInterbereich: Interbereich;
     private _selectedRelationsgebiet: Relationsgebiet;
     private hstQuadTree: QuadTree<Haltestelle>;
     private mapCoords: OlMapCoords;
     private kantenLayer: VectorLayer;
+    private kantenLabelLayer: VectorLayer;
     private hstLayer: VectorLayer;
     private hstLabelLayer: VectorLayer;
     private zonenfillerLayer: VectorLayer;
@@ -90,6 +92,17 @@ export class MapStateService {
     }
 
 
+    public get showKantenLabels(): boolean {
+        return this._showKantenLabels;
+    }
+
+
+    public set showKantenLabels(value: boolean) {
+        this._showKantenLabels = value;
+        this.updateMap();
+    }
+
+
     constructor(private mapService: OlMapService) {
         this.mapService.onDataItemMouseOver.subscribe(this.onMouseOverDataItem.bind(this));
     }
@@ -137,7 +150,7 @@ export class MapStateService {
             return;
         }
 
-        if (!this.hstLayer || !this.kantenLayer || !this.zonenfillerLayer || !this.relationsgebietLayer) {
+        if (!this.hstLayer) {
             this.initLayers();
         }
 
@@ -150,7 +163,7 @@ export class MapStateService {
         }
 
         const kantenList = this._showKanten ? this.searchKanten(hstList) : [];
-        this.drawKanten(kantenList);
+        this.drawKanten(kantenList, this._showKantenLabels);
 
         this.drawZonenplan(this._selectedZonenplan, !this._showZonen);
     }
@@ -163,6 +176,7 @@ export class MapStateService {
         this.relationsgebietLayer = this.mapService.addVectorLayer(true);
         this.kantenLayer = this.mapService.addVectorLayer(true);
         this.hstLayer = this.mapService.addVectorLayer(true);
+        this.kantenLabelLayer = this.mapService.addVectorLayer(true, true);
         this.hstLabelLayer = this.mapService.addVectorLayer(true, true);
 
         this.selectedDataItemLayer = this.mapService.addVectorLayer(true);
@@ -182,11 +196,12 @@ export class MapStateService {
 
     // region draw
 
-    private drawKanten(kantenList: Kante[]) {
+    private drawKanten(kantenList: Kante[], showLabels: boolean) {
         this.kantenLayer.getSource().clear(true);
+        this.kantenLabelLayer.getSource().clear(true);
 
         kantenList.forEach(kante => {
-            const olKante = new OlKante(kante, this.kantenLayer);
+            const olKante = new OlKante(kante, this.kantenLayer, showLabels ? this.kantenLabelLayer : undefined);
         });
     }
 

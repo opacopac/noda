@@ -1,23 +1,24 @@
 import {NovaDrSchema, NovaDrSchemaKante} from './NovaDrSchema';
 import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
 import {Kante, KanteJson, VerkehrsmittelTyp} from '../model/kante';
-import {isArray} from 'util';
-import {StringMap} from '../shared/string-map';
+import {StringMap, StringMapSer} from '../shared/string-map-ser';
 import {NovaDrParserHelper} from './NovaDrParserHelper';
+import {Verwaltung} from '../model/verwaltung';
 
 
 export class NovaDrParserKante {
     public static parse(
         jsonDr: NovaDrSchema,
         stichdatum: string,
-        hstMap: StringMap<Haltestelle, HaltestelleJson>
-    ): StringMap<Kante, KanteJson> {
+        hstMap: StringMapSer<Haltestelle, HaltestelleJson>,
+        verwaltungMap: StringMap<Verwaltung>
+    ): StringMapSer<Kante, KanteJson> {
         const drKanteList = jsonDr.datenrelease.subsystemNetz.kanten.kante;
-        const kanteMap: StringMap<Kante, KanteJson> = new StringMap<Kante, KanteJson>();
+        const kanteMap: StringMapSer<Kante, KanteJson> = new StringMapSer<Kante, KanteJson>();
 
         for (const drKante of drKanteList) {
             const id = NovaDrParserHelper.parseIdAttribute(drKante);
-            const kante = this.parseKante(id, drKante, stichdatum, hstMap);
+            const kante = this.parseKante(id, drKante, stichdatum, hstMap, verwaltungMap);
 
             if (id && kante) {
                 kanteMap.set(id, kante);
@@ -32,15 +33,14 @@ export class NovaDrParserKante {
         kanteId: string,
         drKante: NovaDrSchemaKante,
         stichdatum: string,
-        hstMap: StringMap<Haltestelle, HaltestelleJson>
+        hstMap: StringMapSer<Haltestelle, HaltestelleJson>,
+        verwaltungMap: StringMap<Verwaltung>
     ): Kante {
         if (!drKante.version) {
             return undefined;
         }
 
-        drKante.version = NovaDrParserHelper.asArray(drKante.version);
-
-        for (const drKanteVer of drKante.version) {
+        for (const drKanteVer of NovaDrParserHelper.asArray(drKante.version)) {
             if (!drKanteVer || !drKanteVer.haltestelle1 || !drKanteVer.haltestelle2) {
                 continue;
             }
@@ -51,6 +51,7 @@ export class NovaDrParserKante {
 
             const hst1 = hstMap.get(drKanteVer.haltestelle1);
             const hst2 = hstMap.get(drKanteVer.haltestelle2);
+            const verwaltung = verwaltungMap.get(drKanteVer.verwaltung);
 
             if (!hst1 || !hst2) {
                 continue;
@@ -60,7 +61,8 @@ export class NovaDrParserKante {
                 kanteId,
                 hst1,
                 hst2,
-                this.parseVerkehrsmittelTpy(drKanteVer)
+                this.parseVerkehrsmittelTpy(drKanteVer),
+                verwaltung && verwaltung.betreiber ? verwaltung.betreiber.abkuerzung : ''
             );
         }
 

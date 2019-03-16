@@ -2,7 +2,7 @@ import {DataItemType} from './data-item-type';
 import {Haltestelle, HaltestelleJson} from './haltestelle';
 import {DataItem} from './data-item';
 import {JsonSerializable} from '../shared/json-serializable';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 import {Extent2d} from '../geo/extent-2d';
 
 
@@ -27,7 +27,7 @@ export class Relationsgebiet implements DataItem, JsonSerializable<Relationsgebi
     }
 
 
-    public static fromJSON(json: RelationsgebietJson, hstMap: StringMap<Haltestelle, HaltestelleJson>): Relationsgebiet {
+    public static fromJSON(json: RelationsgebietJson, hstMap: StringMapSer<Haltestelle, HaltestelleJson>): Relationsgebiet {
         const rg = new Relationsgebiet(
             json.id,
             json.nummer,
@@ -39,7 +39,7 @@ export class Relationsgebiet implements DataItem, JsonSerializable<Relationsgebi
     }
 
 
-    private static getHstPairFromIds(hstIdPair: [string, string], hstMap: StringMap<Haltestelle, HaltestelleJson>): [Haltestelle, Haltestelle] {
+    private static getHstPairFromIds(hstIdPair: [string, string], hstMap: StringMapSer<Haltestelle, HaltestelleJson>): [Haltestelle, Haltestelle] {
         return [hstMap.get(hstIdPair[0]), hstMap.get(hstIdPair[1])];
     }
 

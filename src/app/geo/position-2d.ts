@@ -22,6 +22,14 @@ export class Position2d implements JsonSerializable<Position2dJson> {
     }
 
 
+    public static calcMidPoint(pos1: Position2d, pos2: Position2d): Position2d {
+        return new Position2d(
+            (pos1.longitude + pos2.longitude) / 2,
+            (pos1.latitude + pos2.latitude) / 2,
+        );
+    }
+
+
     public static fromJSON(json: Position2dJson): Position2d {
         return new Position2d(json.lon, json.lat);
     }

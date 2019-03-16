@@ -19,7 +19,8 @@
             </td>
             <td>
                 <input type="checkbox" (change)="this.showKantenChange($event)" checked>
-                {{ this.getKantenCount() }} Kanten
+                {{ this.getKantenCount() }} Kanten<br>
+                <input type="checkbox" (change)="this.showKantenLabelsChange($event)"> show Labels
             </td>
             <td>
                 {{ this.getZonenplanCount() }} Zonenpläne:

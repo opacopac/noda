@@ -1,15 +1,15 @@
 import {NovaDrSchema, NovaDrSchemaZone} from './NovaDrSchema';
 import {Kante, KanteJson} from '../model/kante';
 import {Zone} from '../model/zone';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 import {ZoneLikeJson} from '../model/zonelike';
 import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 
 export class NovaDrParserZone {
-    public static parse(jsonDr: NovaDrSchema, stichdatum: string, kanteMap: StringMap<Kante, KanteJson>): StringMap<Zone, ZoneLikeJson> {
+    public static parse(jsonDr: NovaDrSchema, stichdatum: string, kanteMap: StringMapSer<Kante, KanteJson>): StringMapSer<Zone, ZoneLikeJson> {
         const drZonenList = jsonDr.datenrelease.subsystemZonenModell.zonen.zone;
-        const zonenMap = new StringMap<Zone, ZoneLikeJson>();
+        const zonenMap = new StringMapSer<Zone, ZoneLikeJson>();
 
         for (const drZone of drZonenList) {
             const id = NovaDrParserHelper.parseIdAttribute(drZone);
@@ -24,14 +24,12 @@ export class NovaDrParserZone {
     }
 
 
-    private static parseZone(zoneId: string, drZone: NovaDrSchemaZone, stichdatum: string, kantenMap: StringMap<Kante, KanteJson>): Zone {
+    private static parseZone(zoneId: string, drZone: NovaDrSchemaZone, stichdatum: string, kantenMap: StringMapSer<Kante, KanteJson>): Zone {
         if (!drZone.version) {
             return undefined;
         }
 
-        drZone.version = NovaDrParserHelper.asArray(drZone.version);
-
-        for (const drZoneVer of drZone.version) {
+        for (const drZoneVer of NovaDrParserHelper.asArray(drZone.version)) {
             if (!drZoneVer || !drZoneVer.kanteDefault) {
                 continue;
             }

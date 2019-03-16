@@ -1,7 +1,7 @@
 import {NovaDrSchema, NovaDrSchemaAnkerpunkt, NovaDrSchemaInterbereich} from './NovaDrSchema';
 import {Kante, KanteJson} from '../model/kante';
 import {Interbereich, InterbereichJson} from '../model/interbereich';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 import {Ankerpunkt} from '../model/ankerpunkt';
 import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
 import {NovaDrParserHelper} from './NovaDrParserHelper';
@@ -11,10 +11,10 @@ export class NovaDrParserInterbereich {
     public static parse(
         jsonDr: NovaDrSchema,
         stichdatum: string,
-        hstMap: StringMap<Haltestelle, HaltestelleJson>,
-        kanteMap: StringMap<Kante, KanteJson>
-    ): StringMap<Interbereich, InterbereichJson> {
-        const interbereichMap = new StringMap<Interbereich, InterbereichJson>();
+        hstMap: StringMapSer<Haltestelle, HaltestelleJson>,
+        kanteMap: StringMapSer<Kante, KanteJson>
+    ): StringMapSer<Interbereich, InterbereichJson> {
+        const interbereichMap = new StringMapSer<Interbereich, InterbereichJson>();
         const drInterbereichList = NovaDrParserHelper.asArray(jsonDr.datenrelease.subsystemInterModell.interBereiche.interBereich);
 
         for (const drInterbereich of drInterbereichList) {
@@ -33,8 +33,8 @@ export class NovaDrParserInterbereich {
     private static parseInterbereich(
         drInterbereich: NovaDrSchemaInterbereich,
         stichdatum: string,
-        hstMap: StringMap<Haltestelle, HaltestelleJson>,
-        kantenMap: StringMap<Kante, KanteJson>
+        hstMap: StringMapSer<Haltestelle, HaltestelleJson>,
+        kantenMap: StringMapSer<Kante, KanteJson>
     ): Interbereich {
         if (!drInterbereich.version) {
             return undefined;
@@ -74,8 +74,8 @@ export class NovaDrParserInterbereich {
 
     private static parseAnkerpunkt(
         drAnkerpunkt: NovaDrSchemaAnkerpunkt,
-        hstMap: StringMap<Haltestelle, HaltestelleJson>,
-        kantenMap: StringMap<Kante, KanteJson>
+        hstMap: StringMapSer<Haltestelle, HaltestelleJson>,
+        kantenMap: StringMapSer<Kante, KanteJson>
     ): Ankerpunkt {
         if (!drAnkerpunkt) {
             return undefined;

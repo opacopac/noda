@@ -2,7 +2,7 @@ import {isArray} from 'util';
 import {NovaDrSchema, NovaDrSchemaRtmRelation} from './NovaDrSchema';
 import {Relationsgebiet, RelationsgebietJson} from '../model/relationsgebiet';
 import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 
@@ -10,8 +10,8 @@ export class NovaDrParserRelation {
     public static parse(
         jsonDr: NovaDrSchema,
         stichdatum: string,
-        hstMap: StringMap<Haltestelle, HaltestelleJson>,
-        relationsgebietMap: StringMap<Relationsgebiet, RelationsgebietJson>
+        hstMap: StringMapSer<Haltestelle, HaltestelleJson>,
+        relationsgebietMap: StringMapSer<Relationsgebiet, RelationsgebietJson>
     ) {
         const drRelationList = jsonDr.datenrelease.subsystemDVModell.rtmRelationen.rtmRelation;
 
@@ -32,16 +32,14 @@ export class NovaDrParserRelation {
         relationId: string,
         drRelation: NovaDrSchemaRtmRelation,
         stichdatum: string,
-        hstMap: StringMap<Haltestelle, HaltestelleJson>,
-        relationsgebietMap: StringMap<Relationsgebiet, RelationsgebietJson>
+        hstMap: StringMapSer<Haltestelle, HaltestelleJson>,
+        relationsgebietMap: StringMapSer<Relationsgebiet, RelationsgebietJson>
     ) {
         if (!drRelation.version) {
             return undefined;
         }
 
-        drRelation.version = NovaDrParserHelper.asArray(drRelation.version);
-
-        for (const drRelationVer of drRelation.version) {
+        for (const drRelationVer of NovaDrParserHelper.asArray(drRelation.version)) {
             if (!drRelationVer) {
                 continue;
             }

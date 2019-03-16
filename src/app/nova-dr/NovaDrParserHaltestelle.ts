@@ -1,14 +1,14 @@
 import {NovaDrSchema, NovaDrSchemaHaltestelle} from './NovaDrSchema';
 import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
 import {Position2d} from '../geo/position-2d';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 
 export class NovaDrParserHaltestelle {
-    public static parse(jsonDr: NovaDrSchema, stichdatum: string): StringMap<Haltestelle, HaltestelleJson> {
+    public static parse(jsonDr: NovaDrSchema, stichdatum: string): StringMapSer<Haltestelle, HaltestelleJson> {
         const drHstList = jsonDr.datenrelease.subsystemNetz.haltestellen.haltestelle;
-        const hstList: StringMap<Haltestelle, HaltestelleJson> = new StringMap<Haltestelle, HaltestelleJson>();
+        const hstList: StringMapSer<Haltestelle, HaltestelleJson> = new StringMapSer<Haltestelle, HaltestelleJson>();
 
         for (const drHst of drHstList) {
             const id = NovaDrParserHelper.parseIdAttribute(drHst);
@@ -28,9 +28,7 @@ export class NovaDrParserHaltestelle {
             return undefined;
         }
 
-        drHst.version = NovaDrParserHelper.asArray(drHst.version);
-
-        for (const drHstVer of drHst.version) {
+        for (const drHstVer of NovaDrParserHelper.asArray(drHst.version)) {
             if (!drHstVer || !drHstVer.uic || !drHstVer.yKoordinate || !drHstVer.xKoordinate) {
                 continue;
             }

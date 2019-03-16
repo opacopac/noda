@@ -3,7 +3,7 @@ import {DataItem} from './data-item';
 import {Haltestelle, HaltestelleJson} from './haltestelle';
 import {Relationsgebiet, RelationsgebietJson} from './relationsgebiet';
 import {JsonSerializable} from '../shared/json-serializable';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 
 
 export interface RelationJson {
@@ -26,8 +26,8 @@ export class Relation implements DataItem, JsonSerializable<RelationJson> {
 
     public static fromJSON(
         json: RelationJson,
-        relGebMap: StringMap<Relationsgebiet, RelationsgebietJson>,
-        hstMap: StringMap<Haltestelle, HaltestelleJson>
+        relGebMap: StringMapSer<Relationsgebiet, RelationsgebietJson>,
+        hstMap: StringMapSer<Haltestelle, HaltestelleJson>
     ): Relation {
         return new Relation(
             json.id,

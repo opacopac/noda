@@ -8,7 +8,7 @@ export interface NovaDrSchemaRoot {
     subsystemNetz: NovaDrSchemaNetz;
     subsystemZonenModell: NovaDrSchemaZonenModell;
     subsystemDVModell: NovaDrSchemaDvModell;
-    subsystemInterModell: NovaDrSchemaInterModell
+    subsystemInterModell: NovaDrSchemaInterModell;
 }
 
 
@@ -33,8 +33,10 @@ export interface IdAttribute {
 // region netz
 
 export interface NovaDrSchemaNetz {
+    betreibers: { betreiber: NovaDrSchemaBetreiber[] };
     haltestellen: { haltestelle: NovaDrSchemaHaltestelle[] };
     kanten: { kante: NovaDrSchemaKante[] };
+    verwaltungen: { verwaltung: NovaDrSchemaVerwaltung[] };
 }
 
 
@@ -65,6 +67,30 @@ export interface NovaDrSchemaKante extends IdAttribute {
         verkehrsmittelTyp: string;
         zuschlagspflichtig: string;
         bahnersatz: string;
+    }[];
+}
+
+
+export interface NovaDrSchemaVerwaltung extends IdAttribute {
+    '@_id': string;
+    version: {
+        '@_gueltigVon': string;
+        '@_gueltigBis': string;
+        '@_id': string;
+        verwaltungsCode: string;
+        betreiber: string;
+    }[];
+}
+
+
+export interface NovaDrSchemaBetreiber extends IdAttribute {
+    '@_id': string;
+    version: {
+        '@_gueltigVon': string;
+        '@_gueltigBis': string;
+        '@_id': string;
+        name: string;
+        abkuerzung: string;
     }[];
 }
 

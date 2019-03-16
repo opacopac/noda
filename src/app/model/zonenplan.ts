@@ -4,7 +4,7 @@ import {Zone} from './zone';
 import {Lokalnetz} from './lokalnetz';
 import {JsonSerializable} from '../shared/json-serializable';
 import {ZoneLikeJson} from './zonelike';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 import {Extent2d} from '../geo/extent-2d';
 
 
@@ -26,8 +26,8 @@ export class Zonenplan implements DataItem, JsonSerializable<ZonenplanJson> {
 
     public static fromJSON(
         json: ZonenplanJson,
-        zonenMap: StringMap<Zone, ZoneLikeJson>,
-        lokalnetzMap: StringMap<Lokalnetz, ZoneLikeJson>
+        zonenMap: StringMapSer<Zone, ZoneLikeJson>,
+        lokalnetzMap: StringMapSer<Lokalnetz, ZoneLikeJson>
     ): Zonenplan {
         return new Zonenplan(
             json.bezeichnung,

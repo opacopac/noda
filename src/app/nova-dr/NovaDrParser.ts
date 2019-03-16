@@ -11,6 +11,8 @@ import {NovaDrParserLokalnetz} from './NovaDrParserLokalnetz';
 import {NovaDrParserRelationsgebiet} from './NovaDrParserRelationsgebiet';
 import {NovaDrParserRelation} from './NovaDrParserRelation';
 import {NovaDrParserInterbereich} from './NovaDrParserInterbereich';
+import {NovaDrParserBetreiber} from './NovaDrParserBetreiber';
+import {NovaDrParserVerwaltung} from './NovaDrParserVerwaltung';
 
 
 export class NovaDrParser {
@@ -23,12 +25,20 @@ export class NovaDrParser {
         const drId = NovaDrParserMetadata.parseDatenreleaseId(drJson);
         console.log('DR id: ' + drId);
 
+        console.log('parsing betreiber...');
+        const betreiberMap = NovaDrParserBetreiber.parse(drJson, stichdatum);
+        console.log('parsing betreiber completed (' + betreiberMap.size + ')');
+
+        console.log('parsing verwaltungen...');
+        const verwaltungMap = NovaDrParserVerwaltung.parse(drJson, stichdatum, betreiberMap);
+        console.log('parsing verwaltungen completed (' + verwaltungMap.size + ')');
+
         console.log('parsing haltestellen...');
         const hstMap = NovaDrParserHaltestelle.parse(drJson, stichdatum);
         console.log('parsing haltestellen completed (' + hstMap.size + ')');
 
         console.log('parsing kanten...');
-        const kantenMap = NovaDrParserKante.parse(drJson, stichdatum, hstMap);
+        const kantenMap = NovaDrParserKante.parse(drJson, stichdatum, hstMap, verwaltungMap);
         console.log('parsing kanten completed (' + kantenMap.size + ')');
 
         console.log('parsing zonen...');

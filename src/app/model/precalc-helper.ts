@@ -9,7 +9,7 @@ import {Lokalnetz} from './lokalnetz';
 import {Interbereich, InterbereichJson} from './interbereich';
 import {Extent2d} from '../geo/extent-2d';
 import {VoronoiHelper} from '../geo/voronoi-helper';
-import {StringMap} from '../shared/string-map';
+import {StringMapSer} from '../shared/string-map-ser';
 import {ZoneLikeJson} from './zonelike';
 import {Kante} from './kante';
 
@@ -78,7 +78,7 @@ export class PrecalcHelper {
         });
     }
 
-    private static createHstQuadTree(hstMap: StringMap<Haltestelle, HaltestelleJson>): QuadTree<Haltestelle> {
+    private static createHstQuadTree(hstMap: StringMapSer<Haltestelle, HaltestelleJson>): QuadTree<Haltestelle> {
         const extent = new Extent2d(5, 45, 15, 50); // TODO
         const quadTree = new QuadTree<Haltestelle>(extent, 10); // TODO
 
@@ -88,7 +88,7 @@ export class PrecalcHelper {
     }
 
 
-    private static calcVoronoi(hstMap: StringMap<Haltestelle, HaltestelleJson>) {
+    private static calcVoronoi(hstMap: StringMapSer<Haltestelle, HaltestelleJson>) {
         const hstList = Array.from(hstMap.values())
             .filter(hst => hst.isActive());
 
@@ -96,7 +96,7 @@ export class PrecalcHelper {
     }
 
 
-    private static calcZonePolygons(zoneMap: StringMap<Zone, ZoneLikeJson>) {
+    private static calcZonePolygons(zoneMap: StringMapSer<Zone, ZoneLikeJson>) {
         const zoneHstMap = new Map<Zone, Haltestelle[]>();
         const zoneList = Array.from(zoneMap.values());
 
@@ -153,7 +153,7 @@ export class PrecalcHelper {
     }
 
 
-    private static calcLokalnetzPolygons(lokalnetzMap: StringMap<Lokalnetz, ZoneLikeJson>) {
+    private static calcLokalnetzPolygons(lokalnetzMap: StringMapSer<Lokalnetz, ZoneLikeJson>) {
         const lokalnetzList = Array.from(lokalnetzMap.values());
 
         lokalnetzList.forEach(lokalnetz => {
@@ -168,7 +168,7 @@ export class PrecalcHelper {
     }
 
 
-    private static calcInterbereichPolygons(interbereichMap: StringMap<Interbereich, InterbereichJson>) {
+    private static calcInterbereichPolygons(interbereichMap: StringMapSer<Interbereich, InterbereichJson>) {
         const interbereichList = Array.from(interbereichMap.values());
 
         interbereichList.forEach(interbereich => {
