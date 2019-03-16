@@ -1,22 +1,25 @@
-import {isArray} from 'util';
-import {NovaDrSchema, NovaDrSchemaInterbereich} from './NovaDrSchema';
+import {NovaDrSchema, NovaDrSchemaAnkerpunkt, NovaDrSchemaInterbereich} from './NovaDrSchema';
 import {Kante, KanteJson} from '../model/kante';
 import {Interbereich, InterbereichJson} from '../model/interbereich';
 import {StringMap} from '../shared/string-map';
+import {Ankerpunkt} from '../model/ankerpunkt';
+import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
+import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 
 export class NovaDrParserInterbereich {
     public static parse(
         jsonDr: NovaDrSchema,
         stichdatum: string,
+        hstMap: StringMap<Haltestelle, HaltestelleJson>,
         kanteMap: StringMap<Kante, KanteJson>
     ): StringMap<Interbereich, InterbereichJson> {
-        const drInterbereichList = jsonDr.datenrelease.subsystemInterModell.interBereiche.interBereich;
         const interbereichMap = new StringMap<Interbereich, InterbereichJson>();
+        const drInterbereichList = NovaDrParserHelper.asArray(jsonDr.datenrelease.subsystemInterModell.interBereiche.interBereich);
 
         for (const drInterbereich of drInterbereichList) {
-            const id = this.parseId(drInterbereich);
-            const interbereich = this.parseInterbereich(drInterbereich, stichdatum, kanteMap);
+            const id = NovaDrParserHelper.parseIdAttribute(drInterbereich);
+            const interbereich = this.parseInterbereich(drInterbereich, stichdatum, hstMap, kanteMap);
 
             if (id && interbereich) {
                 interbereichMap.set(id, interbereich);
@@ -27,25 +30,17 @@ export class NovaDrParserInterbereich {
     }
 
 
-    private static parseId(drKante: NovaDrSchemaInterbereich): string {
-        return drKante['@_id'];
-    }
-
-
     private static parseInterbereich(
         drInterbereich: NovaDrSchemaInterbereich,
         stichdatum: string,
+        hstMap: StringMap<Haltestelle, HaltestelleJson>,
         kantenMap: StringMap<Kante, KanteJson>
     ): Interbereich {
         if (!drInterbereich.version) {
             return undefined;
         }
 
-        if (!isArray(drInterbereich.version)) {
-            drInterbereich.version = [drInterbereich.version as any];
-        }
-
-        for (const drInterbereichVer of drInterbereich.version) {
+        for (const drInterbereichVer of NovaDrParserHelper.asArray(drInterbereich.version)) {
             if (!drInterbereichVer || !(drInterbereichVer.dvKanten || drInterbereichVer.ivKanten)) {
                 continue;
             }
@@ -54,16 +49,22 @@ export class NovaDrParserInterbereich {
                 continue;
             }
 
-            const dvKantenList = this.parseKantenList(drInterbereichVer.dvKanten, kantenMap);
-            const ivKantenList = this.parseKantenList(drInterbereichVer.ivKanten, kantenMap);
-            const kantenList = [...dvKantenList, ...ivKantenList];
+            const kantenList = [
+                ...NovaDrParserHelper.parseKantenIds(drInterbereichVer.dvKanten, kantenMap),
+                ...NovaDrParserHelper.parseKantenIds(drInterbereichVer.ivKanten, kantenMap)
+            ];
             if (!kantenList || kantenList.length === 0) {
                 continue;
             }
 
+            const ankerpunktList = NovaDrParserHelper.asArray(drInterbereichVer.ankerpunkt)
+                .map(drAnkerpunkt => this.parseAnkerpunkt(drAnkerpunkt, hstMap, kantenMap))
+                .filter(ankerpunkt => ankerpunkt !== undefined);
+
             return new Interbereich(
                 drInterbereichVer.name,
-                kantenList
+                kantenList,
+                ankerpunktList
             );
         }
 
@@ -71,18 +72,30 @@ export class NovaDrParserInterbereich {
     }
 
 
-    private static parseKantenList(idString: string, kantenMap: StringMap<Kante, KanteJson>): Kante[] {
-        if (!idString) {
-            return [];
+    private static parseAnkerpunkt(
+        drAnkerpunkt: NovaDrSchemaAnkerpunkt,
+        hstMap: StringMap<Haltestelle, HaltestelleJson>,
+        kantenMap: StringMap<Kante, KanteJson>
+    ): Ankerpunkt {
+        if (!drAnkerpunkt) {
+            return undefined;
         }
 
-        const zonenIds = idString.split(' ');
-        if (zonenIds.length === 0) {
-            return [];
-        }
+        const hstList = [
+            ...NovaDrParserHelper.parseHaltestellenIds(drAnkerpunkt.hauptHaltestelle, hstMap),
+            ...NovaDrParserHelper.parseHaltestellenIds(drAnkerpunkt.subHaltestellen, hstMap)
+        ];
 
-        return zonenIds
-            .map(id => kantenMap.get(id))
-            .filter(kante => kante !== undefined);
+        const zubringer: Kante[][] = NovaDrParserHelper.asArray(drAnkerpunkt.ankerpunktZubringer)
+            .map(zubr => NovaDrParserHelper.parseKantenIds(zubr.kanten, kantenMap))
+            .filter(zubr => zubr.length > 0);
+
+        return new Ankerpunkt(
+            drAnkerpunkt.bezeichnung,
+            hstList,
+            zubringer
+        );
     }
 }
+
+

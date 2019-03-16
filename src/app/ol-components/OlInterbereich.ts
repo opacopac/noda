@@ -3,6 +3,7 @@ import {Circle, Fill, Icon, Stroke, Style, Text} from 'ol/style';
 import {OlComponentBase} from './OlComponentBase';
 import {OlHelper} from './OlHelper';
 import {Interbereich} from '../model/interbereich';
+import {OlAnkerpunkt} from './OlAnkerpunkt';
 
 
 export class OlInterbereich extends OlComponentBase {
@@ -27,6 +28,10 @@ export class OlInterbereich extends OlComponentBase {
         olFeatureBorder.setStyle(this.createOuterPolygonStyle(interbereich));
         this.setMultiPolygonGeometry(olFeatureBorder, interbereich.polygon);
         layer.getSource().addFeature(olFeatureBorder);
+
+        interbereich.ankerpunkte.forEach(ankerpunkt => {
+            const olAnkerpunkt = new OlAnkerpunkt(ankerpunkt, layer);
+        });
     }
 
 

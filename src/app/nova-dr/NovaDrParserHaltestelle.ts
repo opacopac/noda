@@ -1,8 +1,8 @@
 import {NovaDrSchema, NovaDrSchemaHaltestelle} from './NovaDrSchema';
 import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
 import {Position2d} from '../geo/position-2d';
-import {isArray} from 'util';
 import {StringMap} from '../shared/string-map';
+import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 
 export class NovaDrParserHaltestelle {
@@ -11,7 +11,7 @@ export class NovaDrParserHaltestelle {
         const hstList: StringMap<Haltestelle, HaltestelleJson> = new StringMap<Haltestelle, HaltestelleJson>();
 
         for (const drHst of drHstList) {
-            const id = this.parseHaltestelleId(drHst);
+            const id = NovaDrParserHelper.parseIdAttribute(drHst);
             const hst = this.parseHaltestelle(id, drHst, stichdatum);
 
             if (id && hst) {
@@ -23,19 +23,12 @@ export class NovaDrParserHaltestelle {
     }
 
 
-    private static parseHaltestelleId(drHst: NovaDrSchemaHaltestelle): string {
-        return drHst['@_id'];
-    }
-
-
     private static parseHaltestelle(hstId: string, drHst: NovaDrSchemaHaltestelle, stichdatum: string): Haltestelle {
         if (!drHst.version) {
             return undefined;
         }
 
-        if (!isArray(drHst.version)) {
-            drHst.version = [drHst.version as any];
-        }
+        drHst.version = NovaDrParserHelper.asArray(drHst.version);
 
         for (const drHstVer of drHst.version) {
             if (!drHstVer || !drHstVer.uic || !drHstVer.yKoordinate || !drHstVer.xKoordinate) {

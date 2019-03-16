@@ -25,6 +25,11 @@ export interface NovaDrSchemaMetaData {
 }
 
 
+export interface IdAttribute {
+    '@_id': string;
+}
+
+
 // region netz
 
 export interface NovaDrSchemaNetz {
@@ -33,7 +38,7 @@ export interface NovaDrSchemaNetz {
 }
 
 
-export interface NovaDrSchemaHaltestelle {
+export interface NovaDrSchemaHaltestelle extends IdAttribute {
     '@_id': string;
     version: {
         '@_gueltigVon': string;
@@ -48,7 +53,7 @@ export interface NovaDrSchemaHaltestelle {
 }
 
 
-export interface NovaDrSchemaKante {
+export interface NovaDrSchemaKante extends IdAttribute {
     '@_id': string;
     version: {
         '@_gueltigVon': string;
@@ -75,7 +80,7 @@ export interface NovaDrSchemaZonenModell {
 }
 
 
-export interface NovaDrSchemaZonenplan {
+export interface NovaDrSchemaZonenplan extends IdAttribute {
     '@_id': string;
     version: {
         '@_gueltigVon': string;
@@ -90,7 +95,7 @@ export interface NovaDrSchemaZonenplan {
 }
 
 
-export interface NovaDrSchemaZone {
+export interface NovaDrSchemaZone extends IdAttribute {
     '@_id': string;
     version: {
         '@_gueltigVon': string;
@@ -105,7 +110,7 @@ export interface NovaDrSchemaZone {
     }[];
 }
 
-export interface NovaDrSchemaLokalnetz {
+export interface NovaDrSchemaLokalnetz extends IdAttribute {
     '@_id': string;
     version: {
         '@_gueltigVon': string;
@@ -127,7 +132,7 @@ export interface NovaDrSchemaInterModell {
 }
 
 
-export interface NovaDrSchemaInterbereich {
+export interface NovaDrSchemaInterbereich extends IdAttribute {
     '@_id': string;
     version: {
         '@_gueltigVon': string;
@@ -135,7 +140,23 @@ export interface NovaDrSchemaInterbereich {
         name: string;
         dvKanten: string;
         ivKanten: string;
+        ankerpunkt: NovaDrSchemaAnkerpunkt[];
     }[];
+}
+
+
+export interface NovaDrSchemaAnkerpunkt extends IdAttribute {
+    '@_id': string;
+    bezeichnung: string;
+    hauptHaltestelle: string;
+    subHaltestellen: string;
+    ankerpunktZubringer: NovaDrSchemaAnkerpunktZubringer[];
+}
+
+
+export interface NovaDrSchemaAnkerpunktZubringer extends IdAttribute {
+    '@_id': string;
+    kanten: string;
 }
 
 // endregion
@@ -149,7 +170,7 @@ export interface NovaDrSchemaDvModell {
 }
 
 
-export interface NovaDrSchemaRelationsgebiet {
+export interface NovaDrSchemaRelationsgebiet extends IdAttribute {
     '@_id': string;
     version: {
         '@_gueltigVon': string;
@@ -160,7 +181,7 @@ export interface NovaDrSchemaRelationsgebiet {
 }
 
 
-export interface NovaDrSchemaRtmRelation {
+export interface NovaDrSchemaRtmRelation extends IdAttribute {
     '@_id': string;
     version: {
         '@_gueltigVon': string;

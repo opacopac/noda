@@ -1,9 +1,9 @@
 import {NovaDrSchema, NovaDrSchemaZone} from './NovaDrSchema';
 import {Kante, KanteJson} from '../model/kante';
 import {Zone} from '../model/zone';
-import {isArray} from 'util';
 import {StringMap} from '../shared/string-map';
 import {ZoneLikeJson} from '../model/zonelike';
+import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 
 export class NovaDrParserZone {
@@ -12,7 +12,7 @@ export class NovaDrParserZone {
         const zonenMap = new StringMap<Zone, ZoneLikeJson>();
 
         for (const drZone of drZonenList) {
-            const id = this.parseZoneId(drZone);
+            const id = NovaDrParserHelper.parseIdAttribute(drZone);
             const zone = this.parseZone(id, drZone, stichdatum, kanteMap);
 
             if (id && zone) {
@@ -24,19 +24,12 @@ export class NovaDrParserZone {
     }
 
 
-    private static parseZoneId(drKante: NovaDrSchemaZone): string {
-        return drKante['@_id'];
-    }
-
-
     private static parseZone(zoneId: string, drZone: NovaDrSchemaZone, stichdatum: string, kantenMap: StringMap<Kante, KanteJson>): Zone {
         if (!drZone.version) {
             return undefined;
         }
 
-        if (!isArray(drZone.version)) {
-            drZone.version = [drZone.version as any];
-        }
+        drZone.version = NovaDrParserHelper.asArray(drZone.version);
 
         for (const drZoneVer of drZone.version) {
             if (!drZoneVer || !drZoneVer.kanteDefault) {
@@ -47,7 +40,7 @@ export class NovaDrParserZone {
                 continue;
             }
 
-            const kantenList = this.parseKantenList(drZoneVer.kanteDefault, kantenMap);
+            const kantenList = NovaDrParserHelper.parseKantenIds(drZoneVer.kanteDefault, kantenMap);
             if (!kantenList || kantenList.length === 0) {
                 continue;
             }
@@ -60,18 +53,5 @@ export class NovaDrParserZone {
         }
 
         return undefined;
-    }
-
-
-    private static parseKantenList(idString: string, kantenMap: StringMap<Kante, KanteJson>): Kante[] {
-        const zonenIds = idString.split(' ');
-
-        if (zonenIds.length === 0) {
-            return undefined;
-        }
-
-        return zonenIds
-            .map(id => kantenMap.get(id))
-            .filter(kante => kante !== undefined);
     }
 }

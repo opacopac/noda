@@ -1,7 +1,7 @@
 import {NovaDrSchema, NovaDrSchemaRelationsgebiet} from './NovaDrSchema';
 import {Relationsgebiet, RelationsgebietJson} from '../model/relationsgebiet';
-import {isArray} from 'util';
 import {StringMap} from '../shared/string-map';
+import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 
 export class NovaDrParserRelationsgebiet {
@@ -10,7 +10,7 @@ export class NovaDrParserRelationsgebiet {
         const relationsgebietMap = new StringMap<Relationsgebiet, RelationsgebietJson>();
 
         for (const drRelationsgebiet of drRelationsgebietList) {
-            const id = this.parseId(drRelationsgebiet);
+            const id = NovaDrParserHelper.parseIdAttribute(drRelationsgebiet);
             const relationsgebiet = this.parseRelationsgebiet(id, drRelationsgebiet, stichdatum);
 
             if (id && relationsgebiet) {
@@ -19,11 +19,6 @@ export class NovaDrParserRelationsgebiet {
         }
 
         return relationsgebietMap;
-    }
-
-
-    private static parseId(drZonenplan: NovaDrSchemaRelationsgebiet): string {
-        return drZonenplan['@_id'];
     }
 
 
@@ -36,9 +31,7 @@ export class NovaDrParserRelationsgebiet {
             return undefined;
         }
 
-        if (!isArray(drRelationsgebiet.version)) {
-            drRelationsgebiet.version = [drRelationsgebiet.version as any];
-        }
+        drRelationsgebiet.version = NovaDrParserHelper.asArray(drRelationsgebiet.version);
 
         for (const drRelationsgebietVer of drRelationsgebiet.version) {
             if (!drRelationsgebietVer) {

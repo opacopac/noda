@@ -44,7 +44,7 @@ export class NovaDrParser {
         console.log('parsing zonenpläne completed (' + zonenplanMap.size + ')');
 
         console.log('parsing interbereiche...');
-        const interbereichMap = NovaDrParserInterbereich.parse(drJson, stichdatum, kantenMap);
+        const interbereichMap = NovaDrParserInterbereich.parse(drJson, stichdatum, hstMap, kantenMap);
         console.log('parsing interbereiche completed (' + interbereichMap.size + ')');
 
         console.log('parsing relationsgebiete...');

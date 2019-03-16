@@ -3,6 +3,7 @@ import {NovaDrSchema, NovaDrSchemaRtmRelation} from './NovaDrSchema';
 import {Relationsgebiet, RelationsgebietJson} from '../model/relationsgebiet';
 import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
 import {StringMap} from '../shared/string-map';
+import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 
 export class NovaDrParserRelation {
@@ -15,7 +16,7 @@ export class NovaDrParserRelation {
         const drRelationList = jsonDr.datenrelease.subsystemDVModell.rtmRelationen.rtmRelation;
 
         for (const drRelations of drRelationList) {
-            const id = this.parseId(drRelations);
+            const id = NovaDrParserHelper.parseIdAttribute(drRelations);
             const relationsgebiet = this.parseRelation(id, drRelations, stichdatum, hstMap, relationsgebietMap);
 
             if (id && relationsgebiet) {
@@ -24,11 +25,6 @@ export class NovaDrParserRelation {
         }
 
         return relationsgebietMap;
-    }
-
-
-    private static parseId(drRelation: NovaDrSchemaRtmRelation): string {
-        return drRelation['@_id'];
     }
 
 
@@ -43,9 +39,7 @@ export class NovaDrParserRelation {
             return undefined;
         }
 
-        if (!isArray(drRelation.version)) {
-            drRelation.version = [drRelation.version as any];
-        }
+        drRelation.version = NovaDrParserHelper.asArray(drRelation.version);
 
         for (const drRelationVer of drRelation.version) {
             if (!drRelationVer) {

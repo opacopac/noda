@@ -3,6 +3,7 @@ import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
 import {Kante, KanteJson, VerkehrsmittelTyp} from '../model/kante';
 import {isArray} from 'util';
 import {StringMap} from '../shared/string-map';
+import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 
 export class NovaDrParserKante {
@@ -15,7 +16,7 @@ export class NovaDrParserKante {
         const kanteMap: StringMap<Kante, KanteJson> = new StringMap<Kante, KanteJson>();
 
         for (const drKante of drKanteList) {
-            const id = this.parseKanteId(drKante);
+            const id = NovaDrParserHelper.parseIdAttribute(drKante);
             const kante = this.parseKante(id, drKante, stichdatum, hstMap);
 
             if (id && kante) {
@@ -24,11 +25,6 @@ export class NovaDrParserKante {
         }
 
         return kanteMap;
-    }
-
-
-    private static parseKanteId(drKante: NovaDrSchemaKante): string {
-        return drKante['@_id'];
     }
 
 
@@ -42,9 +38,7 @@ export class NovaDrParserKante {
             return undefined;
         }
 
-        if (!isArray(drKante.version)) {
-            drKante.version = [drKante.version as any];
-        }
+        drKante.version = NovaDrParserHelper.asArray(drKante.version);
 
         for (const drKanteVer of drKante.version) {
             if (!drKanteVer || !drKanteVer.haltestelle1 || !drKanteVer.haltestelle2) {

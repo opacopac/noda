@@ -53,7 +53,7 @@ export class DrData implements JsonSerializable<DrDataJson> {
         json.zonenplaene.map.forEach(entry => zonenplanMap.set(entry.key, Zonenplan.fromJSON(entry.val, zonenMap, lokalnetzMap)));
 
         const interbereichMap = new StringMap<Interbereich, InterbereichJson>();
-        json.interbereiche.map.forEach(entry => interbereichMap.set(entry.key, Interbereich.fromJSON(entry.val, kantenMap)));
+        json.interbereiche.map.forEach(entry => interbereichMap.set(entry.key, Interbereich.fromJSON(entry.val, hstMap, kantenMap)));
 
         const relGebMap = new StringMap<Relationsgebiet, RelationsgebietJson>();
         json.relationsgebiete.map.forEach(entry => relGebMap.set(entry.key, Relationsgebiet.fromJSON(entry.val, hstMap)));
