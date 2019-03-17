@@ -15,12 +15,12 @@
             <td>
                 <input type="checkbox" (change)="this.showHaltestellenChange($event)" checked>
                 {{ this.getHstCount() }} Haltestellen<br>
-                <input type="checkbox" (change)="this.showHaltestellenLabelsChange($event)"> show Labels
+                &nbsp;&nbsp;<input type="checkbox" (change)="this.showHaltestellenLabelsChange($event)"> show Names
             </td>
             <td>
                 <input type="checkbox" (change)="this.showKantenChange($event)" checked>
                 {{ this.getKantenCount() }} Kanten<br>
-                <input type="checkbox" (change)="this.showKantenLabelsChange($event)"> show Labels
+                &nbsp;&nbsp;<input type="checkbox" (change)="this.showKantenLabelsChange($event)"> show Betreiber
             </td>
             <td>
                 {{ this.getZonenplanCount() }} Zonenpläne:
@@ -29,21 +29,18 @@
                     <option *ngFor="let zonenplan of this.getZonenplanList(); let i = index;"
                             [value]="i">{{ this.getDisplayText(zonenplan.bezeichnung) }}</option>
                 </select>
-                <br>
                 <input type="radio" name="zonlok" [value]="1" checked
                        (change)="this.showZonenSelect(true)">{{ this.getZonenCount() }} Zonen
                 <input type="radio" name="zonlok" [value]="2"
-                       (change)="this.showZonenSelect(false)">{{ this.getLokalnetzCount() }} Lokalnetze<br>
-            </td>
-            <td>
+                       (change)="this.showZonenSelect(false)">{{ this.getLokalnetzCount() }} Lokalnetze
+                <br>
                 {{ this.getRelationsgebietCount() }} Relationsgebiete:
                 <select (change)="this.relationsgebietChange($event)" [value]="-1">
                     <option [value]="-1">(empty)</option>
                     <option *ngFor="let relationsgebiet of this.getRelationsgebietList(); let i = index;"
                             [value]="i">{{ relationsgebiet.bezeichnung }}</option>
                 </select>
-            </td>
-            <td>
+                <br>
                 {{ this.getInterbereichCount() }} Interbereiche:
                 <select (change)="this.interbereichChange($event)" [value]="-1">
                     <option [value]="-1">(empty)</option>

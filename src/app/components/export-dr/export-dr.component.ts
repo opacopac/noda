@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {StorageService} from '../../services/storage.service';
-import {MapStateService} from '../../services/map-state.service';
+import {AppStateService} from '../../services/app-state.service';
 
 
 @Component({
@@ -10,7 +10,7 @@ import {MapStateService} from '../../services/map-state.service';
 })
 export class ExportDrComponent implements OnInit {
     constructor(
-        private mapStateService: MapStateService,
+        private mapStateService: AppStateService,
         private storageService: StorageService
     ) {
     }
@@ -21,6 +21,6 @@ export class ExportDrComponent implements OnInit {
 
 
     public exportClick() {
-        this.storageService.exportStammdatenJson(this.mapStateService.drData, 'stammdaten.json');
+        this.storageService.exportStammdatenJson(this.mapStateService.appState.drData, 'stammdaten.json');
     }
 }

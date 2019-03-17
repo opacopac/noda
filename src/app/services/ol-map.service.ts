@@ -120,6 +120,10 @@ export class OlMapService {
 
 
     public setExtent(extent: Extent2d): void {
+        if (!extent) {
+            return;
+        }
+
         const minPos = OlPos.getMercator(extent.minPos);
         const maxPos = OlPos.getMercator(extent.maxPos);
         const merExt = [minPos[0], minPos[1], maxPos[0], maxPos[1]];

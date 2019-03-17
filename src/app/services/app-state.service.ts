@@ -7,7 +7,6 @@ import {OlMapCoords, OlMapService} from './ol-map.service';
 import {Extent2d} from '../geo/extent-2d';
 import {Haltestelle} from '../model/haltestelle';
 import {Kante} from '../model/kante';
-import {QuadTree} from '../quadtree/quad-tree';
 import {Zonenplan} from '../model/zonenplan';
 import {Relationsgebiet} from '../model/relationsgebiet';
 import {OlRelationsgebiet} from '../ol-components/OlRelationsgebiet';
@@ -19,24 +18,14 @@ import {DataItem} from '../model/data-item';
 import {DataItemType} from '../model/data-item-type';
 import {Zonelike} from '../model/zonelike';
 import {OlZonelike} from '../ol-components/OlZonelike';
+import {AppState} from './app-state';
 
 
 @Injectable({
     providedIn: 'root'
 })
-export class MapStateService {
-    public drData: DrData;
-    private currentMouseOverDataItem: DataItem;
-    private _showKanten = true;
-    private _showZonen = true;
-    private _showHst = true;
-    private _showHstLabels = false;
-    private _showKantenLabels = false;
-    private _selectedZonenplan: Zonenplan;
-    private _selectedInterbereich: Interbereich;
-    private _selectedRelationsgebiet: Relationsgebiet;
-    private hstQuadTree: QuadTree<Haltestelle>;
-    private mapCoords: OlMapCoords;
+export class AppStateService {
+    public appState: AppState;
     private kantenLayer: VectorLayer;
     private kantenLabelLayer: VectorLayer;
     private hstLayer: VectorLayer;
@@ -46,107 +35,109 @@ export class MapStateService {
     private interbereichLayer: VectorLayer;
     private relationsgebietLayer: VectorLayer;
     private selectedDataItemLayer: VectorLayer;
+    private readonly MAX_HST_IN_VIEW = 500;
 
 
     public get showZonen(): boolean {
-        return this._showZonen;
+        return this.appState.showZonen;
     }
 
 
     public set showZonen(value: boolean) {
-        this._showZonen = value;
+        this.appState.showZonen = value;
         this.updateMap();
     }
 
 
     public get showKanten(): boolean {
-        return this._showKanten;
+        return this.appState.showKanten;
     }
 
 
     public set showKanten(value: boolean) {
-        this._showKanten = value;
+        this.appState.showKanten = value;
         this.updateMap();
     }
 
 
     public get showHst(): boolean {
-        return this._showHst;
+        return this.appState.showHst;
     }
 
 
     public set showHst(value: boolean) {
-        this._showHst = value;
+        this.appState.showHst = value;
         this.updateMap();
     }
 
 
     public get showHstLabels(): boolean {
-        return this._showHstLabels;
+        return this.appState.showHstLabels;
     }
 
 
     public set showHstLabels(value: boolean) {
-        this._showHstLabels = value;
+        this.appState.showHstLabels = value;
         this.updateMap();
     }
 
 
     public get showKantenLabels(): boolean {
-        return this._showKantenLabels;
+        return this.appState.showKantenLabels;
     }
 
 
     public set showKantenLabels(value: boolean) {
-        this._showKantenLabels = value;
+        this.appState.showKantenLabels = value;
         this.updateMap();
     }
 
 
     constructor(private mapService: OlMapService) {
+        this.appState = new AppState();
         this.mapService.onDataItemMouseOver.subscribe(this.onMouseOverDataItem.bind(this));
     }
 
 
     public updateMapCoords(mapCoords: OlMapCoords) {
-        this.mapCoords = mapCoords;
+        this.appState.mapCoords = mapCoords;
         this.updateMap();
     }
 
 
     public selectZonenplan(zonenplan: Zonenplan) {
-        this._selectedZonenplan = zonenplan;
-        this.mapService.setExtent(zonenplan.getExtent());
-        this.drawZonenplan(zonenplan, !this._showZonen);
+        this.appState.selectedZonenplan = zonenplan;
+        this.mapService.setExtent(zonenplan ? zonenplan.getExtent() : undefined);
+        this.drawZonenplan(zonenplan, !this.appState.showZonen);
         this.updateMap();
     }
 
 
     public selectInterbereich(interbereich: Interbereich) {
-        this._selectedInterbereich = interbereich;
-        this.mapService.setExtent(interbereich.getExtent());
+        this.appState.selectedInterbereich = interbereich;
+        this.mapService.setExtent(interbereich ? interbereich.getExtent() : undefined);
         this.drawInterbereich(interbereich);
         this.updateMap();
     }
 
 
     public selectRelationsgebiet(relationsgebiet: Relationsgebiet) {
-        this._selectedRelationsgebiet = relationsgebiet;
-        this.mapService.setExtent(relationsgebiet.getExtent());
+        this.appState.selectedRelationsgebiet = relationsgebiet;
+        this.mapService.setExtent(relationsgebiet ? relationsgebiet.getExtent() : undefined);
         this.drawRelationsgebiet(relationsgebiet);
         this.updateMap();
     }
 
 
     public updateDrData(drData: DrData) {
-        this.drData = drData;
-        this.hstQuadTree = PrecalcHelper.precalc(drData);
+        this.appState.drData = drData;
+        this.appState.hstQuadTree = PrecalcHelper.precalc(drData);
         this.updateMap();
     }
 
 
     private updateMap() {
-        if (!this.drData || !this.mapCoords) {
+        if (!this.appState.drData || !this.appState.mapCoords) {
             return;
         }
 
@@ -154,18 +145,17 @@ export class MapStateService {
             this.initLayers();
         }
 
-        const maxResults = 500; // this._showHstLabels ? 100 : 500;
-        const hstList = this.searchHaltestellen(this.mapCoords.extent, maxResults);
-        if (this._showHst)  {
-            this.drawHaltestellen(hstList, this._showHstLabels);
+        const hstList = this.searchHaltestellen(this.appState.mapCoords.extent, this.MAX_HST_IN_VIEW);
+        if (this.appState.showHst)  {
+            this.drawHaltestellen(hstList, this.appState.showHstLabels);
         } else {
             this.drawHaltestellen([], false);
         }
 
-        const kantenList = this._showKanten ? this.searchKanten(hstList) : [];
-        this.drawKanten(kantenList, this._showKantenLabels);
+        const kantenList = this.appState.showKanten ? this.searchKanten(hstList) : [];
+        this.drawKanten(kantenList, this.appState.showKantenLabels);
 
-        this.drawZonenplan(this._selectedZonenplan, !this._showZonen);
+        this.drawZonenplan(this.appState.selectedZonenplan, !this.appState.showZonen);
     }
 
 
@@ -184,10 +174,10 @@ export class MapStateService {
 
 
     public onMouseOverDataItem(dataItem: DataItem) {
-        if (dataItem === this.currentMouseOverDataItem) {
+        if (dataItem === this.appState.currentMouseOverDataItem) {
             return;
         } else {
-            this.currentMouseOverDataItem = dataItem;
+            this.appState.currentMouseOverDataItem = dataItem;
         }
 
         this.drawSelectedItem(dataItem);
@@ -270,7 +260,7 @@ export class MapStateService {
 
 
     private searchHaltestellen(extent: Extent2d, maxResults: number): Haltestelle[] {
-        return this.hstQuadTree.searchItems(extent, maxResults);
+        return this.appState.hstQuadTree.searchItems(extent, maxResults);
     }
 
 

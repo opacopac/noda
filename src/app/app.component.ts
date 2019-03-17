@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {StorageService} from './services/storage.service';
-import {MapStateService} from './services/map-state.service';
+import {AppStateService} from './services/app-state.service';
 
 
 @Component({
@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
 
     constructor(
         private storageService: StorageService,
-        private mapFeaturesService: MapStateService
+        private mapFeaturesService: AppStateService
     ) {
     }
 

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NovaDrParser} from '../../nova-dr/NovaDrParser';
-import {MapStateService} from '../../services/map-state.service';
+import {AppStateService} from '../../services/app-state.service';
 import {StorageService} from '../../services/storage.service';
 import {DrData} from '../../model/dr-data';
 
@@ -13,7 +13,7 @@ import {DrData} from '../../model/dr-data';
 export class UploadDrComponent implements OnInit {
     constructor(
         private storageService: StorageService,
-        private mapFeatureService: MapStateService) {
+        private mapFeatureService: AppStateService) {
     }
 
 
@@ -35,17 +35,17 @@ export class UploadDrComponent implements OnInit {
         console.log('uploading file...');
 
         const reader = new FileReader();
-        reader.onload = (ev: FileReaderProgressEvent) => {
+        reader.onload = (ev: ProgressEvent) => {
             console.log('uploading file completed');
 
             const filename = file.name.toLowerCase();
             let drData: DrData;
             if (filename.endsWith('.xml')) {
                 console.log('xml file detected');
-                drData = NovaDrParser.processXmlContent(ev.target.result);
+                drData = NovaDrParser.processXmlContent(reader.result as string);
             } else if (filename.endsWith('.json')) {
                 console.log('json file detected');
-                drData = this.storageService.deserializeDrData(ev.target.result);
+                drData = this.storageService.deserializeDrData(reader.result as string);
             } else {
                 console.log('unknown file format');
                 return;
