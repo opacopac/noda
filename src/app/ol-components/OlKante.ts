@@ -1,46 +1,37 @@
 import VectorLayer from 'ol/layer';
 import {Circle, Fill, Icon, Stroke, Style, Text} from 'ol/style';
-import {OlComponentBase} from './OlComponentBase';
+import {OlFeatureHelper} from './OlFeatureHelper';
 import {Kante, VerkehrsmittelTyp} from '../model/kante';
 import {Position2d} from '../geo/position-2d';
 
 
-export class OlKante extends OlComponentBase {
-    private readonly DASH_LENGTH_PIXEL = 20;
-
-    get isSelectable(): boolean {
-        return false;
-    }
+export class OlKante {
+    private static readonly DASH_LENGTH_PIXEL = 20;
 
 
-    public constructor(
-        kante: Kante,
-        layer: VectorLayer,
-        labelLayer: VectorLayer) {
-
-        super();
-
-        const olFeature = this.createFeature(kante);
+    public static drawKante(kante: Kante, layer: VectorLayer) {
+        const olFeature = OlFeatureHelper.createFeature(kante);
         olFeature.setStyle(this.createStyle(kante));
-        this.setLineGeometry(olFeature, [kante.haltestelle1.position, kante.haltestelle2.position]);
+        OlFeatureHelper.setLineGeometry(olFeature, [kante.haltestelle1.position, kante.haltestelle2.position]);
         layer.getSource().addFeature(olFeature);
-
-
-        if (labelLayer !== undefined) {
-            const olLabelFeature = this.createFeature(kante);
-            olLabelFeature.setStyle(this.createLabelStyle(kante));
-            this.setPointGeometry(olLabelFeature, Position2d.calcMidPoint(kante.haltestelle1.position, kante.haltestelle2.position));
-            labelLayer.getSource().addFeature(olLabelFeature);
-        }
     }
 
 
-    private createStyle(kante: Kante): Style {
+    public static drawLabel(kante: Kante, layer: VectorLayer) {
+        const olLabelFeature = OlFeatureHelper.createFeature(kante);
+        olLabelFeature.setStyle(this.createLabelStyle(kante));
+        OlFeatureHelper.setPointGeometry(olLabelFeature, Position2d.calcMidPoint(kante.haltestelle1.position, kante.haltestelle2.position));
+        layer.getSource().addFeature(olLabelFeature);
+    }
+
+
+
+    private static createStyle(kante: Kante): Style {
         let dash, dashOffset;
         const tot = kante.parallelKanteLut.length;
         if (tot > 1) {
-            dash = [this.DASH_LENGTH_PIXEL, (tot - 1) * this.DASH_LENGTH_PIXEL];
-            dashOffset = this.DASH_LENGTH_PIXEL * kante.parallelKanteLut.indexOf(kante);
+            dash = [OlKante.DASH_LENGTH_PIXEL, (tot - 1) * OlKante.DASH_LENGTH_PIXEL];
+            dashOffset = OlKante.DASH_LENGTH_PIXEL * kante.parallelKanteLut.indexOf(kante);
         } else if (kante.verkehrsmittelTyp === VerkehrsmittelTyp.FUSSWEG) {
             dash = [10, 7];
             dashOffset = 0;
@@ -60,7 +51,7 @@ export class OlKante extends OlComponentBase {
     }
 
 
-    private createLabelStyle(kante: Kante): Style {
+    private static createLabelStyle(kante: Kante): Style {
         let betreiber: string;
         if (kante.parallelKanteLut.length > 1 && kante.parallelKanteLut.indexOf(kante) === 0) {
             betreiber = kante.parallelKanteLut.reduce((totVal, kte) => totVal + '\n' + kte.betreiber, '');
@@ -79,7 +70,7 @@ export class OlKante extends OlComponentBase {
     }
 
 
-    private getKanteColor(kante: Kante): string {
+    private static getKanteColor(kante: Kante): string {
         switch (kante.verkehrsmittelTyp) {
             case VerkehrsmittelTyp.BUS: return '#FFCC00';
             case VerkehrsmittelTyp.SCHIFF: return '#6666FF';

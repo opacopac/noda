@@ -10,9 +10,10 @@ import {DataItem} from '../model/data-item';
 
 export class AppState {
     public drData: DrData;
+    public drIsLoading = false;
     public currentMouseOverDataItem: DataItem;
     public showKanten = true;
-    public showZonen = true;
+    public showZonenXorLokalnetze = true;
     public showHst = true;
     public showHstLabels = false;
     public showKantenLabels = false;

@@ -13,7 +13,7 @@ import {Extent2d} from '../geo/extent-2d';
 import {Position2d} from '../geo/position-2d';
 import {OlPos} from '../geo/ol-pos';
 import {DataItem} from '../model/data-item';
-import {OlComponentBase} from '../ol-components/OlComponentBase';
+import {OlFeatureHelper} from '../ol-components/OlFeatureHelper';
 import Pixel from 'ol/pixel';
 import Feature from 'ol/Feature';
 
@@ -32,6 +32,7 @@ export class OlMapCoords {
     providedIn: 'root'
 })
 export class OlMapService {
+    public onMapInitialized = new EventEmitter<null>();
     public onMapCoordsChanged = new EventEmitter<OlMapCoords>();
     public onMapClicked = new EventEmitter<{ clickPos: Position2d, dataItem: DataItem }>();
     public onDataItemMouseOver = new EventEmitter<DataItem>();
@@ -68,6 +69,8 @@ export class OlMapService {
         this.map.on('moveend', this.onMoveEnd.bind(this));
         this.map.on('singleclick', this.onSingleClick.bind(this));
         this.map.on('pointermove', this.onPointerMove.bind(this));
+
+        this.onMapInitialized.emit();
     }
 
 
@@ -186,8 +189,8 @@ export class OlMapService {
     private getDataItemsFromFeatures(olFeatureList: Feature[], onlySelectable: boolean): DataItem[] {
         // TODO: sort order
         return olFeatureList
-            .filter(feature => !onlySelectable || OlComponentBase.isSelectable(feature))
-            .map(feature => OlComponentBase.getDataItem(feature))
+            .filter(feature => !onlySelectable || OlFeatureHelper.isSelectable(feature))
+            .map(feature => OlFeatureHelper.getDataItem(feature))
             .filter(dataItem => dataItem !== undefined);
     }
 
@@ -207,7 +210,7 @@ export class OlMapService {
 
     private emitMouseOver(olFeatureList: Feature[]) {
         const dataItemList = olFeatureList
-            .map(feature => OlComponentBase.getDataItem(feature))
+            .map(feature => OlFeatureHelper.getDataItem(feature))
             .filter(dataItem => dataItem !== undefined);
 
         if (dataItemList && dataItemList.length > 0) {

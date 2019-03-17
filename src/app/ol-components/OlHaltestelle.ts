@@ -1,37 +1,27 @@
 import VectorLayer from 'ol/layer';
 import {Style, Icon, Fill, Circle, Text, Stroke} from 'ol/style';
-import {OlComponentBase} from './OlComponentBase';
 import {Haltestelle} from '../model/haltestelle';
+import {OlFeatureHelper} from './OlFeatureHelper';
 
 
-export class OlHaltestelle extends OlComponentBase {
-    get isSelectable(): boolean {
-        return false;
-    }
-
-
-    public constructor(
-        haltestelle: Haltestelle,
-        layer: VectorLayer,
-        labelLayer: VectorLayer) {
-
-        super();
-
-        const olFeature = this.createFeature(haltestelle);
+export class OlHaltestelle {
+    public static drawHst(haltestelle: Haltestelle, layer: VectorLayer) {
+        const olFeature = OlFeatureHelper.createFeature(haltestelle);
         olFeature.setStyle(this.createPointStyle(haltestelle));
-        this.setPointGeometry(olFeature, haltestelle.position);
+        OlFeatureHelper.setPointGeometry(olFeature, haltestelle.position);
         layer.getSource().addFeature(olFeature);
-
-        if (labelLayer !== undefined) {
-            const olLabelFeature = this.createFeature(haltestelle);
-            olLabelFeature.setStyle(this.createLabelStyle(haltestelle));
-            this.setPointGeometry(olLabelFeature, haltestelle.position);
-            labelLayer.getSource().addFeature(olLabelFeature);
-        }
     }
 
 
-    private createPointStyle(haltestelle: Haltestelle): Style {
+    public static drawLabel(haltestelle: Haltestelle, layer: VectorLayer) {
+        const olLabelFeature = OlFeatureHelper.createFeature(haltestelle);
+        olLabelFeature.setStyle(this.createLabelStyle(haltestelle));
+        OlFeatureHelper.setPointGeometry(olLabelFeature, haltestelle.position);
+        layer.getSource().addFeature(olLabelFeature);
+    }
+
+
+    private static createPointStyle(haltestelle: Haltestelle): Style {
         const isActive = haltestelle.isActive();
 
         return new Style({
@@ -49,7 +39,7 @@ export class OlHaltestelle extends OlComponentBase {
     }
 
 
-    private createLabelStyle(haltestelle: Haltestelle): Style {
+    private static createLabelStyle(haltestelle: Haltestelle): Style {
         return new Style({
             text: new Text({
                 font: 'bold 14px Calibri,sans-serif',

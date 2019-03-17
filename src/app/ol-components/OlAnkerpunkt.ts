@@ -1,42 +1,32 @@
 import VectorLayer from 'ol/layer';
 import {Circle, Fill, Icon, Stroke, Style, Text} from 'ol/style';
-import {OlComponentBase} from './OlComponentBase';
 import {Ankerpunkt} from '../model/ankerpunkt';
 import {Haltestelle} from '../model/haltestelle';
 import {Kante} from '../model/kante';
+import {OlFeatureHelper} from './OlFeatureHelper';
 
 
-export class OlAnkerpunkt extends OlComponentBase {
-    get isSelectable(): boolean {
-        return false;
-    }
-
-
-    public constructor(
-        ankerpunkt: Ankerpunkt,
-        layer: VectorLayer) {
-
-        super();
-
+export class OlAnkerpunkt  {
+    public static draw(ankerpunkt: Ankerpunkt, layer: VectorLayer) {
         ankerpunkt.haltestellenList.forEach(hst => {
-            const olFeature = this.createFeature(hst);
+            const olFeature = OlFeatureHelper.createFeature(hst);
             olFeature.setStyle(this.createPointStyle(hst));
-            this.setPointGeometry(olFeature, hst.position);
+            OlFeatureHelper.setPointGeometry(olFeature, hst.position);
             layer.getSource().addFeature(olFeature);
         });
 
         ankerpunkt.zubringerList.forEach(zubr => {
             zubr.forEach(kante => {
-                const olFeature = this.createFeature(kante);
+                const olFeature = OlFeatureHelper.createFeature(kante);
                 olFeature.setStyle(this.createZubringerStyle(kante));
-                this.setLineGeometry(olFeature, [kante.haltestelle1.position, kante.haltestelle2.position]);
+                OlFeatureHelper.setLineGeometry(olFeature, [kante.haltestelle1.position, kante.haltestelle2.position]);
                 layer.getSource().addFeature(olFeature);
             });
         });
     }
 
 
-    private createPointStyle(haltestelle: Haltestelle): Style {
+    private static createPointStyle(haltestelle: Haltestelle): Style {
         return new Style({
             image: new Circle({
                 radius: 10,
@@ -60,14 +50,14 @@ export class OlAnkerpunkt extends OlComponentBase {
     }
 
 
-    private createZubringerStyle(kante: Kante): Style {
+    private static createZubringerStyle(kante: Kante): Style {
         return new Style({
             /*fill: new Fill({
                 color: '#999999'
             }),*/
             stroke: new Stroke({
                 color: '#FFFF00',
-                width: 4
+                width: 6
             })
         });
     }

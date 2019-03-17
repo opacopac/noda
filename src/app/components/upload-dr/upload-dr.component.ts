@@ -13,7 +13,7 @@ import {DrData} from '../../model/dr-data';
 export class UploadDrComponent implements OnInit {
     constructor(
         private storageService: StorageService,
-        private mapFeatureService: AppStateService) {
+        private appStateService: AppStateService) {
     }
 
 
@@ -34,6 +34,8 @@ export class UploadDrComponent implements OnInit {
     private uploadFile(file: File) {
         console.log('uploading file...');
 
+        this.appStateService.setIsLoading(true);
+
         const reader = new FileReader();
         reader.onload = (ev: ProgressEvent) => {
             console.log('uploading file completed');
@@ -51,8 +53,8 @@ export class UploadDrComponent implements OnInit {
                 return;
             }
 
-            this.storageService.storeDrData(drData);
-            this.mapFeatureService.updateDrData(drData);
+            this.appStateService.setIsLoading(false);
+            this.appStateService.updateDrData(drData);
         };
 
         reader.readAsText(file);

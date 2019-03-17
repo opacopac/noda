@@ -2,20 +2,8 @@ import {Style, Icon, Fill, Circle, Text, Stroke} from 'ol/style';
 import {ZoneColorHelper} from '../model/zone-color-helper';
 
 
-interface VerbundZonenColors {
-    zonenplaene: string[];
-    colors: ZonenColor[];
-}
-
-
-interface ZonenColor {
-    color: string;
-    zones: number[];
-}
-
-
-export class OlHelper {
-    private static readonly colorList = [
+export class OlColorHelper {
+    private static readonly defaultColorList = [
         '#4363d8',
         '#42d4f4',
         '#3cb44b',
@@ -36,15 +24,8 @@ export class OlHelper {
         let colorHex = ZoneColorHelper.getHexColor(zonenplan, zoneCode);
 
         if (!colorHex) {
-            colorHex = this.colorList[zoneCode % 10];
+            colorHex = this.defaultColorList[zoneCode % 10];
         }
-
-        return this.getRgbaFromHex(colorHex, opacity);
-    }
-
-
-    public static getRgbaFromColorIndex(colorListIndex: number, opacity: number): string {
-        const colorHex = this.colorList[colorListIndex];
 
         return this.getRgbaFromHex(colorHex, opacity);
     }

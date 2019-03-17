@@ -1,53 +1,71 @@
-<div class="navbar">
-    <h1>NODA</h1>
+-<div class="navbar">
     <table>
         <tr valign="top">
             <td>
-                load prepared DR:
-                <app-load-dr></app-load-dr>
-                export JSON:
-                <app-export-dr></app-export-dr>
+                <h1>NODA</h1>
+            </td>
+            <td>
+                DR: {{ this.drId$ | async }}
                 <br>
-                upload stammdaten.xml/.json:
+                <mat-progress-bar mode="indeterminate" *ngIf="this.drIsLoading$ | async"></mat-progress-bar>
+                <app-load-dr *ngIf="(this.drIsLoaded$ | async) === false"></app-load-dr>
                 <app-upload-dr></app-upload-dr>
-                <br>
+                <app-export-dr *ngIf="(this.drIsLoaded$ | async) === true"></app-export-dr>
             </td>
             <td>
-                <input type="checkbox" (change)="this.showHaltestellenChange($event)" checked>
-                {{ this.getHstCount() }} Haltestellen<br>
-                &nbsp;&nbsp;<input type="checkbox" (change)="this.showHaltestellenLabelsChange($event)"> show Names
+                <mat-checkbox #showHst (change)="this.showHaltestellenChange($event.checked)" [checked]="true">
+                    Haltestellen ({{ this.hstCount$ | async }})
+                </mat-checkbox>
+                <br>
+                <mat-slide-toggle (change)="this.showHaltestellenLabelsChange($event.checked)" [disabled]="!showHst.checked">show names</mat-slide-toggle>
+                <br>
+                <mat-checkbox #showKts (change)="this.showKantenChange($event.checked)" [checked]="true">
+                    Kanten ({{ this.kantenCount$ | async }})
+                </mat-checkbox>
+                <br>
+                <mat-slide-toggle (change)="this.showKantenLabelsChange($event.checked)" [disabled]="!showKts.checked">show Betreiber</mat-slide-toggle>
+            </td>
+            <!--<td>
+                <mat-form-field>
+                    <input matInput type="text" placeholder="Haltestelle" [matAutocomplete]="autoHst">
+                    <mat-autocomplete #autoHst="matAutocomplete">
+                        <mat-option *ngFor="let zonenplan of this.getZonenplanList(); let i = index;" [value]="zonenplan.bezeichnung">{{ zonenplan.bezeichnung }}</mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </td>-->
+            <td>
+                <mat-form-field class="selector" >
+                    <mat-select placeholder="Zonenplan" (selectionChange)="this.zonenplanChange($event.value)">
+                        <mat-option [value]="undefined">(none)</mat-option>
+                        <mat-option *ngFor="let zonenplan of this.zonenplanList$ | async" [value]="zonenplan">
+                            {{ this.getDisplayText(zonenplan.bezeichnung) }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <br>
+                <mat-slide-toggle (change)="this.toggleZonenLokalnetzeChange()" >{{ this.zonenXorLokalnetzeText$ | async }}</mat-slide-toggle>
             </td>
             <td>
-                <input type="checkbox" (change)="this.showKantenChange($event)" checked>
-                {{ this.getKantenCount() }} Kanten<br>
-                &nbsp;&nbsp;<input type="checkbox" (change)="this.showKantenLabelsChange($event)"> show Betreiber
+                <mat-form-field class="selector">
+                    <mat-select placeholder="Interbereich" (selectionChange)="this.interbereichChange($event.value)">
+                        <mat-option [value]="undefined">(none)</mat-option>
+                        <mat-option *ngFor="let interbereich of this.interbereicheList$ | async" [value]="interbereich">
+                            {{ this.getDisplayText(interbereich.name) }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </td>
             <td>
-                {{ this.getZonenplanCount() }} Zonenpläne:
-                <select (change)="this.zonenplanChange($event)" [value]="-1">
-                    <option [value]="-1">(empty)</option>
-                    <option *ngFor="let zonenplan of this.getZonenplanList(); let i = index;"
-                            [value]="i">{{ this.getDisplayText(zonenplan.bezeichnung) }}</option>
-                </select>
-                <input type="radio" name="zonlok" [value]="1" checked
-                       (change)="this.showZonenSelect(true)">{{ this.getZonenCount() }} Zonen
-                <input type="radio" name="zonlok" [value]="2"
-                       (change)="this.showZonenSelect(false)">{{ this.getLokalnetzCount() }} Lokalnetze
-                <br>
-                {{ this.getRelationsgebietCount() }} Relationsgebiete:
-                <select (change)="this.relationsgebietChange($event)" [value]="-1">
-                    <option [value]="-1">(empty)</option>
-                    <option *ngFor="let relationsgebiet of this.getRelationsgebietList(); let i = index;"
-                            [value]="i">{{ relationsgebiet.bezeichnung }}</option>
-                </select>
-                <br>
-                {{ this.getInterbereichCount() }} Interbereiche:
-                <select (change)="this.interbereichChange($event)" [value]="-1">
-                    <option [value]="-1">(empty)</option>
-                    <option *ngFor="let interbereich of this.getInterbereicheList(); let i = index;"
-                            [value]="i">{{ interbereich.name }}</option>
-                </select>
+                <mat-form-field class="selector">
+                    <mat-select placeholder="Relationsgebiet" (selectionChange)="this.relationsgebietChange($event.value)">
+                        <mat-option [value]="undefined">(none)</mat-option>
+                        <mat-option *ngFor="let relationsgebiet of this.relationsgebietList$ | async" [value]="relationsgebiet">
+                            {{ this.getDisplayText(relationsgebiet.bezeichnung) }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </td>
         </tr>
     </table>
 </div>
+

@@ -1,6 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {StorageService} from './services/storage.service';
-import {AppStateService} from './services/app-state.service';
 
 
 @Component({
@@ -9,22 +7,10 @@ import {AppStateService} from './services/app-state.service';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-    title = 'NoDa';
-
-
-    constructor(
-        private storageService: StorageService,
-        private mapFeaturesService: AppStateService
-    ) {
+    constructor() {
     }
 
 
-    ngOnInit(): void {
-        this.storageService.loadDrData()
-            .subscribe(drData => {
-                if (drData) {
-                    this.mapFeaturesService.updateDrData(drData);
-                }
-            });
+    ngOnInit() {
     }
 }

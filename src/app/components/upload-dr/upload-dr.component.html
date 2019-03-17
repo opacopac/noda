@@ -1,1 +1,2 @@
-<input type="file" (change)="this.fileUploadChange($event)">
+<button mat-stroked-button (click)="fileInput.click()" title="upload stammdaten.xml / .json">upload</button>
+<input hidden type="file" #fileInput (change)="this.fileUploadChange($event)">

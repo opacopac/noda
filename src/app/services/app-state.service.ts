@@ -19,224 +19,174 @@ import {DataItemType} from '../model/data-item-type';
 import {Zonelike} from '../model/zonelike';
 import {OlZonelike} from '../ol-components/OlZonelike';
 import {AppState} from './app-state';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 
 @Injectable({
     providedIn: 'root'
 })
 export class AppStateService {
-    public appState: AppState;
-    private kantenLayer: VectorLayer;
-    private kantenLabelLayer: VectorLayer;
-    private hstLayer: VectorLayer;
-    private hstLabelLayer: VectorLayer;
-    private zonenfillerLayer: VectorLayer;
-    private zonenOuterLayer: VectorLayer;
-    private interbereichLayer: VectorLayer;
-    private relationsgebietLayer: VectorLayer;
-    private selectedDataItemLayer: VectorLayer;
     private readonly MAX_HST_IN_VIEW = 500;
 
-
-    public get showZonen(): boolean {
-        return this.appState.showZonen;
-    }
-
-
-    public set showZonen(value: boolean) {
-        this.appState.showZonen = value;
-        this.updateMap();
-    }
-
-
-    public get showKanten(): boolean {
-        return this.appState.showKanten;
-    }
-
-
-    public set showKanten(value: boolean) {
-        this.appState.showKanten = value;
-        this.updateMap();
-    }
-
-
-    public get showHst(): boolean {
-        return this.appState.showHst;
-    }
-
-
-    public set showHst(value: boolean) {
-        this.appState.showHst = value;
-        this.updateMap();
-    }
-
-
-    public get showHstLabels(): boolean {
-        return this.appState.showHstLabels;
-    }
-
-
-    public set showHstLabels(value: boolean) {
-        this.appState.showHstLabels = value;
-        this.updateMap();
-    }
-
-
-    public get showKantenLabels(): boolean {
-        return this.appState.showKantenLabels;
-    }
-
-
-    public set showKantenLabels(value: boolean) {
-        this.appState.showKantenLabels = value;
-        this.updateMap();
-    }
+    public readonly appState$: Observable<AppState>;
+    private readonly appStateSubject: BehaviorSubject<AppState>;
+    private readonly appState: AppState;
+    private dataItemsLayer: VectorLayer;
+    private labelLayer: VectorLayer;
+    private selectedDataItemLayer: VectorLayer;
 
 
     constructor(private mapService: OlMapService) {
         this.appState = new AppState();
+        this.appStateSubject = new BehaviorSubject(this.appState);
+        this.appState$ = this.appStateSubject.asObservable();
+
+        this.mapService.onMapInitialized.subscribe(() => this.initLayers());
         this.mapService.onDataItemMouseOver.subscribe(this.onMouseOverDataItem.bind(this));
+    }
+
+
+    public setIsLoading(isLoading: boolean) {
+        this.appState.drIsLoading = isLoading;
+        this.onStateChanged();
     }
 
 
     public updateMapCoords(mapCoords: OlMapCoords) {
         this.appState.mapCoords = mapCoords;
-        this.updateMap();
+        this.drawDataItems();
+        this.onStateChanged();
+    }
+
+
+    public showKanten(value: boolean) {
+        this.appState.showKanten = value;
+        this.drawDataItems();
+        this.onStateChanged();
+    }
+
+
+    public showHst(value: boolean) {
+        this.appState.showHst = value;
+        this.drawDataItems();
+        this.onStateChanged();
+    }
+
+
+    public showHstLabels(value: boolean) {
+        this.appState.showHstLabels = value;
+        this.drawDataItems();
+        this.onStateChanged();
+    }
+
+
+    public showKantenLabels(value: boolean) {
+        this.appState.showKantenLabels = value;
+        this.drawDataItems();
+        this.onStateChanged();
+    }
+
+
+    public toggleZonenXorLokalnetze() {
+        this.appState.showZonenXorLokalnetze = !this.appState.showZonenXorLokalnetze;
+        this.drawDataItems();
+        this.onStateChanged();
     }
 
 
     public selectZonenplan(zonenplan: Zonenplan) {
         this.appState.selectedZonenplan = zonenplan;
         this.mapService.setExtent(zonenplan ? zonenplan.getExtent() : undefined);
-        this.drawZonenplan(zonenplan, !this.appState.showZonen);
-        this.updateMap();
+        this.drawDataItems();
+        this.onStateChanged();
     }
 
 
     public selectInterbereich(interbereich: Interbereich) {
         this.appState.selectedInterbereich = interbereich;
         this.mapService.setExtent(interbereich ? interbereich.getExtent() : undefined);
-        this.drawInterbereich(interbereich);
-        this.updateMap();
+        this.drawDataItems();
+        this.onStateChanged();
     }
 
 
     public selectRelationsgebiet(relationsgebiet: Relationsgebiet) {
         this.appState.selectedRelationsgebiet = relationsgebiet;
         this.mapService.setExtent(relationsgebiet ? relationsgebiet.getExtent() : undefined);
-        this.drawRelationsgebiet(relationsgebiet);
-        this.updateMap();
+        this.drawDataItems();
+        this.onStateChanged();
     }
 
 
     public updateDrData(drData: DrData) {
         this.appState.drData = drData;
         this.appState.hstQuadTree = PrecalcHelper.precalc(drData);
-        this.updateMap();
-    }
-
-
-    private updateMap() {
-        if (!this.appState.drData || !this.appState.mapCoords) {
-            return;
-        }
-
-        if (!this.hstLayer) {
-            this.initLayers();
-        }
-
-        const hstList = this.searchHaltestellen(this.appState.mapCoords.extent, this.MAX_HST_IN_VIEW);
-        if (this.appState.showHst)  {
-            this.drawHaltestellen(hstList, this.appState.showHstLabels);
-        } else {
-            this.drawHaltestellen([], false);
-        }
-
-        const kantenList = this.appState.showKanten ? this.searchKanten(hstList) : [];
-        this.drawKanten(kantenList, this.appState.showKantenLabels);
-
-        this.drawZonenplan(this.appState.selectedZonenplan, !this.appState.showZonen);
-    }
-
-
-    private initLayers() {
-        this.zonenfillerLayer = this.mapService.addVectorLayer(true);
-        this.zonenOuterLayer = this.mapService.addVectorLayer(true);
-        this.interbereichLayer = this.mapService.addVectorLayer(true);
-        this.relationsgebietLayer = this.mapService.addVectorLayer(true);
-        this.kantenLayer = this.mapService.addVectorLayer(true);
-        this.hstLayer = this.mapService.addVectorLayer(true);
-        this.kantenLabelLayer = this.mapService.addVectorLayer(true, true);
-        this.hstLabelLayer = this.mapService.addVectorLayer(true, true);
-
-        this.selectedDataItemLayer = this.mapService.addVectorLayer(true);
+        this.drawDataItems();
+        this.onStateChanged();
     }
 
 
     public onMouseOverDataItem(dataItem: DataItem) {
         if (dataItem === this.appState.currentMouseOverDataItem) {
             return;
-        } else {
-            this.appState.currentMouseOverDataItem = dataItem;
         }
 
+        this.appState.currentMouseOverDataItem = dataItem;
         this.drawSelectedItem(dataItem);
+        this.onStateChanged();
+    }
+
+
+    private onStateChanged() {
+        this.appStateSubject.next(this.appState);
+    }
+
+
+    private initLayers() {
+        this.dataItemsLayer = this.mapService.addVectorLayer(true);
+        this.labelLayer = this.mapService.addVectorLayer(true, true);
+        this.selectedDataItemLayer = this.mapService.addVectorLayer(false);
     }
 
 
     // region draw
 
-    private drawKanten(kantenList: Kante[], showLabels: boolean) {
-        this.kantenLayer.getSource().clear(true);
-        this.kantenLabelLayer.getSource().clear(true);
-
-        kantenList.forEach(kante => {
-            const olKante = new OlKante(kante, this.kantenLayer, showLabels ? this.kantenLabelLayer : undefined);
-        });
-    }
-
-
-    private drawHaltestellen(hstList: Haltestelle[], showLabels: boolean) {
-        this.hstLayer.getSource().clear(true);
-        this.hstLabelLayer.getSource().clear(true);
-
-        hstList.forEach(hst => {
-            const olHst = new OlHaltestelle(hst, this.hstLayer, showLabels ? this.hstLabelLayer : undefined);
-        });
-    }
-
-
-    private drawZonenplan(zonenplan: Zonenplan, showLokalnetze: boolean) {
-        this.zonenfillerLayer.getSource().clear(true);
-        this.zonenOuterLayer.getSource().clear(true);
-
-        if (!zonenplan) {
+    private drawDataItems() {
+        if (!this.appState.drData || !this.appState.mapCoords) {
             return;
         }
 
-        const olZonenplan = new OlZonenplan(zonenplan, showLokalnetze, this.zonenfillerLayer, this.zonenOuterLayer);
-    }
+        this.dataItemsLayer.getSource().clear(true);
+        this.labelLayer.getSource().clear(true);
 
-
-    private drawInterbereich(interbereich: Interbereich) {
-        this.interbereichLayer.getSource().clear(true);
-
-        if (!interbereich) {
-            return;
+        if (this.appState.selectedZonenplan) {
+            OlZonenplan.draw(this.appState.selectedZonenplan, !this.appState.showZonenXorLokalnetze, this.dataItemsLayer);
         }
 
-        const olInterbereich = new OlInterbereich(interbereich, this.interbereichLayer);
-    }
-
-
-    private drawRelationsgebiet(relationsgebiet: Relationsgebiet) {
-        this.relationsgebietLayer.getSource().clear(true);
-
-        if (!relationsgebiet) {
-            return;
+        if (this.appState.selectedInterbereich) {
+            OlInterbereich.draw(this.appState.selectedInterbereich, this.dataItemsLayer);
         }
 
-        const olRelationsgebiet = new OlRelationsgebiet(relationsgebiet, this.relationsgebietLayer);
+        if (this.appState.selectedRelationsgebiet) {
+            OlRelationsgebiet.draw(this.appState.selectedRelationsgebiet, this.dataItemsLayer);
+        }
+
+        if (this.appState.showHst || this.appState.showKanten) {
+            const hstList = this.searchHaltestellen(this.appState.mapCoords.extent, this.MAX_HST_IN_VIEW);
+            const kantenList = this.appState.showKanten ? this.searchKanten(hstList) : [];
+            kantenList.forEach(kante => OlKante.drawKante(kante, this.dataItemsLayer));
+
+            const visibleHstList = this.appState.showHst ? hstList : [];
+            visibleHstList.forEach(hst => OlHaltestelle.drawHst(hst, this.dataItemsLayer));
+
+            if (this.appState.showKantenLabels) {
+                kantenList.forEach(kante => OlKante.drawLabel(kante, this.labelLayer));
+            }
+
+            if (this.appState.showHstLabels) {
+                visibleHstList.forEach(hst => OlHaltestelle.drawLabel(hst, this.labelLayer));
+            }
+        }
     }
 
 

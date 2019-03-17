@@ -1,44 +1,32 @@
 import VectorLayer from 'ol/layer/Vector';
 import Feature from 'ol/Feature';
 import {Circle, Fill, Icon, Stroke, Style, Text} from 'ol/style';
-import {OlComponentBase} from './OlComponentBase';
-import {Zonenplan} from '../model/zonenplan';
 import {Zonelike} from '../model/zonelike';
-import {OlHelper} from './OlHelper';
+import {OlColorHelper} from './OlColorHelper';
+import {OlFeatureHelper} from './OlFeatureHelper';
 
 
-export class OlZonelike extends OlComponentBase {
-    get isSelectable(): boolean {
-        return false;
+export class OlZonelike {
+    public static drawFilling(zonelike: Zonelike, layer: VectorLayer) {
+        const olFeatureInner = OlFeatureHelper.createFeature(zonelike);
+        olFeatureInner.setStyle(OlZonelike.createHstPolygonStyle(zonelike));
+        OlFeatureHelper.setMultiPolygonGeometry(olFeatureInner, zonelike.hstPolygon);
+        layer.getSource().addFeature(olFeatureInner);
     }
 
 
-    public constructor(
-        zonelike: Zonelike,
-        zonenplan: Zonenplan,
-        zoneFillingLayer: VectorLayer,
-        zoneBorderLayer: VectorLayer) {
-
-        super();
-
-        // filling
-        const olFeatureInner = this.createFeature(zonelike);
-        olFeatureInner.setStyle(this.createHstPolygonStyle(zonelike));
-        this.setMultiPolygonGeometry(olFeatureInner, zonelike.hstPolygon);
-        zoneFillingLayer.getSource().addFeature(olFeatureInner);
-
-        // border
-        const olFeatureBorder = this.createFeature(zonelike);
-        olFeatureBorder.setStyle(this.createOuterPolygonStyle(zonelike));
-        this.setMultiPolygonGeometry(olFeatureBorder, zonelike.polygon);
-        zoneBorderLayer.getSource().addFeature(olFeatureBorder);
+    public static drawOutline(zonelike: Zonelike, layer: VectorLayer) {
+        const olFeatureBorder = OlFeatureHelper.createFeature(zonelike);
+        olFeatureBorder.setStyle(OlZonelike.createOuterPolygonStyle(zonelike));
+        OlFeatureHelper.setMultiPolygonGeometry(olFeatureBorder, zonelike.polygon);
+        layer.getSource().addFeature(olFeatureBorder);
     }
 
 
     public static drawSelection(zonelike: Zonelike, layer: VectorLayer) {
         const olFeature = new Feature();
         olFeature.setStyle(this.createSelectionStyle(zonelike));
-        this.setMultiPolygonGeometry2(olFeature, zonelike.polygon);
+        OlFeatureHelper.setMultiPolygonGeometry(olFeature, zonelike.polygon);
         layer.getSource().addFeature(olFeature);
     }
 
@@ -53,21 +41,21 @@ export class OlZonelike extends OlComponentBase {
     }
 
 
-    private createHstPolygonStyle(zonelike: Zonelike): Style {
+    private static createHstPolygonStyle(zonelike: Zonelike): Style {
         const colorHexBg = '#FFFFFF';
         return new Style({
             fill: new Fill({
-                color: OlHelper.getRgbaFromVerbundZone(zonelike.zonenplan.bezeichnung, zonelike.code, 0.6)
+                color: OlColorHelper.getRgbaFromVerbundZone(zonelike.zonenplan.bezeichnung, zonelike.code, 0.6)
             }),
             stroke: new Stroke({
-                color: OlHelper.getRgbaFromHex(colorHexBg, 0.2),
+                color: OlColorHelper.getRgbaFromHex(colorHexBg, 0.2),
                 width: 1,
             }),
         });
     }
 
 
-    private createOuterPolygonStyle(zonelike: Zonelike): Style {
+    private static createOuterPolygonStyle(zonelike: Zonelike): Style {
         const colorHexBg = '#FFFFFF';
         let text = zonelike.code.toString();
         if (zonelike.bezeichnung && zonelike.bezeichnung.length > 0) {
@@ -75,7 +63,7 @@ export class OlZonelike extends OlComponentBase {
         }
         return new Style({
             stroke: new Stroke({
-                color: OlHelper.getRgbaFromVerbundZone(zonelike.zonenplan.bezeichnung, zonelike.code, 0.9),
+                color: OlColorHelper.getRgbaFromVerbundZone(zonelike.zonenplan.bezeichnung, zonelike.code, 0.9),
                 width: 3,
             }),
             text: new Text({

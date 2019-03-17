@@ -14,7 +14,7 @@ export class LoadDrComponent implements OnInit {
 
     constructor(
         private storageService: StorageService,
-        private mapFeatureService: AppStateService) {
+        private appStateService: AppStateService) {
     }
 
 
@@ -29,13 +29,14 @@ export class LoadDrComponent implements OnInit {
 
     private loadPreparedDr() {
         console.log('loading prepared dr...');
+        this.appStateService.setIsLoading(true);
         const url = this.PREPARED_DR_URL + '?ver=' + Date.now();
         this.storageService.downloadTextFile(url).subscribe(response => {
             console.log('loading prepared dr completed');
 
             const drData = this.storageService.deserializeDrData(response);
-            this.storageService.storeDrData(drData);
-            this.mapFeatureService.updateDrData(drData);
+            this.appStateService.setIsLoading(false);
+            this.appStateService.updateDrData(drData);
         });
     }
 }

@@ -1,73 +1,100 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Zonenplan} from '../../model/zonenplan';
 import {OlMapService} from '../../services/ol-map.service';
 import {AppStateService} from '../../services/app-state.service';
 import {Relationsgebiet} from '../../model/relationsgebiet';
 import {Interbereich} from '../../model/interbereich';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+
 
 @Component({
     selector: 'app-nav-bar',
     templateUrl: './nav-bar.component.html',
-    styleUrls: ['./nav-bar.component.css']
+    styleUrls: ['./nav-bar.component.css'],
 })
 export class NavBarComponent implements OnInit {
+    public drId$: Observable<string>;
+    public drIsLoading$: Observable<boolean>;
+    public drIsLoaded$: Observable<boolean>;
+    public hstCount$: Observable<number>;
+    public kantenCount$: Observable<number>;
+    public zonenplanList$: Observable<Zonenplan[]>;
+    public interbereicheList$: Observable<Interbereich[]>;
+    public relationsgebietList$: Observable<Relationsgebiet[]>;
+    public zonenXorLokalnetzeText$: Observable<string>;
+
+
 
     constructor(
+        private changeDetector: ChangeDetectorRef,
         private mapService: OlMapService,
-        private mapFeatureService: AppStateService) {
+        private appStateService: AppStateService
+    ) {
+        this.initObservables();
     }
+
 
     ngOnInit() {
     }
 
 
-    public getHstCount(): number {
-        return this.mapFeatureService.appState.drData ? this.mapFeatureService.appState.drData.haltestellen.size : 0;
-    }
+    private initObservables() {
+        this.drIsLoaded$ = this.appStateService.appState$.pipe(
+            map(appState => appState.drData !== undefined)
+        );
 
 
-    public getKantenCount(): number {
-        return this.mapFeatureService.appState.drData ? this.mapFeatureService.appState.drData.kanten.size : 0;
-    }
+        this.drIsLoading$ = this.appStateService.appState$.pipe(
+            map(appState => appState.drIsLoading)
+        );
 
 
-    public getZonenCount(): number {
-        return this.mapFeatureService.appState.drData ? this.mapFeatureService.appState.drData.zonen.size : 0;
-    }
+        this.drId$ = this.appStateService.appState$.pipe(
+            map(appState => appState.drData ? appState.drData.drId : '(not loaded)')
+        );
 
+        this.hstCount$ = this.appStateService.appState$.pipe(
+            map(appState => appState.drData ? appState.drData.haltestellen.size : 0)
+        );
 
-    public getLokalnetzCount(): number {
-        return this.mapFeatureService.appState.drData ? this.mapFeatureService.appState.drData.lokalnetze.size : 0;
-    }
+        this.kantenCount$ = this.appStateService.appState$.pipe(
+            map(appState => appState.drData ? appState.drData.kanten.size : 0)
+        );
 
+        this.zonenXorLokalnetzeText$ = this.appStateService.appState$.pipe(
+            map(appState => appState.showZonenXorLokalnetze ? 'Zonen' : 'Lokalnetze')
+        );
 
-    public getZonenplanCount(): number {
-        return this.mapFeatureService.appState.drData ? this.mapFeatureService.appState.drData.zonenplaene.size : 0;
-    }
+        this.zonenplanList$ = this.appStateService.appState$.pipe(
+            map(appState => {
+                return appState.drData ?
+                    Array.from(appState.drData.zonenplaene.values())
+                        .sort((a, b) => a.bezeichnung > b.bezeichnung ? 1 : -1)
+                    : [];
+                }
+            )
+        );
 
+        this.interbereicheList$ = this.appStateService.appState$.pipe(
+            map(appState => {
+                    return appState.drData ?
+                        Array.from(appState.drData.interbereiche.values())
+                            .sort((a, b) => a.name > b.name ? 1 : -1)
+                        : [];
+                }
+            )
+        );
 
-    public getZonenplanList(): Zonenplan[] {
-        return this.mapFeatureService.appState.drData ? Array.from(this.mapFeatureService.appState.drData.zonenplaene.values()) : [];
-    }
-
-
-    public getInterbereichCount(): number {
-        return this.mapFeatureService.appState.drData ? this.mapFeatureService.appState.drData.interbereiche.size : 0;
-    }
-
-
-    public getRelationsgebietCount(): number {
-        return this.mapFeatureService.appState.drData ? this.mapFeatureService.appState.drData.relationsgebiete.size : 0;
-    }
-
-
-    public getInterbereicheList(): Interbereich[] {
-        return this.mapFeatureService.appState.drData ? Array.from(this.mapFeatureService.appState.drData.interbereiche.values()) : [];
-    }
-
-
-    public getRelationsgebietList(): Relationsgebiet[] {
-        return this.mapFeatureService.appState.drData ? Array.from(this.mapFeatureService.appState.drData.relationsgebiete.values()) : [];
+        this.relationsgebietList$ = this.appStateService.appState$.pipe(
+            map(appState => {
+                    return appState.drData ?
+                        Array.from(appState.drData.relationsgebiete.values())
+                            .sort((a, b) => a.bezeichnung > b.bezeichnung ? 1 : -1)
+                        : [];
+                }
+            )
+        );
     }
 
 
@@ -76,48 +103,42 @@ export class NavBarComponent implements OnInit {
     }
 
 
-    public showHaltestellenChange(event: Event) {
-        this.mapFeatureService.showHst = (event.target as HTMLInputElement).checked;
+    public showHaltestellenChange(isChecked: boolean) {
+        this.appStateService.showHst(isChecked);
     }
 
 
-    public showHaltestellenLabelsChange(event: Event) {
-        this.mapFeatureService.showHstLabels = (event.target as HTMLInputElement).checked;
+    public showHaltestellenLabelsChange(isChecked: boolean) {
+        this.appStateService.showHstLabels(isChecked);
     }
 
 
-    public showKantenChange(event: Event) {
-        this.mapFeatureService.showKanten = (event.target as HTMLInputElement).checked;
+    public showKantenChange(isChecked: boolean) {
+        this.appStateService.showKanten(isChecked);
     }
 
 
-    public showKantenLabelsChange(event: Event) {
-        this.mapFeatureService.showKantenLabels = (event.target as HTMLInputElement).checked;
+    public showKantenLabelsChange(isChecked: boolean) {
+        this.appStateService.showKantenLabels(isChecked);
     }
 
 
-    public showZonenSelect(value: boolean) {
-        this.mapFeatureService.showZonen = value;
+    public toggleZonenLokalnetzeChange() {
+        this.appStateService.toggleZonenXorLokalnetze();
     }
 
 
-    public zonenplanChange(event: Event) {
-        const idx = parseInt((event.target as HTMLSelectElement).value, 10);
-        const zonenplan = idx >= 0 ? this.getZonenplanList()[idx] : undefined;
-        this.mapFeatureService.selectZonenplan(zonenplan);
+    public zonenplanChange(zonenplan: Zonenplan) {
+        this.appStateService.selectZonenplan(zonenplan);
     }
 
 
-    public interbereichChange(event: Event) {
-        const idx = parseInt((event.target as HTMLSelectElement).value, 10);
-        const interbereich = idx >= 0 ? this.getInterbereicheList()[idx] : undefined;
-        this.mapFeatureService.selectInterbereich(interbereich);
+    public interbereichChange(interbereich: Interbereich) {
+        this.appStateService.selectInterbereich(interbereich);
     }
 
 
-    public relationsgebietChange(event: Event) {
-        const idx = parseInt((event.target as HTMLSelectElement).value, 10);
-        const relationsgebiet = idx >= 0 ? this.getRelationsgebietList()[idx] : undefined;
-        this.mapFeatureService.selectRelationsgebiet(relationsgebiet);
+    public relationsgebietChange(relationsgebiet: Relationsgebiet) {
+        this.appStateService.selectRelationsgebiet(relationsgebiet);
     }
 }
