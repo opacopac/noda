@@ -13,5 +13,6 @@ app-nav-bar {
 
 
 app-base-map {
-    flex: 1 1 calc(100% - 150px);
+    height: calc(100vh - 150px);
+    flex: 1 1 calc(100vh - 150px);
 }

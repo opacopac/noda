@@ -1,1 +1,7 @@
-<button mat-mini-fab color="primary" (click)="this.loadDrClicked()">DR</button>
+<button mat-mini-fab color="primary" [matMenuTriggerFor]="appMenu">DR</button>
+<mat-menu #appMenu="matMenu">
+    <button mat-menu-item (click)="this.loadDrClicked()">load DR from server</button>
+    <button mat-menu-item (click)="fileInput.click()">upload stammdaten.xml/.json</button>
+    <button mat-menu-item (click)="this.exportClick()">export stammdaten.json</button>
+</mat-menu>
+<input hidden type="file" #fileInput (change)="this.fileUploadChange($event)">

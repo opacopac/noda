@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {StorageService} from '../../services/storage.service';
 import {AppStateService} from '../../services/app-state.service';
+import {first} from 'rxjs/operators';
+import {DrData} from '../../model/dr-data';
+import {NovaDrParser} from '../../nova-dr/NovaDrParser';
 
 
 @Component({
@@ -19,6 +22,7 @@ export class LoadDrComponent implements OnInit {
 
 
     ngOnInit() {
+        this.loadPreparedDr();
     }
 
 
@@ -38,5 +42,54 @@ export class LoadDrComponent implements OnInit {
             this.appStateService.setIsLoading(false);
             this.appStateService.updateDrData(drData);
         });
+    }
+
+
+    public exportClick() {
+        this.appStateService.appState$
+            .pipe(first())
+            .subscribe((appState) => {
+                this.storageService.exportStammdatenJson(appState.drData, 'stammdaten.json');
+            });
+    }
+
+
+    public fileUploadChange(fileInputEvent: any) {
+        const dataFile = fileInputEvent.target.files[0] as File;
+        if (!dataFile) {
+            return;
+        }
+
+        this.uploadFile(dataFile);
+    }
+
+
+    private uploadFile(file: File) {
+        console.log('uploading file...');
+
+        this.appStateService.setIsLoading(true);
+
+        const reader = new FileReader();
+        reader.onload = (ev: ProgressEvent) => {
+            console.log('uploading file completed');
+
+            const filename = file.name.toLowerCase();
+            let drData: DrData;
+            if (filename.endsWith('.xml')) {
+                console.log('xml file detected');
+                drData = NovaDrParser.processXmlContent(reader.result as string);
+            } else if (filename.endsWith('.json')) {
+                console.log('json file detected');
+                drData = this.storageService.deserializeDrData(reader.result as string);
+            } else {
+                console.log('unknown file format');
+                return;
+            }
+
+            this.appStateService.setIsLoading(false);
+            this.appStateService.updateDrData(drData);
+        };
+
+        reader.readAsText(file);
     }
 }

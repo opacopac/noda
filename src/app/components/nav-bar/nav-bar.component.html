@@ -1,12 +1,12 @@
 <div class="navbar">
     <div class="col0">
         <h1>NODA</h1>
-        <app-load-dr></app-load-dr>&nbsp;{{ this.drId$ | async }}
-        <br>
-        <mat-progress-bar mode="indeterminate" *ngIf="this.drIsLoading$ | async"></mat-progress-bar>
-        <!--<app-load-dr *ngIf="(this.drIsLoaded$ | async) === false"></app-load-dr>
-        <app-upload-dr></app-upload-dr>
-        <app-export-dr *ngIf="(this.drIsLoaded$ | async) === true"></app-export-dr>-->
+        <div class="drloader">
+            <app-load-dr></app-load-dr>
+            <span *ngIf="!(this.drIsLoading$ | async)"> {{ this.drId$ | async }}</span>
+            <mat-progress-bar mode="indeterminate" *ngIf="this.drIsLoading$ | async"></mat-progress-bar>
+            <!--<mat-spinner mode="indeterminate" *ngIf="this.drIsLoading$ | async"></mat-spinner>-->
+        </div>
     </div>
     <div class="col1">
         <div class="hstkt">
