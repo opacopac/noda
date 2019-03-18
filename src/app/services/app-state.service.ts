@@ -94,6 +94,20 @@ export class AppStateService {
     }
 
 
+    public selectHaltestelle(hst: Haltestelle) {
+        if (!hst) {
+            return;
+        }
+
+        this.mapService.setMapPosition(hst.position, 16);
+        if (!this.appState.showHstLabels) {
+            this.appState.showHstLabels = true;
+        }
+        this.drawDataItems();
+        this.onStateChanged();
+    }
+
+
     public selectZonenplan(zonenplan: Zonenplan) {
         this.appState.selectedZonenplan = zonenplan;
         this.mapService.setExtent(zonenplan ? zonenplan.getExtent() : undefined);
@@ -172,7 +186,7 @@ export class AppStateService {
         }
 
         if (this.appState.showHst || this.appState.showKanten) {
-            const hstList = this.searchHaltestellen(this.appState.mapCoords.extent, this.MAX_HST_IN_VIEW);
+            const hstList = this.appState.hstQuadTree.searchItems(this.appState.mapCoords.extent, this.MAX_HST_IN_VIEW);
             const kantenList = this.appState.showKanten ? this.searchKanten(hstList) : [];
             kantenList.forEach(kante => OlKante.drawKante(kante, this.dataItemsLayer));
 
@@ -209,8 +223,25 @@ export class AppStateService {
     // endregion
 
 
-    private searchHaltestellen(extent: Extent2d, maxResults: number): Haltestelle[] {
-        return this.appState.hstQuadTree.searchItems(extent, maxResults);
+    public searchHaltestellen(query: string, maxResults = 50): Haltestelle[] {
+        if (!query || !this.appState.drData) {
+            return [];
+        }
+
+        query = query.trim().toLowerCase();
+        const hstList = Array.from(this.appState.drData.haltestellen.values());
+
+        return hstList
+            .filter(hst => hst.bavName.toLowerCase().indexOf(query) >= 0)
+            .sort((a, b) => {
+                const idxDiff = a.bavName.toLowerCase().indexOf(query) - b.bavName.toLowerCase().indexOf(query);
+                if (idxDiff !== 0) {
+                    return idxDiff;
+                }
+
+                return a.bavName.length - b.bavName.length;
+            })
+            .slice(0, maxResults);
     }
 
 

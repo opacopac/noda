@@ -1,10 +1,46 @@
 .navbar {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
     margin: 8px;
+}
+
+.col0 {
+    flex: 1 1 auto;
+    margin-right: 16px;
+}
+
+.col1, .col2, .col3 {
+    display: flex;
+    flex-direction: column;
+}
+
+.col1 > div,
+.col2 > div,
+.col3 > div
+{
+    flex: 1 1 50%;
+    width: 350px;
+    margin-right: 16px;
+}
+
+.hstkt {
+    display: flex;
+    flex-direction: row;
+    margin-top: 8px;
+}
+
+.hstkt > div {
+    margin-right: 8px;
+}
+
+.col3 > div > mat-slide-toggle {
+    margin-top: 20px;
 }
 
 /*::ng-deep .mat-select-trigger {*/
 .selector {
-    min-width: 300px;
+    min-width: 350px;
 }
 
 ::ng-deep .mat-select-panel {

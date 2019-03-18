@@ -17,6 +17,7 @@ import {
     MatToolbarModule
 } from '@angular/material';
 import 'hammerjs';
+import {ReactiveFormsModule} from '@angular/forms';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import 'hammerjs';
     imports: [
         BrowserModule,
         HttpClientModule,
+        ReactiveFormsModule,
         // NoopAnimationsModule,
         BrowserAnimationsModule,
         MatToolbarModule,

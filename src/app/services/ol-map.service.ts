@@ -109,6 +109,21 @@ export class OlMapService {
     }
 
 
+    public setMapPosition(position: Position2d, zoom?: number) {
+        if (!this.map || !this.map.getView()) {
+            return;
+        }
+
+        if (position) {
+            this.map.getView().setCenter(OlPos.getMercator(position));
+        }
+
+        if (zoom != null) {
+            this.map.getView().setZoom(zoom);
+        }
+    }
+
+
     public getExtent(): Extent2d {
         const merExt = this.map.getView().calculateExtent(this.map.getSize());
         const minPos = OlPos.getLonLat([merExt[0], merExt[1]]);

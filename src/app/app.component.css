@@ -8,12 +8,10 @@
 }
 
 app-nav-bar {
-    height: 150px;
-    flex: 0 0 auto;
+    flex: 0 0 150px;
 }
 
 
 app-base-map {
-    height: calc(100% - 150px);
-    flex: 1 1 auto;
+    flex: 1 1 calc(100% - 150px);
 }

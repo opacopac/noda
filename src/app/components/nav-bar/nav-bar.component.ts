@@ -4,8 +4,10 @@ import {OlMapService} from '../../services/ol-map.service';
 import {AppStateService} from '../../services/app-state.service';
 import {Relationsgebiet} from '../../model/relationsgebiet';
 import {Interbereich} from '../../model/interbereich';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {debounceTime, filter, map} from 'rxjs/operators';
+import {Haltestelle} from '../../model/haltestelle';
+import {FormControl} from '@angular/forms';
 
 
 @Component({
@@ -19,10 +21,14 @@ export class NavBarComponent implements OnInit {
     public drIsLoaded$: Observable<boolean>;
     public hstCount$: Observable<number>;
     public kantenCount$: Observable<number>;
+    public showHstLabels$: Observable<boolean>;
+    public showKantenLabels$: Observable<boolean>;
     public zonenplanList$: Observable<Zonenplan[]>;
     public interbereicheList$: Observable<Interbereich[]>;
     public relationsgebietList$: Observable<Relationsgebiet[]>;
     public zonenXorLokalnetzeText$: Observable<string>;
+    public hstSearchResults$: Observable<Haltestelle[]>;
+    public hstQueryInput = new FormControl();
 
 
 
@@ -36,6 +42,11 @@ export class NavBarComponent implements OnInit {
 
 
     ngOnInit() {
+        this.hstSearchResults$ = this.hstQueryInput.valueChanges.pipe(
+            debounceTime(250),
+            filter(value => value && value.length > 2),
+            map(value => this.appStateService.searchHaltestellen(value, 10))
+        );
     }
 
 
@@ -60,6 +71,14 @@ export class NavBarComponent implements OnInit {
 
         this.kantenCount$ = this.appStateService.appState$.pipe(
             map(appState => appState.drData ? appState.drData.kanten.size : 0)
+        );
+
+        this.showHstLabels$ = this.appStateService.appState$.pipe(
+            map(appState => appState.showHstLabels)
+        );
+
+        this.showKantenLabels$ = this.appStateService.appState$.pipe(
+            map(appState => appState.showKantenLabels)
         );
 
         this.zonenXorLokalnetzeText$ = this.appStateService.appState$.pipe(
@@ -95,6 +114,13 @@ export class NavBarComponent implements OnInit {
                 }
             )
         );
+
+        this.hstSearchResults$ = new BehaviorSubject<Haltestelle[]>([]);
+    }
+
+
+    public displayHstAutcompleteFn(hst?: Haltestelle): string | undefined {
+        return hst ? hst.bavName + ' (' + hst.uic + ')' : undefined;
     }
 
 
@@ -115,6 +141,11 @@ export class NavBarComponent implements OnInit {
 
     public showKantenChange(isChecked: boolean) {
         this.appStateService.showKanten(isChecked);
+    }
+
+
+    public hstSelected(hst: Haltestelle) {
+        this.appStateService.selectHaltestelle(hst);
     }
 
 

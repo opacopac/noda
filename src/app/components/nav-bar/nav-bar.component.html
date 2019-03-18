@@ -1,71 +1,74 @@
--<div class="navbar">
-    <table>
-        <tr valign="top">
-            <td>
-                <h1>NODA</h1>
-            </td>
-            <td>
-                DR: {{ this.drId$ | async }}
-                <br>
-                <mat-progress-bar mode="indeterminate" *ngIf="this.drIsLoading$ | async"></mat-progress-bar>
-                <app-load-dr *ngIf="(this.drIsLoaded$ | async) === false"></app-load-dr>
-                <app-upload-dr></app-upload-dr>
-                <app-export-dr *ngIf="(this.drIsLoaded$ | async) === true"></app-export-dr>
-            </td>
-            <td>
+<div class="navbar">
+    <div class="col0">
+        <h1>NODA</h1>
+        <app-load-dr></app-load-dr>&nbsp;{{ this.drId$ | async }}
+        <br>
+        <mat-progress-bar mode="indeterminate" *ngIf="this.drIsLoading$ | async"></mat-progress-bar>
+        <!--<app-load-dr *ngIf="(this.drIsLoaded$ | async) === false"></app-load-dr>
+        <app-upload-dr></app-upload-dr>
+        <app-export-dr *ngIf="(this.drIsLoaded$ | async) === true"></app-export-dr>-->
+    </div>
+    <div class="col1">
+        <div class="hstkt">
+            <div>
                 <mat-checkbox #showHst (change)="this.showHaltestellenChange($event.checked)" [checked]="true">
                     Haltestellen ({{ this.hstCount$ | async }})
                 </mat-checkbox>
                 <br>
-                <mat-slide-toggle (change)="this.showHaltestellenLabelsChange($event.checked)" [disabled]="!showHst.checked">show names</mat-slide-toggle>
-                <br>
+                <mat-slide-toggle (change)="this.showHaltestellenLabelsChange($event.checked)" [checked]="this.showHstLabels$ | async" [disabled]="!showHst.checked">show names</mat-slide-toggle>
+            </div>
+            <div>
                 <mat-checkbox #showKts (change)="this.showKantenChange($event.checked)" [checked]="true">
                     Kanten ({{ this.kantenCount$ | async }})
                 </mat-checkbox>
                 <br>
-                <mat-slide-toggle (change)="this.showKantenLabelsChange($event.checked)" [disabled]="!showKts.checked">show Betreiber</mat-slide-toggle>
-            </td>
-            <!--<td>
-                <mat-form-field>
-                    <input matInput type="text" placeholder="Haltestelle" [matAutocomplete]="autoHst">
-                    <mat-autocomplete #autoHst="matAutocomplete">
-                        <mat-option *ngFor="let zonenplan of this.getZonenplanList(); let i = index;" [value]="zonenplan.bezeichnung">{{ zonenplan.bezeichnung }}</mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
-            </td>-->
-            <td>
-                <mat-form-field class="selector" >
-                    <mat-select placeholder="Zonenplan" (selectionChange)="this.zonenplanChange($event.value)">
-                        <mat-option [value]="undefined">(none)</mat-option>
-                        <mat-option *ngFor="let zonenplan of this.zonenplanList$ | async" [value]="zonenplan">
-                            {{ this.getDisplayText(zonenplan.bezeichnung) }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <br>
-                <mat-slide-toggle (change)="this.toggleZonenLokalnetzeChange()" >{{ this.zonenXorLokalnetzeText$ | async }}</mat-slide-toggle>
-            </td>
-            <td>
-                <mat-form-field class="selector">
-                    <mat-select placeholder="Interbereich" (selectionChange)="this.interbereichChange($event.value)">
-                        <mat-option [value]="undefined">(none)</mat-option>
-                        <mat-option *ngFor="let interbereich of this.interbereicheList$ | async" [value]="interbereich">
-                            {{ this.getDisplayText(interbereich.name) }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </td>
-            <td>
-                <mat-form-field class="selector">
-                    <mat-select placeholder="Relationsgebiet" (selectionChange)="this.relationsgebietChange($event.value)">
-                        <mat-option [value]="undefined">(none)</mat-option>
-                        <mat-option *ngFor="let relationsgebiet of this.relationsgebietList$ | async" [value]="relationsgebiet">
-                            {{ this.getDisplayText(relationsgebiet.bezeichnung) }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </td>
-        </tr>
-    </table>
+                <mat-slide-toggle (change)="this.showKantenLabelsChange($event.checked)" [checked]="this.showKantenLabels$ | async" [disabled]="!showKts.checked">show Betreiber</mat-slide-toggle>
+            </div>
+        </div>
+        <div>
+            <mat-form-field class="selector">
+                <input matInput type="text" placeholder="Haltestelle" [matAutocomplete]="autoHst" [formControl]="hstQueryInput">
+                <mat-autocomplete autoActiveFirstOption #autoHst="matAutocomplete" (optionSelected)="this.hstSelected($event.option.value)" [displayWith]="displayHstAutcompleteFn">
+                    <mat-option *ngFor="let hst of this.hstSearchResults$ | async;" [value]="hst">{{ hst.bavName }} ({{ hst.uic }})</mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="col2">
+        <div>
+            <mat-form-field class="selector" >
+                <mat-select placeholder="Zonenplan" (selectionChange)="this.zonenplanChange($event.value)">
+                    <mat-option [value]="undefined">(none)</mat-option>
+                    <mat-option *ngFor="let zonenplan of this.zonenplanList$ | async" [value]="zonenplan">
+                        {{ this.getDisplayText(zonenplan.bezeichnung) }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field class="selector">
+                <mat-select placeholder="Interbereich" (selectionChange)="this.interbereichChange($event.value)">
+                    <mat-option [value]="undefined">(none)</mat-option>
+                    <mat-option *ngFor="let interbereich of this.interbereicheList$ | async" [value]="interbereich">
+                        {{ this.getDisplayText(interbereich.name) }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="col3">
+        <div>
+            <mat-slide-toggle style="right: 0px" (change)="this.toggleZonenLokalnetzeChange()" >{{ this.zonenXorLokalnetzeText$ | async }}</mat-slide-toggle>
+        </div>
+        <div>
+            <mat-form-field class="selector">
+                <mat-select placeholder="Relationsgebiet" (selectionChange)="this.relationsgebietChange($event.value)">
+                    <mat-option [value]="undefined">(none)</mat-option>
+                    <mat-option *ngFor="let relationsgebiet of this.relationsgebietList$ | async" [value]="relationsgebiet">
+                        {{ this.getDisplayText(relationsgebiet.bezeichnung) }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
 </div>
-
