@@ -22,7 +22,7 @@ export class LoadDrComponent implements OnInit {
 
 
     ngOnInit() {
-       // this.loadPreparedDr();
+       this.loadPreparedDr();
     }
 
 
