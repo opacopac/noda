@@ -10,8 +10,9 @@ import {Interbereich, InterbereichJson} from './interbereich';
 import {Extent2d} from '../geo/extent-2d';
 import {VoronoiHelper} from '../geo/voronoi-helper';
 import {StringMapSer} from '../shared/string-map-ser';
-import {ZoneLikeJson} from './zonelike';
+import {Zonelike, ZoneLikeJson} from './zonelike';
 import {Kante} from './kante';
+import {TurfHelper} from '../geo/turf-helper';
 
 
 class KanteWithZonen {
@@ -31,6 +32,7 @@ export class PrecalcHelper {
         this.createKantenLut(drData);
         this.createZonenLut(drData);
         this.createZonenplanLut(drData);
+        this.createZonenHstLut(drData);
         console.log('creating LUTs completed');
 
         console.log('creating hst quad tree...');
@@ -78,27 +80,10 @@ export class PrecalcHelper {
         });
     }
 
-    private static createHstQuadTree(hstMap: StringMapSer<Haltestelle, HaltestelleJson>): QuadTree<Haltestelle> {
-        const extent = new Extent2d(5, 45, 15, 50); // TODO
-        const quadTree = new QuadTree<Haltestelle>(extent, 10); // TODO
 
-        hstMap.forEach(hst => quadTree.addItem(hst));
-
-        return quadTree;
-    }
-
-
-    private static calcVoronoi(hstMap: StringMapSer<Haltestelle, HaltestelleJson>) {
-        const hstList = Array.from(hstMap.values())
-            .filter(hst => hst.isActive());
-
-        VoronoiHelper.calculate(hstList);
-    }
-
-
-    private static calcZonePolygons(zoneMap: StringMapSer<Zone, ZoneLikeJson>) {
+    private static createZonenHstLut(drData: DrData) {
         const zoneHstMap = new Map<Zone, Haltestelle[]>();
-        const zoneList = Array.from(zoneMap.values());
+        const zoneList = Array.from(drData.zonen.values());
 
         // first pass: kanten with 1 assigned zone
         zoneList.forEach(zone => {
@@ -142,12 +127,36 @@ export class PrecalcHelper {
         });
 
 
-        // union polygons
+        zoneList.forEach(zone => zone.hstLut = zoneHstMap.get(zone));
+    }
+
+
+    private static createHstQuadTree(hstMap: StringMapSer<Haltestelle, HaltestelleJson>): QuadTree<Haltestelle> {
+        const extent = new Extent2d(5, 45, 15, 50); // TODO
+        const quadTree = new QuadTree<Haltestelle>(extent, 10); // TODO
+
+        hstMap.forEach(hst => quadTree.addItem(hst));
+
+        return quadTree;
+    }
+
+
+    private static calcVoronoi(hstMap: StringMapSer<Haltestelle, HaltestelleJson>) {
+        const hstList = Array.from(hstMap.values())
+            .filter(hst => hst.isActive());
+
+        VoronoiHelper.calculate(hstList);
+    }
+
+
+    private static calcZonePolygons(zoneMap: StringMapSer<Zone, ZoneLikeJson>) {
+        const zoneList = Array.from(zoneMap.values());
+
         zoneList.forEach(zone => {
-            const hstList = zoneHstMap.get(zone);
-            if (hstList.length > 0) {
-                zone.polygon = PolygonMerger.unionAdjacentRings(hstList.map(hst => hst.ring));
-                zone.hstPolygon = new MultiPolygon2d(hstList.map(hst => new Polygon2d(hst.ring)));
+            if (zone.hstLut.length > 0) {
+                zone.polygon = PolygonMerger.unionAdjacentRings(zone.hstLut.map(hst => hst.ring));
+                // zone.polygon = TurfHelper.unionRings(zone.hstLut.map(hst => hst.ring));
+                zone.hstPolygon = new MultiPolygon2d(zone.hstLut.map(hst => new Polygon2d(hst.ring)));
             }
         });
     }
@@ -162,6 +171,7 @@ export class PrecalcHelper {
 
             if (hstList.length > 0) {
                 lokalnetz.polygon = PolygonMerger.unionAdjacentRings(hstList.map(hst => hst.ring));
+                // lokalnetz.polygon = TurfHelper.unionRings(hstList.map(hst => hst.ring));
                 lokalnetz.hstPolygon = new MultiPolygon2d(hstList.map(hst => new Polygon2d(hst.ring)));
             }
         });
@@ -177,6 +187,7 @@ export class PrecalcHelper {
 
             if (hstList.length > 0) {
                 interbereich.polygon = PolygonMerger.unionAdjacentRings(hstList.map(hst => hst.ring));
+                // interbereich.polygon = TurfHelper.unionRings(hstList.map(hst => hst.ring));
                 interbereich.hstPolygon = new MultiPolygon2d(hstList.map(hst => new Polygon2d(hst.ring)));
             }
         });
@@ -212,5 +223,18 @@ export class PrecalcHelper {
     private static getParallelKanten(kante: Kante): Kante[] {
         return kante.haltestelle1.kantenLut
             .filter(kt => kante.haltestelle2.kantenLut.indexOf(kt) >= 0);
+    }
+
+
+    public static cropVoronoiCells(drData: DrData) {
+        drData.zonenplaene.forEach(zonenplan => {
+            console.log('processing zonenplan ' + zonenplan.bezeichnung);
+            zonenplan.zonen.forEach(zone => {
+                const hstCircles = zone.hstLut.map(hst => TurfHelper.createCircle(hst.position, 3));
+                const circlePolygon = TurfHelper.unionRings(hstCircles);
+                zone.polygon = TurfHelper.intersectMultipolygon(zone.polygon, circlePolygon);
+                zone.hstPolygon = TurfHelper.intersectMultipolygon(zone.hstPolygon, circlePolygon);
+            });
+        });
     }
 }

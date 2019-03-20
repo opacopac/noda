@@ -22,7 +22,7 @@ export class LoadDrComponent implements OnInit {
 
 
     ngOnInit() {
-        this.loadPreparedDr();
+       // this.loadPreparedDr();
     }
 
 
@@ -51,6 +51,11 @@ export class LoadDrComponent implements OnInit {
             .subscribe((appState) => {
                 this.storageService.exportStammdatenJson(appState.drData, 'stammdaten.json');
             });
+    }
+
+
+    public cropZonenClick() {
+        this.appStateService.cropZonen();
     }
 
 

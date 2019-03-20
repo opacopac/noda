@@ -1,7 +1,13 @@
 <button mat-mini-fab color="primary" [matMenuTriggerFor]="appMenu">DR</button>
 <mat-menu #appMenu="matMenu">
-    <button mat-menu-item (click)="this.loadDrClicked()">load DR from server</button>
     <button mat-menu-item (click)="fileInput.click()">upload stammdaten.xml/.json</button>
+    <button mat-menu-item (click)="this.loadDrClicked()">load DR from server</button>
     <button mat-menu-item (click)="this.exportClick()">export stammdaten.json</button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item [matMenuTriggerFor]="subMenu">experimental stuff</button>
+</mat-menu>
+
+<mat-menu #subMenu="matMenu">
+    <button mat-menu-item (click)="this.cropZonenClick()">crop zones</button>
 </mat-menu>
 <input hidden type="file" #fileInput (change)="this.fileUploadChange($event)">

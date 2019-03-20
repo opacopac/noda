@@ -9,7 +9,7 @@ import {LoadDrComponent} from './components/load-dr/load-dr.component';
 import {
     MatAutocompleteModule,
     MatButtonModule,
-    MatCheckboxModule, MatFormFieldModule, MatInputModule, MatMenuModule,
+    MatCheckboxModule, MatDividerModule, MatFormFieldModule, MatInputModule, MatMenuModule,
     MatProgressBarModule, MatProgressSpinnerModule,
     MatRadioModule, MatSelectModule, MatSlideToggleModule,
     MatToolbarModule
@@ -33,6 +33,7 @@ import {ReactiveFormsModule} from '@angular/forms';
         BrowserAnimationsModule,
         MatToolbarModule,
         MatMenuModule,
+        MatDividerModule,
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,

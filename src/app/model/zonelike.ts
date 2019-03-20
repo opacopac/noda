@@ -4,6 +4,7 @@ import {DataItem} from './data-item';
 import {DataItemType} from './data-item-type';
 import {MultiPolygon2d} from '../geo/multi-polygon-2d';
 import {JsonSerializable} from '../shared/json-serializable';
+import {Haltestelle} from './haltestelle';
 
 
 export class ZoneLikeJson {
@@ -16,6 +17,7 @@ export class ZoneLikeJson {
 
 export abstract class Zonelike implements DataItem, JsonSerializable<ZoneLikeJson> {
     public zonenplan: Zonenplan;
+    public hstLut: Haltestelle[] = [];
     public polygon: MultiPolygon2d;
     public hstPolygon: MultiPolygon2d;
 

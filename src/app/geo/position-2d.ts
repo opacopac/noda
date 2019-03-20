@@ -35,6 +35,15 @@ export class Position2d implements JsonSerializable<Position2dJson> {
     }
 
 
+    public static fromArray(posArr: number[]): Position2d {
+        if (!posArr || posArr.length !== 2) {
+            return undefined;
+        }
+
+        return new Position2d(posArr[0], posArr[1]);
+    }
+
+
     public equals(pos: Position2d): boolean {
         return (this.longitude === pos.longitude && this.latitude === pos.latitude);
     }
@@ -47,5 +56,10 @@ export class Position2d implements JsonSerializable<Position2dJson> {
 
     public toJSON(key: string): Position2dJson {
         return { lon: this.longitude, lat: this.latitude };
+    }
+
+
+    public toArray(): number[] {
+        return [this.longitude, this.latitude];
     }
 }

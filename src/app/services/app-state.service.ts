@@ -151,6 +151,11 @@ export class AppStateService {
     }
 
 
+    public cropZonen() {
+        PrecalcHelper.cropVoronoiCells(this.appState.drData);
+    }
+
+
     private onStateChanged() {
         this.appStateSubject.next(this.appState);
     }

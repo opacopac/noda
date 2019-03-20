@@ -1,5 +1,6 @@
 import {Position2d} from './position-2d';
 import {Edge2d} from './edge-2d';
+import {isArray} from 'util';
 
 
 export class Ring2d {
@@ -18,6 +19,17 @@ export class Ring2d {
         }
 
         return new Ring2d(posList);
+    }
+
+
+    public static fromArray(ringArr: number[][]): Ring2d {
+        if (!ringArr || !isArray(ringArr)) {
+            return undefined;
+        }
+
+        return new Ring2d(
+            ringArr.map(posArr => Position2d.fromArray(posArr))
+        );
     }
 
 
@@ -75,5 +87,15 @@ export class Ring2d {
         }
 
         return true;
+    }
+
+
+    public clone(): Ring2d {
+        return new Ring2d(this.positionList.map(pos => pos.clone()));
+    }
+
+
+    public toArray(): number[][] {
+        return this.positionList.map(pos => pos.toArray());
     }
 }
