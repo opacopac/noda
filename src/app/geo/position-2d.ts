@@ -44,6 +44,14 @@ export class Position2d implements JsonSerializable<Position2dJson> {
     }
 
 
+    public static getFakeEuclidDist(pos1: Position2d, pos2: Position2d): number {
+        const latDiff = pos1.latitude - pos2.latitude;
+        const lonDiff = pos1.longitude - pos2.longitude;
+
+        return Math.sqrt(latDiff * latDiff + lonDiff * lonDiff);
+    }
+
+
     public equals(pos: Position2d): boolean {
         return (this.longitude === pos.longitude && this.latitude === pos.latitude);
     }

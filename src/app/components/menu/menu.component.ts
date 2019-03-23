@@ -4,14 +4,15 @@ import {AppStateService} from '../../services/app-state.service';
 import {first} from 'rxjs/operators';
 import {DrData} from '../../model/dr-data';
 import {NovaDrParser} from '../../nova-dr/NovaDrParser';
+import {Dijkstra} from '../../geo/dijkstra';
 
 
 @Component({
     selector: 'app-load-dr',
-    templateUrl: './load-dr.component.html',
-    styleUrls: ['./load-dr.component.css']
+    templateUrl: './menu.component.html',
+    styleUrls: ['./menu.component.css']
 })
-export class LoadDrComponent implements OnInit {
+export class MenuComponent implements OnInit {
     private readonly PREPARED_DR_URL = 'http://www.tschanz.com/noda/tmp/stammdaten.json';
 
 
@@ -56,6 +57,11 @@ export class LoadDrComponent implements OnInit {
 
     public cropZonenClick() {
         this.appStateService.cropZonen();
+    }
+
+
+    public dijkstraTestClick() {
+        this.appStateService.calcShortestPath();
     }
 
 

@@ -83,4 +83,15 @@ export class Kante implements DataItem, JsonSerializable<KanteJson> {
             Math.max(this.haltestelle1.position.latitude, this.haltestelle2.position.latitude)
         );
     }
+
+
+    public getOtherHst(hst: Haltestelle): Haltestelle {
+        if (hst === this.haltestelle1) {
+            return this.haltestelle2;
+        } else if (hst === this.haltestelle2) {
+            return this.haltestelle1;
+        } else {
+            return undefined;
+        }
+    }
 }

@@ -6,6 +6,7 @@ import {Zonenplan} from '../model/zonenplan';
 import {Relationsgebiet} from '../model/relationsgebiet';
 import {Interbereich} from '../model/interbereich';
 import {DataItem} from '../model/data-item';
+import {Path} from '../model/path';
 
 
 export class AppState {
@@ -20,6 +21,7 @@ export class AppState {
     public selectedZonenplan: Zonenplan;
     public selectedInterbereich: Interbereich;
     public selectedRelationsgebiet: Relationsgebiet;
+    public selectedPath: Path;
     public hstQuadTree: QuadTree<Haltestelle>;
     public mapCoords: OlMapCoords;
 

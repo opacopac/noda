@@ -6,5 +6,6 @@ export enum DataItemType {
     Zonenplan,
     Interbereich,
     Relationsgebiet,
-    Relation
+    Relation,
+    Path,
 }

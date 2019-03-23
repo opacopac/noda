@@ -1,8 +1,9 @@
-import * as turf from '@turf/turf';
 import {Position2d} from './position-2d';
 import {Ring2d} from './ring-2d';
 import {MultiPolygon2d} from './multi-polygon-2d';
 import {Polygon2d} from './polygon-2d';
+import {intersect, union, circle, point, polygon} from '@turf/turf';
+import {Feature, Polygon, MultiPolygon} from '@turf/helpers';
 
 
 export class TurfHelper {
@@ -14,8 +15,8 @@ export class TurfHelper {
             return undefined;
         }
 
-        const turfCircle = turf.circle(
-            turf.point(center.toArray()),
+        const turfCircle = circle(
+            point(center.toArray()),
             radius_km,
             {steps: 18, units: 'kilometers'}
         );
@@ -29,10 +30,10 @@ export class TurfHelper {
             return undefined;
         }
 
-        const unionTurfPoly = turf.union(
+        const unionTurfPoly = union(
             ...ringList
                 .filter(ring => ring !== undefined)
-                .map(ring => turf.polygon([ring.toArray()]))
+                .map(ring => polygon([ring.toArray()]))
         );
 
         return this.getAsMultipolygon(unionTurfPoly);
@@ -44,9 +45,9 @@ export class TurfHelper {
             return undefined;
         }
 
-        const intersectTurfPoly = turf.intersect<turf.Polygon>(
-            turf.polygon(poly1.toArray()),
-            turf.polygon(poly2.toArray())
+        const intersectTurfPoly = intersect<Polygon>(
+            polygon(poly1.toArray()),
+            polygon(poly2.toArray())
         );
 
         if (!intersectTurfPoly) {
@@ -79,7 +80,7 @@ export class TurfHelper {
     }
 
 
-    private static getAsMultipolygon(polyFeature: turf.Feature<turf.Polygon | turf.MultiPolygon>): MultiPolygon2d {
+    private static getAsMultipolygon(polyFeature: Feature<Polygon | MultiPolygon>): MultiPolygon2d {
         if (!polyFeature) {
             return undefined;
         }

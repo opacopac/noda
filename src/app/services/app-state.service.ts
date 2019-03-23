@@ -20,6 +20,9 @@ import {Zonelike} from '../model/zonelike';
 import {OlZonelike} from '../ol-components/OlZonelike';
 import {AppState} from './app-state';
 import {BehaviorSubject, Observable} from 'rxjs';
+import {Dijkstra} from '../geo/dijkstra';
+import {Path} from '../model/path';
+import {OlPath} from '../ol-components/OlPath';
 
 
 @Injectable({
@@ -156,6 +159,23 @@ export class AppStateService {
     }
 
 
+    public calcShortestPath() {
+        const hstList = Array.from(this.appState.drData.haltestellen.values());
+        const hst1 = hstList[Math.floor(Math.random() * hstList.length)];
+        const hst2 = hstList[Math.floor(Math.random() * hstList.length)];
+        console.log(hst1);
+        console.log(hst2);
+        const d = new Dijkstra(hst1);
+        const kanten = d.getShortestPath(hst2);
+        console.log(kanten);
+        this.appState.selectedPath = new Path(hst1, hst2, kanten);
+
+        this.mapService.setExtent(this.appState.selectedPath.getExtent());
+        this.drawDataItems();
+        this.onStateChanged();
+    }
+
+
     private onStateChanged() {
         this.appStateSubject.next(this.appState);
     }
@@ -188,6 +208,10 @@ export class AppStateService {
 
         if (this.appState.selectedRelationsgebiet) {
             OlRelationsgebiet.draw(this.appState.selectedRelationsgebiet, this.dataItemsLayer);
+        }
+
+        if (this.appState.selectedPath) {
+            OlPath.draw(this.appState.selectedPath, this.dataItemsLayer, this.labelLayer);
         }
 
         if (this.appState.showHst || this.appState.showKanten) {

@@ -5,7 +5,7 @@ import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-b
 import {AppComponent} from './app.component';
 import {BaseMapComponent} from './components/base-map/base-map.component';
 import {NavBarComponent} from './components/nav-bar/nav-bar.component';
-import {LoadDrComponent} from './components/load-dr/load-dr.component';
+import {MenuComponent} from './components/menu/menu.component';
 import {
     MatAutocompleteModule,
     MatButtonModule,
@@ -23,7 +23,7 @@ import {ReactiveFormsModule} from '@angular/forms';
         AppComponent,
         BaseMapComponent,
         NavBarComponent,
-        LoadDrComponent
+        MenuComponent
     ],
     imports: [
         BrowserModule,

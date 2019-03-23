@@ -8,6 +8,7 @@
 </mat-menu>
 
 <mat-menu #subMenu="matMenu">
-    <button mat-menu-item (click)="this.cropZonenClick()">crop zones</button>
+    <button mat-menu-item (click)="this.cropZonenClick()">crop zones (approx 2-3mins...)</button>
+    <button mat-menu-item (click)="this.dijkstraTestClick()">dijkstra test</button>
 </mat-menu>
 <input hidden type="file" #fileInput (change)="this.fileUploadChange($event)">
