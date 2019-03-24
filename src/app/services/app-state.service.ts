@@ -154,8 +154,10 @@ export class AppStateService {
     }
 
 
-    public cropZonen() {
-        PrecalcHelper.cropVoronoiCells(this.appState.drData);
+    public cropZonenToggle() {
+        this.appState.cropZones = !this.appState.cropZones;
+        this.drawDataItems();
+        this.onStateChanged();
     }
 
 
@@ -199,6 +201,9 @@ export class AppStateService {
         this.labelLayer.getSource().clear(true);
 
         if (this.appState.selectedZonenplan) {
+            if (this.appState.cropZones) {
+                PrecalcHelper.cropVoronoiCells(this.appState.selectedZonenplan);
+            }
             OlZonenplan.draw(this.appState.selectedZonenplan, !this.appState.showZonenXorLokalnetze, this.dataItemsLayer);
         }
 

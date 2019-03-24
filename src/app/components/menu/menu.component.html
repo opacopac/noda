@@ -8,7 +8,10 @@
 </mat-menu>
 
 <mat-menu #subMenu="matMenu">
-    <button mat-menu-item (click)="this.cropZonenClick()">crop zones (approx 2-3mins...)</button>
+    <button mat-menu-item (click)="this.cropZonenToggle()">
+        crop zones (max. radius 4km)
+        <mat-slide-toggle (click)="this.cropZonenToggle()" [checked]="this.cropZones$ | async"></mat-slide-toggle>
+    </button>
     <button mat-menu-item (click)="this.dijkstraTestClick()">dijkstra test</button>
 </mat-menu>
 <input hidden type="file" #fileInput (change)="this.fileUploadChange($event)">

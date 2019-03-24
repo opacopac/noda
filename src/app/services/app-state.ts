@@ -24,6 +24,7 @@ export class AppState {
     public selectedPath: Path;
     public hstQuadTree: QuadTree<Haltestelle>;
     public mapCoords: OlMapCoords;
+    public cropZones = false;
 
 
     constructor() {

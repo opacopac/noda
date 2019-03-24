@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
+import {first, map} from 'rxjs/operators';
 import {StorageService} from '../../services/storage.service';
 import {AppStateService} from '../../services/app-state.service';
-import {first} from 'rxjs/operators';
 import {DrData} from '../../model/dr-data';
 import {NovaDrParser} from '../../nova-dr/NovaDrParser';
-import {Dijkstra} from '../../geo/dijkstra';
+import {Observable} from 'rxjs';
 
 
 @Component({
@@ -14,11 +14,16 @@ import {Dijkstra} from '../../geo/dijkstra';
 })
 export class MenuComponent implements OnInit {
     private readonly PREPARED_DR_URL = 'http://www.tschanz.com/noda/tmp/stammdaten.json';
+    public readonly cropZones$: Observable<boolean>;
 
 
     constructor(
         private storageService: StorageService,
-        private appStateService: AppStateService) {
+        private appStateService: AppStateService
+    ) {
+        this.cropZones$ = this.appStateService.appState$.pipe(
+            map(appState => appState.cropZones)
+        );
     }
 
 
@@ -55,8 +60,8 @@ export class MenuComponent implements OnInit {
     }
 
 
-    public cropZonenClick() {
-        this.appStateService.cropZonen();
+    public cropZonenToggle() {
+        this.appStateService.cropZonenToggle();
     }
 
 

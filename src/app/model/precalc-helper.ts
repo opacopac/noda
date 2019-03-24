@@ -13,6 +13,7 @@ import {StringMapSer} from '../shared/string-map-ser';
 import {Zonelike, ZoneLikeJson} from './zonelike';
 import {Kante} from './kante';
 import {TurfHelper} from '../geo/turf-helper';
+import {Zonenplan} from './zonenplan';
 
 
 class KanteWithZonen {
@@ -226,15 +227,17 @@ export class PrecalcHelper {
     }
 
 
-    public static cropVoronoiCells(drData: DrData) {
-        drData.zonenplaene.forEach(zonenplan => {
-            console.log('processing zonenplan ' + zonenplan.bezeichnung);
-            zonenplan.zonen.forEach(zone => {
-                const hstCircles = zone.hstLut.map(hst => TurfHelper.createCircle(hst.position, 3));
-                const circlePolygon = TurfHelper.unionRings(hstCircles);
-                zone.polygon = TurfHelper.intersectMultipolygon(zone.polygon, circlePolygon);
-                zone.hstPolygon = TurfHelper.intersectMultipolygon(zone.hstPolygon, circlePolygon);
-            });
+    public static cropVoronoiCells(zonenplan: Zonenplan) {
+        if (zonenplan.isCroppedPolygons) {
+            return;
+        }
+
+        zonenplan.zonen.forEach(zone => {
+            const hstCircles = zone.hstLut.map(hst => TurfHelper.createCircle(hst.position, 3));
+            const circlePolygon = TurfHelper.unionRings(hstCircles);
+            zone.polygon = TurfHelper.intersectMultipolygon(zone.polygon, circlePolygon);
+            zone.hstPolygon = TurfHelper.intersectMultipolygon(zone.hstPolygon, circlePolygon);
         });
+        zonenplan.isCroppedPolygons = true;
     }
 }

@@ -16,6 +16,8 @@ export interface ZonenplanJson {
 
 
 export class Zonenplan implements DataItem, JsonSerializable<ZonenplanJson> {
+    public isCroppedPolygons = false;
+
     public constructor(
         public bezeichnung: string,
         public zonen: Zone[],
