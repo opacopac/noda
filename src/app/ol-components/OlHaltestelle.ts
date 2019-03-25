@@ -6,7 +6,7 @@ import {OlFeatureHelper} from './OlFeatureHelper';
 
 export class OlHaltestelle {
     public static drawHst(haltestelle: Haltestelle, layer: VectorLayer) {
-        const olFeature = OlFeatureHelper.createFeature(haltestelle);
+        const olFeature = OlFeatureHelper.createFeature(haltestelle, true);
         olFeature.setStyle(this.createPointStyle(haltestelle));
         OlFeatureHelper.setPointGeometry(olFeature, haltestelle.position);
         layer.getSource().addFeature(olFeature);
@@ -14,7 +14,7 @@ export class OlHaltestelle {
 
 
     public static drawLabel(haltestelle: Haltestelle, layer: VectorLayer) {
-        const olLabelFeature = OlFeatureHelper.createFeature(haltestelle);
+        const olLabelFeature = OlFeatureHelper.createFeature(haltestelle, true);
         olLabelFeature.setStyle(this.createLabelStyle(haltestelle));
         OlFeatureHelper.setPointGeometry(olLabelFeature, haltestelle.position);
         layer.getSource().addFeature(olLabelFeature);

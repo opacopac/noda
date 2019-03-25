@@ -7,6 +7,7 @@ import {Relationsgebiet} from '../model/relationsgebiet';
 import {Interbereich} from '../model/interbereich';
 import {DataItem} from '../model/data-item';
 import {Path} from '../model/path';
+import {Kante} from '../model/kante';
 
 
 export class AppState {
@@ -22,6 +23,10 @@ export class AppState {
     public selectedInterbereich: Interbereich;
     public selectedRelationsgebiet: Relationsgebiet;
     public selectedPath: Path;
+    public selectedHaltestelle: Haltestelle;
+    public selectedKante: Kante;
+    public routeFrom: Haltestelle;
+    public routeTo: Haltestelle;
     public hstQuadTree: QuadTree<Haltestelle>;
     public mapCoords: OlMapCoords;
     public cropZones = false;

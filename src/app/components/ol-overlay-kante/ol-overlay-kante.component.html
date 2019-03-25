@@ -1,0 +1,19 @@
+<div #container class="ol-popup">
+    <mat-card *ngIf="this.kante">
+        <mat-card-header>
+            <mat-card-title>
+                {{ this.getKanteName() }}
+            </mat-card-title>
+            <mat-card-subtitle>
+                Kante
+            </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <p>Von: {{ this.kante.haltestelle1.bavName }} (<a href="#" (click)="this.selectHaltestelle(this.kante.haltestelle1)">{{ this.kante.haltestelle1.uic }}</a>)</p>
+            <p>Nach: {{ this.kante.haltestelle2.bavName }} (<a href="#" (click)="this.selectHaltestelle(this.kante.haltestelle2)">{{ this.kante.haltestelle2.uic }}</a>)</p>
+            <p *ngFor="let kte of this.getParallelKanten()">
+                Betreiber: {{ kte.betreiber }} ({{ VerkehrsmittelTyp[kte.verkehrsmittelTyp] }})
+            </p>
+        </mat-card-content>
+    </mat-card>
+</div>

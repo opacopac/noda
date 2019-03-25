@@ -16,6 +16,7 @@ import {DataItem} from '../model/data-item';
 import {OlFeatureHelper} from '../ol-components/OlFeatureHelper';
 import Pixel from 'ol/pixel';
 import Feature from 'ol/Feature';
+import Overlay from 'ol/Overlay';
 
 
 export class OlMapCoords {
@@ -32,7 +33,7 @@ export class OlMapCoords {
     providedIn: 'root'
 })
 export class OlMapService {
-    public onMapInitialized = new EventEmitter<null>();
+    public onMapInitialized = new EventEmitter<boolean>();
     public onMapCoordsChanged = new EventEmitter<OlMapCoords>();
     public onMapClicked = new EventEmitter<{ clickPos: Position2d, dataItem: DataItem }>();
     public onDataItemMouseOver = new EventEmitter<DataItem>();
@@ -70,7 +71,7 @@ export class OlMapService {
         this.map.on('singleclick', this.onSingleClick.bind(this));
         this.map.on('pointermove', this.onPointerMove.bind(this));
 
-        this.onMapInitialized.emit();
+        this.onMapInitialized.emit(true);
     }
 
 
@@ -173,10 +174,10 @@ export class OlMapService {
         const olFeatureList = this.getFeaturesAtPixel(event.pixel, this.CLICK_TOLERANCE_PIXELS);
         const dataItemList = this.getDataItemsFromFeatures(olFeatureList, true);
 
-        if (dataItemList.length > 0) {
-            const clickPos = OlPos.getLonLat(event.coordinate);
-            this.onMapClicked.emit({clickPos: clickPos, dataItem: dataItemList[0]});
-        }
+        const clickPos = OlPos.getLonLat(event.coordinate);
+        const dataItem = dataItemList.length > 0 ? dataItemList[0] : undefined;
+
+        this.onMapClicked.emit({clickPos: clickPos, dataItem: dataItem});
     }
 
 
@@ -239,6 +240,25 @@ export class OlMapService {
     private isClickableLayer(layer: Layer): boolean {
         return layer !== this.mapLayer;
     }
+
+    // endregion
+
+
+    // region overlays
+
+
+    public addOverlay(container: HTMLElement): Overlay {
+        const overlay = new Overlay({
+            element: container,
+            autoPan: true,
+            autoPanAnimation: { source: undefined, duration: 250 }
+        });
+
+        this.map.addOverlay(overlay);
+
+        return overlay;
+    }
+
 
     // endregion
 }

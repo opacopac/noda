@@ -65,11 +65,6 @@ export class MenuComponent implements OnInit {
     }
 
 
-    public dijkstraTestClick() {
-        this.appStateService.calcShortestPath();
-    }
-
-
     public fileUploadChange(fileInputEvent: any) {
         const dataFile = fileInputEvent.target.files[0] as File;
         if (!dataFile) {

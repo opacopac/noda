@@ -4,7 +4,6 @@ import {DrData} from '../model/dr-data';
 import {OlKante} from '../ol-components/OlKante';
 import {OlHaltestelle} from '../ol-components/OlHaltestelle';
 import {OlMapCoords, OlMapService} from './ol-map.service';
-import {Extent2d} from '../geo/extent-2d';
 import {Haltestelle} from '../model/haltestelle';
 import {Kante} from '../model/kante';
 import {Zonenplan} from '../model/zonenplan';
@@ -44,7 +43,7 @@ export class AppStateService {
         this.appStateSubject = new BehaviorSubject(this.appState);
         this.appState$ = this.appStateSubject.asObservable();
 
-        this.mapService.onMapInitialized.subscribe(() => this.initLayers());
+        this.mapService.onMapInitialized.subscribe((val) => this.initLayers());
         this.mapService.onDataItemMouseOver.subscribe(this.onMouseOverDataItem.bind(this));
     }
 
@@ -98,11 +97,50 @@ export class AppStateService {
 
 
     public selectHaltestelle(hst: Haltestelle) {
+        this.appState.selectedHaltestelle = hst;
+        this.appState.selectedKante = undefined;
+        this.onStateChanged();
+    }
+
+
+    public selectKante(kante: Kante) {
+        this.appState.selectedKante = kante;
+        this.appState.selectedHaltestelle = undefined;
+        this.onStateChanged();
+    }
+
+
+    public selectRouteFromTo(hst: Haltestelle, isFrom: boolean) {
+        if (isFrom) {
+            this.appState.routeFrom = hst;
+        } else {
+            this.appState.routeTo = hst;
+        }
+
+        this.appState.selectedHaltestelle = undefined;
+        this.appState.selectedKante = undefined;
+
+        let path: Path;
+        if (this.appState.routeFrom && this.appState.routeTo) {
+            path = this.calcShortestRoute(this.appState.routeFrom, this.appState.routeTo);
+        } else {
+            path = undefined;
+        }
+
+        this.selectPath(path);
+    }
+
+
+    public selectHaltestelleSearchResult(hst: Haltestelle) {
         if (!hst) {
             return;
         }
 
         this.mapService.setMapPosition(hst.position, 16);
+        this.appState.selectedHaltestelle = hst;
+        if (!this.appState.showHst) {
+            this.appState.showHst = true;
+        }
         if (!this.appState.showHstLabels) {
             this.appState.showHstLabels = true;
         }
@@ -135,6 +173,16 @@ export class AppStateService {
     }
 
 
+    public selectPath(path: Path) {
+        this.appState.selectedPath = path;
+        if (path) {
+            this.mapService.setExtent(this.appState.selectedPath.getExtent());
+        }
+        this.drawDataItems();
+        this.onStateChanged();
+    }
+
+
     public updateDrData(drData: DrData) {
         this.appState.drData = drData;
         this.appState.hstQuadTree = PrecalcHelper.precalc(drData);
@@ -161,20 +209,10 @@ export class AppStateService {
     }
 
 
-    public calcShortestPath() {
-        const hstList = Array.from(this.appState.drData.haltestellen.values());
-        const hst1 = hstList[Math.floor(Math.random() * hstList.length)];
-        const hst2 = hstList[Math.floor(Math.random() * hstList.length)];
-        console.log(hst1);
-        console.log(hst2);
+    public calcShortestRoute(hst1: Haltestelle, hst2: Haltestelle): Path {
         const d = new Dijkstra(hst1);
         const kanten = d.getShortestPath(hst2);
-        console.log(kanten);
-        this.appState.selectedPath = new Path(hst1, hst2, kanten);
-
-        this.mapService.setExtent(this.appState.selectedPath.getExtent());
-        this.drawDataItems();
-        this.onStateChanged();
+        return new Path(hst1, hst2, kanten);
     }
 
 

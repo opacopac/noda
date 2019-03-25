@@ -37,10 +37,10 @@ export class OlFeatureHelper {
     }
 
 
-    public static createFeature(dataItem: DataItem): Feature {
+    public static createFeature(dataItem: DataItem, isSelectable = false): Feature {
         const feature = new Feature();
         feature.set(OlFeatureHelper.PROPERTYNAME_DATAITEM, dataItem, true);
-        feature.set(OlFeatureHelper.PROPERTYNAME_ISSELECTABLE, this.isSelectable, true);
+        feature.set(OlFeatureHelper.PROPERTYNAME_ISSELECTABLE, isSelectable, true);
         return feature;
     }
 

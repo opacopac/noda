@@ -10,7 +10,7 @@ export class OlKante {
 
 
     public static drawKante(kante: Kante, layer: VectorLayer) {
-        const olFeature = OlFeatureHelper.createFeature(kante);
+        const olFeature = OlFeatureHelper.createFeature(kante, true);
         olFeature.setStyle(this.createStyle(kante));
         OlFeatureHelper.setLineGeometry(olFeature, [kante.haltestelle1.position, kante.haltestelle2.position]);
         layer.getSource().addFeature(olFeature);
@@ -18,7 +18,7 @@ export class OlKante {
 
 
     public static drawLabel(kante: Kante, layer: VectorLayer) {
-        const olLabelFeature = OlFeatureHelper.createFeature(kante);
+        const olLabelFeature = OlFeatureHelper.createFeature(kante, true);
         olLabelFeature.setStyle(this.createLabelStyle(kante));
         OlFeatureHelper.setPointGeometry(olLabelFeature, Position2d.calcMidPoint(kante.haltestelle1.position, kante.haltestelle2.position));
         layer.getSource().addFeature(olLabelFeature);

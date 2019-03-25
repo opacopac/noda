@@ -5,6 +5,7 @@ import {Zone} from './zone';
 import {JsonSerializable} from '../shared/json-serializable';
 import {StringMapSer} from '../shared/string-map-ser';
 import {Extent2d} from '../geo/extent-2d';
+import {Position2d} from '../geo/position-2d';
 
 
 export enum VerkehrsmittelTyp {
@@ -72,6 +73,11 @@ export class Kante implements DataItem, JsonSerializable<KanteJson> {
             typ: VerkehrsmittelTyp[this.verkehrsmittelTyp],
             betr: this.betreiber
         };
+    }
+
+
+    public getMidPos(): Position2d {
+        return Position2d.calcMidPoint(this.haltestelle1.position, this.haltestelle2.position);
     }
 
 

@@ -145,7 +145,7 @@ export class NavBarComponent implements OnInit {
 
 
     public hstSelected(hst: Haltestelle) {
-        this.appStateService.selectHaltestelle(hst);
+        this.appStateService.selectHaltestelleSearchResult(hst);
     }
 
 
