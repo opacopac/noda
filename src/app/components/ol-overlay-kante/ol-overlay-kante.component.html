@@ -11,9 +11,22 @@
         <mat-card-content>
             <p>Von: {{ this.kante.haltestelle1.bavName }} (<a href="#" (click)="this.selectHaltestelle(this.kante.haltestelle1)">{{ this.kante.haltestelle1.uic }}</a>)</p>
             <p>Nach: {{ this.kante.haltestelle2.bavName }} (<a href="#" (click)="this.selectHaltestelle(this.kante.haltestelle2)">{{ this.kante.haltestelle2.uic }}</a>)</p>
-            <p *ngFor="let kte of this.getParallelKanten()">
-                Betreiber: {{ kte.betreiber }} ({{ VerkehrsmittelTyp[kte.verkehrsmittelTyp] }})
-            </p>
+            <span>
+                Betreiber:
+                <ul>
+                    <li *ngFor="let kte of this.getParallelKanten()">
+                        {{ kte.betreiber }} ({{ VerkehrsmittelTyp[kte.verkehrsmittelTyp] }})
+                    </li>
+                </ul>
+            </span>
+            <span *ngIf="this.getZonenplaene().length > 0">
+                Zonenzuordnung:
+                <ul>
+                    <li *ngFor="let zonenplan of this.getZonenplaene()">
+                        {{ zonenplan.bezeichnung }}: <span *ngFor="let zone of this.getZonen(zonenplan)">{{ zone.code }} </span>
+                    </li>
+                </ul>
+            </span>
         </mat-card-content>
     </mat-card>
 </div>

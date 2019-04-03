@@ -5,6 +5,8 @@ import {Position2d} from '../../geo/position-2d';
 import {OlPos} from '../../geo/ol-pos';
 import {Kante, VerkehrsmittelTyp} from '../../model/kante';
 import {Haltestelle} from '../../model/haltestelle';
+import {Zone} from '../../model/zone';
+import {Zonenplan} from '../../model/zonenplan';
 
 
 @Component({
@@ -53,6 +55,17 @@ export class OlOverlayKanteComponent extends OlOverlayBase implements OnInit {
     public getParallelKanten(): Kante[] {
         return this.kante.haltestelle1.kantenLut
             .filter(otherKante => otherKante.getOtherHst(this.kante.haltestelle1) === this.kante.haltestelle2);
+    }
+
+
+    public getZonenplaene(): Zonenplan[] {
+        return Array.from(new Set(this.kante.zonenLut.map(zone => zone.zonenplan)));
+    }
+
+
+    public getZonen(zonenplan: Zonenplan): Zone[] {
+        return this.kante.zonenLut
+            .filter(zone => zone.zonenplan === zonenplan);
     }
 
 
