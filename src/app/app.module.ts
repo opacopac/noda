@@ -9,7 +9,7 @@ import {MenuComponent} from './components/menu/menu.component';
 import {
     MatAutocompleteModule,
     MatButtonModule, MatCardModule,
-    MatCheckboxModule, MatDividerModule, MatFormFieldModule, MatInputModule, MatMenuModule,
+    MatCheckboxModule, MatDividerModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule,
     MatProgressBarModule, MatProgressSpinnerModule,
     MatRadioModule, MatSelectModule, MatSlideToggleModule,
     MatToolbarModule
@@ -49,6 +49,7 @@ import { OlOverlayKanteComponent } from './components/ol-overlay-kante/ol-overla
         MatProgressBarModule,
         MatProgressSpinnerModule,
         MatCardModule,
+        MatIconModule,
     ],
     providers: [],
     bootstrap: [AppComponent]

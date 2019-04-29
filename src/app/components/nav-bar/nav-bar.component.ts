@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Zonenplan} from '../../model/zonenplan';
 import {OlMapService} from '../../services/ol-map.service';
 import {AppStateService} from '../../services/app-state.service';
@@ -14,6 +14,7 @@ import {FormControl} from '@angular/forms';
     selector: 'app-nav-bar',
     templateUrl: './nav-bar.component.html',
     styleUrls: ['./nav-bar.component.css'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class NavBarComponent implements OnInit {
     public drId$: Observable<string>;
