@@ -1,5 +1,6 @@
 import {Style, Icon, Fill, Circle, Text, Stroke} from 'ol/style';
 import {ZoneColorHelper} from '../model/zone-color-helper';
+import {Linie} from '../model/linie';
 
 
 export class OlColorHelper {
@@ -26,6 +27,17 @@ export class OlColorHelper {
         if (!colorHex) {
             colorHex = this.defaultColorList[zoneCode % 10];
         }
+
+        return this.getRgbaFromHex(colorHex, opacity);
+    }
+
+
+    public static getRgbaFromLinie(linie: Linie, opacity: number): string {
+        let nr = parseInt(linie.nr, 10);
+        if (isNaN(nr)) {
+            nr = 0;
+        }
+        const colorHex = this.defaultColorList[nr % 10];
 
         return this.getRgbaFromHex(colorHex, opacity);
     }

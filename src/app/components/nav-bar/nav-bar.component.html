@@ -68,8 +68,13 @@
     </div>
     <div class="col3">
         <div>
-            <mat-slide-toggle style="right: 0px"
-                              (change)="this.toggleZonenLokalnetzeChange()">{{ this.zonenXorLokalnetzeText$ | async }}</mat-slide-toggle>
+            <mat-slide-toggle style="right: 0px" (change)="this.toggleZonenLokalnetzeChange()">
+                {{ this.zonenXorLokalnetzeText$ | async }}
+            </mat-slide-toggle>
+            &nbsp;&nbsp;
+            <mat-slide-toggle (change)="this.showLinienChange($event.checked)" [checked]="this.showLinien$ | async" [disabled]="!(this.linienAreLoaded$ | async)">
+                show Linien
+            </mat-slide-toggle>
         </div>
         <div>
             <mat-form-field class="selector">

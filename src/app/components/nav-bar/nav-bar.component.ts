@@ -20,10 +20,12 @@ export class NavBarComponent implements OnInit {
     public drId$: Observable<string>;
     public drIsLoading$: Observable<boolean>;
     public drIsLoaded$: Observable<boolean>;
+    public linienAreLoaded$: Observable<boolean>;
     public hstCount$: Observable<number>;
     public kantenCount$: Observable<number>;
     public showHstLabels$: Observable<boolean>;
     public showKantenLabels$: Observable<boolean>;
+    public showLinien$: Observable<boolean>;
     public zonenplanList$: Observable<Zonenplan[]>;
     public interbereicheList$: Observable<Interbereich[]>;
     public relationsgebietList$: Observable<Relationsgebiet[]>;
@@ -62,6 +64,10 @@ export class NavBarComponent implements OnInit {
         );
 
 
+        this.linienAreLoaded$ = this.appStateService.appState$.pipe(
+            map(appState => appState.linien && appState.linien.length > 0)
+        );
+
         this.drId$ = this.appStateService.appState$.pipe(
             map(appState => appState.drData ? appState.drData.drId : '(not loaded)')
         );
@@ -80,6 +86,10 @@ export class NavBarComponent implements OnInit {
 
         this.showKantenLabels$ = this.appStateService.appState$.pipe(
             map(appState => appState.showKantenLabels)
+        );
+
+        this.showLinien$ = this.appStateService.appState$.pipe(
+            map(appState => appState.showLinien)
         );
 
         this.zonenXorLokalnetzeText$ = this.appStateService.appState$.pipe(
@@ -152,6 +162,11 @@ export class NavBarComponent implements OnInit {
 
     public showKantenLabelsChange(isChecked: boolean) {
         this.appStateService.showKantenLabels(isChecked);
+    }
+
+
+    public showLinienChange(isChecked: boolean) {
+        this.appStateService.showLinien(isChecked);
     }
 
 

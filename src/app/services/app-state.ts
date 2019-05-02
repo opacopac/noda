@@ -8,10 +8,12 @@ import {Interbereich} from '../model/interbereich';
 import {DataItem} from '../model/data-item';
 import {Path} from '../model/path';
 import {Kante} from '../model/kante';
+import {Linie} from '../model/linie';
 
 
 export class AppState {
     public drData: DrData;
+    public linien: Linie[];
     public drIsLoading = false;
     public currentMouseOverDataItem: DataItem;
     public showKanten = true;
@@ -19,6 +21,7 @@ export class AppState {
     public showHst = true;
     public showHstLabels = false;
     public showKantenLabels = false;
+    public showLinien = false;
     public selectedZonenplan: Zonenplan;
     public selectedInterbereich: Interbereich;
     public selectedRelationsgebiet: Relationsgebiet;

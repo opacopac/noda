@@ -8,4 +8,5 @@ export enum DataItemType {
     Relationsgebiet,
     Relation,
     Path,
+    Linie,
 }

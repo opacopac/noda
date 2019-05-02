@@ -13,7 +13,8 @@ import {Observable} from 'rxjs';
     styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-    private readonly PREPARED_DR_URL = 'http://www.tschanz.com/noda/tmp/stammdaten.json';
+    private readonly STAMMDATEN_JSON_URL = 'http://www.tschanz.com/noda/tmp/stammdaten.json';
+    private readonly LINIEN_JSON_URL = 'http://www.tschanz.com/noda/tmp/linien.json';
     public readonly cropZones$: Observable<boolean>;
 
 
@@ -40,13 +41,13 @@ export class MenuComponent implements OnInit {
     private loadPreparedDr() {
         console.log('loading prepared dr...');
         this.appStateService.setIsLoading(true);
-        const url = this.PREPARED_DR_URL + '?ver=' + Date.now();
+        const url = this.STAMMDATEN_JSON_URL + '?ver=' + Date.now();
         this.storageService.downloadTextFile(url).subscribe(response => {
             console.log('loading prepared dr completed');
 
             const drData = this.storageService.deserializeDrData(response);
-            this.appStateService.setIsLoading(false);
             this.appStateService.updateDrData(drData);
+            this.appStateService.setIsLoading(false);
         });
     }
 
@@ -57,6 +58,18 @@ export class MenuComponent implements OnInit {
             .subscribe((appState) => {
                 this.storageService.exportStammdatenJson(appState.drData, 'stammdaten.json');
             });
+    }
+
+
+    public loadLinien() {
+        console.log('loading linien...');
+        this.appStateService.setIsLoading(true);
+        const url = this.LINIEN_JSON_URL + '?ver=' + Date.now();
+        this.storageService.downloadTextFile(url).subscribe(response => {
+            console.log('loading linien completed');
+            this.appStateService.updateLinien(response);
+            this.appStateService.setIsLoading(false);
+        });
     }
 
 

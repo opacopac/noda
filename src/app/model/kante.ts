@@ -6,6 +6,7 @@ import {JsonSerializable} from '../shared/json-serializable';
 import {StringMapSer} from '../shared/string-map-ser';
 import {Extent2d} from '../geo/extent-2d';
 import {Position2d} from '../geo/position-2d';
+import {Linie} from './linie';
 
 
 export enum VerkehrsmittelTyp {
@@ -29,6 +30,7 @@ export interface KanteJson {
 export class Kante implements DataItem, JsonSerializable<KanteJson> {
     public zonenLut: Zone[] = [];
     public parallelKanteLut: Kante[] = [];
+    public linieLut: Linie[] = [];
 
 
     public constructor(

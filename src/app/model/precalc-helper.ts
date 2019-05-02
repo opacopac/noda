@@ -14,6 +14,7 @@ import {Zonelike, ZoneLikeJson} from './zonelike';
 import {Kante} from './kante';
 import {TurfHelper} from '../geo/turf-helper';
 import {Zonenplan} from './zonenplan';
+import {Linie} from './linie';
 
 
 class KanteWithZonen {
@@ -52,6 +53,19 @@ export class PrecalcHelper {
 
 
         return hstQuadTree;
+    }
+
+
+    public static createLinienLut(linien: Linie[]) {
+        console.log('create linien LUT...');
+
+        linien.forEach(linie => {
+            linie.kanten.forEach(kante => {
+                this.addUniqueLinie(kante.linieLut, linie);
+            });
+        });
+
+        console.log('done');
     }
 
 
@@ -204,6 +218,13 @@ export class PrecalcHelper {
     private static addUniqueHst(hstList: Haltestelle[], hst: Haltestelle) {
         if (hstList.indexOf(hst) === -1) {
             hstList.push(hst);
+        }
+    }
+
+
+    private static addUniqueLinie(linieList: Linie[], linie: Linie) {
+        if (linieList.indexOf(linie) === -1) {
+            linieList.push(linie);
         }
     }
 

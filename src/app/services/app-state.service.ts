@@ -4,7 +4,7 @@ import {DrData} from '../model/dr-data';
 import {OlKante} from '../ol-components/OlKante';
 import {OlHaltestelle} from '../ol-components/OlHaltestelle';
 import {OlMapCoords, OlMapService} from './ol-map.service';
-import {Haltestelle} from '../model/haltestelle';
+import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
 import {Kante} from '../model/kante';
 import {Zonenplan} from '../model/zonenplan';
 import {Relationsgebiet} from '../model/relationsgebiet';
@@ -22,6 +22,9 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {Dijkstra} from '../geo/dijkstra';
 import {Path} from '../model/path';
 import {OlPath} from '../ol-components/OlPath';
+import {StringMapSer} from '../shared/string-map-ser';
+import {Linie} from '../model/linie';
+import {OlLinienKante} from '../ol-components/OlLinienKante';
 
 
 @Injectable({
@@ -84,6 +87,13 @@ export class AppStateService {
 
     public showKantenLabels(value: boolean) {
         this.appState.showKantenLabels = value;
+        this.drawDataItems();
+        this.onStateChanged();
+    }
+
+
+    public showLinien(value: boolean) {
+        this.appState.showLinien = value;
         this.drawDataItems();
         this.onStateChanged();
     }
@@ -191,6 +201,14 @@ export class AppStateService {
     }
 
 
+    public updateLinien(linienJsonString: string) {
+        const linienJson = JSON.parse(linienJsonString);
+        this.appState.linien = Linie.fromJSON(linienJson, this.appState.drData.haltestellen, this.appState.drData.kanten);
+        PrecalcHelper.createLinienLut(this.appState.linien);
+        this.onStateChanged();
+    }
+
+
     public onMouseOverDataItem(dataItem: DataItem) {
         if (dataItem === this.appState.currentMouseOverDataItem) {
             return;
@@ -257,20 +275,31 @@ export class AppStateService {
             OlPath.draw(this.appState.selectedPath, this.dataItemsLayer, this.labelLayer);
         }
 
-        if (this.appState.showHst || this.appState.showKanten) {
+        if (this.appState.showHst || this.appState.showKanten || this.appState.showLinien) {
             const hstList = this.appState.hstQuadTree.searchItems(this.appState.mapCoords.extent, this.MAX_HST_IN_VIEW);
-            const kantenList = this.appState.showKanten ? this.searchKanten(hstList) : [];
-            kantenList.forEach(kante => OlKante.drawKante(kante, this.dataItemsLayer));
+            const kantenList = (this.appState.showKanten || this.appState.showLinien) ? this.searchKanten(hstList) : [];
+
+            const visLinienKantenList = this.appState.showLinien ? kantenList
+                .filter(kante => kante.linieLut && kante.linieLut.length > 0)
+                : [];
+            visLinienKantenList.forEach(linienKante => OlLinienKante.draw(linienKante, this.dataItemsLayer));
+
+            const visibleKantenList = this.appState.showKanten ? kantenList : [];
+            visibleKantenList.forEach(kante => OlKante.drawKante(kante, this.dataItemsLayer));
 
             const visibleHstList = this.appState.showHst ? hstList : [];
             visibleHstList.forEach(hst => OlHaltestelle.drawHst(hst, this.dataItemsLayer));
 
             if (this.appState.showKantenLabels) {
-                kantenList.forEach(kante => OlKante.drawLabel(kante, this.labelLayer));
+                visibleKantenList.forEach(kante => OlKante.drawLabel(kante, this.labelLayer));
             }
 
             if (this.appState.showHstLabels) {
                 visibleHstList.forEach(hst => OlHaltestelle.drawLabel(hst, this.labelLayer));
+            }
+
+            if (this.appState.showLinien) {
+                visLinienKantenList.forEach(linienkante => OlLinienKante.drawLabel(linienkante, this.labelLayer));
             }
         }
     }
