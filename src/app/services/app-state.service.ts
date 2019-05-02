@@ -330,19 +330,38 @@ export class AppStateService {
         }
 
         query = query.trim().toLowerCase();
+        const isNumericQuery = !isNaN(parseInt(query, 10));
         const hstList = Array.from(this.appState.drData.haltestellen.values());
 
         return hstList
             .filter(hst => (hst.bavName.toLowerCase().indexOf(query) >= 0 || hst.uic.toString().indexOf(query) >= 0))
             .sort((a, b) => {
-                const idxDiff = a.bavName.toLowerCase().indexOf(query) - b.bavName.toLowerCase().indexOf(query);
-                if (idxDiff !== 0) {
-                    return idxDiff;
+                let idxDiff: number;
+                if (isNumericQuery) {
+                    idxDiff = b.uic.toString().indexOf(query) - a.uic.toString().indexOf(query);
+                    if (idxDiff !== 0) {
+                        return idxDiff;
+                    }
+                    const isChDiff = this.isCh(b) - this.isCh(a);
+                    if (isChDiff !== 0) {
+                        return isChDiff;
+                    }
+                    return a.uic - b.uic;
+                } else {
+                    idxDiff = a.bavName.toLowerCase().indexOf(query) - b.bavName.toLowerCase().indexOf(query);
+                    if (idxDiff !== 0) {
+                        return idxDiff;
+                    }
                 }
 
                 return a.bavName.length - b.bavName.length;
             })
             .slice(0, maxResults);
+    }
+
+
+    private isCh(hst: Haltestelle): number {
+        return (hst.uic > 8500000 && hst.uic < 8599999) ? 1 : 0;
     }
 
 
