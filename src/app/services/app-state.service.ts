@@ -333,7 +333,7 @@ export class AppStateService {
         const hstList = Array.from(this.appState.drData.haltestellen.values());
 
         return hstList
-            .filter(hst => hst.bavName.toLowerCase().indexOf(query) >= 0)
+            .filter(hst => (hst.bavName.toLowerCase().indexOf(query) >= 0 || hst.uic.toString().indexOf(query) >= 0))
             .sort((a, b) => {
                 const idxDiff = a.bavName.toLowerCase().indexOf(query) - b.bavName.toLowerCase().indexOf(query);
                 if (idxDiff !== 0) {
