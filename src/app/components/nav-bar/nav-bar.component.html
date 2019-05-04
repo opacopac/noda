@@ -112,7 +112,7 @@
             </div>
             <div mat-menu-item (click)="$event.stopPropagation()">
                 <mat-slide-toggle (change)="this.toggleColorsChange($event.checked)" [checked]="this.showLinien$ | async" [disabled]="!(this.linienAreLoaded$ | async)">
-                    show Linien
+                    Verkehrsmittel / Linien
                 </mat-slide-toggle>
             </div>
             <div mat-menu-item (click)="$event.stopPropagation()">
