@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import VectorLayer from 'ol/layer/Vector';
 import {DrData} from '../model/dr-data';
-import {OlKante} from '../ol-components/OlKante';
+import {OlVerkehrsKante} from '../ol-components/OlVerkehrsKante';
 import {OlHaltestelle} from '../ol-components/OlHaltestelle';
 import {OlMapCoords, OlMapService} from './ol-map.service';
-import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
+import {Haltestelle} from '../model/haltestelle';
 import {Kante} from '../model/kante';
 import {Zonenplan} from '../model/zonenplan';
 import {Relationsgebiet} from '../model/relationsgebiet';
@@ -22,7 +22,6 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {Dijkstra} from '../geo/dijkstra';
 import {Path} from '../model/path';
 import {OlPath} from '../ol-components/OlPath';
-import {StringMapSer} from '../shared/string-map-ser';
 import {Linie} from '../model/linie';
 import {OlLinienKante} from '../ol-components/OlLinienKante';
 
@@ -215,7 +214,7 @@ export class AppStateService {
         }
 
         this.appState.currentMouseOverDataItem = dataItem;
-        this.drawSelectedItem(dataItem);
+        this.drawItemSelection(dataItem);
         this.onStateChanged();
     }
 
@@ -275,37 +274,45 @@ export class AppStateService {
             OlPath.draw(this.appState.selectedPath, this.dataItemsLayer, this.labelLayer);
         }
 
-        if (this.appState.showHst || this.appState.showKanten || this.appState.showLinien) {
+        if (this.appState.showHst || this.appState.showKanten) {
+            // determine hst & kanten for drawing
             const hstList = this.appState.hstQuadTree.searchItems(this.appState.mapCoords.extent, this.MAX_HST_IN_VIEW);
-            const kantenList = (this.appState.showKanten || this.appState.showLinien) ? this.searchKanten(hstList) : [];
+            const kantenList = this.appState.showKanten ? this.searchKanten(hstList) : [];
 
-            const visLinienKantenList = this.appState.showLinien ? kantenList
-                .filter(kante => kante.linieLut && kante.linieLut.length > 0)
-                : [];
-            visLinienKantenList.forEach(linienKante => OlLinienKante.draw(linienKante, this.dataItemsLayer));
-
+            // draw kanten
             const visibleKantenList = this.appState.showKanten ? kantenList : [];
-            visibleKantenList.forEach(kante => OlKante.drawKante(kante, this.dataItemsLayer));
+            visibleKantenList.forEach(kante => {
+                if (this.appState.showLinien) {
+                    OlLinienKante.draw(kante, this.dataItemsLayer);
+                } else {
+                    OlVerkehrsKante.draw(kante, this.dataItemsLayer);
+                }
+            });
 
+            // draw haltestellen
             const visibleHstList = this.appState.showHst ? hstList : [];
             visibleHstList.forEach(hst => OlHaltestelle.drawHst(hst, this.dataItemsLayer));
 
-            if (this.appState.showKantenLabels) {
-                visibleKantenList.forEach(kante => OlKante.drawLabel(kante, this.labelLayer));
-            }
-
+            // draw haltestelle labels
             if (this.appState.showHstLabels) {
                 visibleHstList.forEach(hst => OlHaltestelle.drawLabel(hst, this.labelLayer));
             }
 
-            if (this.appState.showLinien) {
-                visLinienKantenList.forEach(linienkante => OlLinienKante.drawLabel(linienkante, this.labelLayer));
+            // draw kanten labels
+            if (this.appState.showKantenLabels) {
+                visibleKantenList.forEach(kante => {
+                    if (this.appState.showLinien) {
+                        OlLinienKante.drawLabel(kante, this.labelLayer);
+                    } else {
+                        OlVerkehrsKante.drawLabel(kante, this.labelLayer);
+                    }
+                });
             }
         }
     }
 
 
-    private drawSelectedItem(dataItem: DataItem) {
+    private drawItemSelection(dataItem: DataItem) {
         this.selectedDataItemLayer.getSource().clear(true);
 
         if (!dataItem) {

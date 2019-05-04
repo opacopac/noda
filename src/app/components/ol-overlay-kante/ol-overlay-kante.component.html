@@ -15,12 +15,12 @@
                 Betreiber:
                 <ul>
                     <li *ngFor="let kte of this.getParallelKanten()">
-                        {{ kte.betreiber }} ({{ VerkehrsmittelTyp[kte.verkehrsmittelTyp] }})
+                        {{ kte.betreiber }} ({{ VerkehrsmittelTyp[kte.verkehrsmittelTyp] }}), Linie: {{ this.getLinienText(kte) }}
                     </li>
                 </ul>
             </span>
             <span *ngIf="this.getZonenplaene().length > 0">
-                Zonenzuordnung:
+                Zonen:
                 <ul>
                     <li *ngFor="let zonenplan of this.getZonenplaene()">
                         {{ zonenplan.bezeichnung }}: <span *ngFor="let zone of this.getZonen(zonenplan)">{{ zone.code }} </span>

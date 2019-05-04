@@ -58,6 +58,19 @@ export class OlOverlayKanteComponent extends OlOverlayBase implements OnInit {
     }
 
 
+    public getLinienText(kante: Kante): string {
+        if (!kante.linieLut || kante.linieLut.length === 0) {
+            return '-';
+        }
+
+        return kante.linieLut
+            .map(linie => linie.nr)
+            .filter((nr, index) => kante.linieLut.map(linie => linie.nr).indexOf(nr) === index)
+            .sort()
+            .join(', ');
+    }
+
+
     public getZonenplaene(): Zonenplan[] {
         return Array.from(new Set(this.kante.zonenLut.map(zone => zone.zonenplan)));
     }

@@ -102,4 +102,57 @@ export class Kante implements DataItem, JsonSerializable<KanteJson> {
             return undefined;
         }
     }
+
+
+    public getDistinctBetreiber(): string[] {
+        const distinctBetreiber: string[] = [];
+        for (const kante of this.parallelKanteLut) {
+            for (const linie of kante.linieLut) {
+                if (distinctBetreiber.indexOf(linie.betreiber) === -1) {
+                    distinctBetreiber.push(linie.betreiber);
+                }
+            }
+        }
+
+        return distinctBetreiber;
+    }
+
+
+    public getDistinctLinienNrs(betreiber: string): string[] {
+        const distinctLinienNrs: string[] = [];
+        for (const kante of this.parallelKanteLut) {
+            for (const linie of kante.linieLut) {
+                if (linie.betreiber === betreiber && distinctLinienNrs.indexOf(linie.nr) === -1) {
+                    distinctLinienNrs.push(linie.nr);
+                }
+            }
+        }
+
+        return distinctLinienNrs;
+    }
+
+
+    public getDistinctAllBetreiberLinie(): string[][] {
+        const distinctBetreiberLinie: string[][] = [];
+        for (const kante of this.parallelKanteLut) {
+            for (const linie of kante.linieLut) {
+                if (!this.containsBetreiberLinie(distinctBetreiberLinie, linie.betreiber, linie.nr)) {
+                    distinctBetreiberLinie.push([linie.betreiber, linie.nr]);
+                }
+            }
+        }
+
+        return distinctBetreiberLinie;
+    }
+
+
+    private containsBetreiberLinie(betreiberLinieList: string[][], betreiber: string, nr: string): boolean {
+        for (const betreiberLinie of betreiberLinieList) {
+            if (betreiberLinie[0] === betreiber && betreiberLinie[1] === nr) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

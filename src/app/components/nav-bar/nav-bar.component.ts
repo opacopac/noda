@@ -165,7 +165,7 @@ export class NavBarComponent implements OnInit {
     }
 
 
-    public showLinienChange(isChecked: boolean) {
+    public toggleColorsChange(isChecked: boolean) {
         this.appStateService.showLinien(isChecked);
     }
 

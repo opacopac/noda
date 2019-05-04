@@ -1,9 +1,9 @@
 import {Style, Icon, Fill, Circle, Text, Stroke} from 'ol/style';
 import {ZoneColorHelper} from '../model/zone-color-helper';
-import {Linie} from '../model/linie';
 
 
 export class OlColorHelper {
+    private static readonly DASH_LENGTH_PIXEL = 20;
     private static readonly defaultColorList = [
         '#4363d8',
         '#42d4f4',
@@ -32,8 +32,8 @@ export class OlColorHelper {
     }
 
 
-    public static getRgbaFromLinie(linie: Linie, opacity: number): string {
-        let nr = parseInt(linie.nr, 10);
+    public static getRgbaFromLinieNr(linieNr: string, opacity: number): string {
+        let nr = parseInt(linieNr, 10);
         if (isNaN(nr)) {
             nr = 0;
         }
@@ -49,6 +49,27 @@ export class OlColorHelper {
             this.getDecFromHex(colorHex.substr(3, 2)) + ',' +
             this.getDecFromHex(colorHex.substr(5, 2)) + ',' +
             opacity + ')';
+    }
+
+
+    public static createMultiColorStyle(index: number, maxCount: number, color: string, width: number): Style {
+        let dash, dashOffset;
+        if (maxCount > 1) {
+            dash = [this.DASH_LENGTH_PIXEL, (maxCount - 1) * this.DASH_LENGTH_PIXEL];
+            dashOffset = this.DASH_LENGTH_PIXEL * index;
+        } else {
+            dash = [];
+            dashOffset = 0;
+        }
+
+        return new Style({
+            stroke: new Stroke({
+                color: color,
+                width: width,
+                lineDash: dash,
+                lineDashOffset: dashOffset
+            })
+        });
     }
 
 

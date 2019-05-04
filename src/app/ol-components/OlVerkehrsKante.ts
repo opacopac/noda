@@ -3,13 +3,11 @@ import {Circle, Fill, Icon, Stroke, Style, Text} from 'ol/style';
 import {OlFeatureHelper} from './OlFeatureHelper';
 import {Kante, VerkehrsmittelTyp} from '../model/kante';
 import {Position2d} from '../geo/position-2d';
+import {OlColorHelper} from './OlColorHelper';
 
 
-export class OlKante {
-    private static readonly DASH_LENGTH_PIXEL = 20;
-
-
-    public static drawKante(kante: Kante, layer: VectorLayer) {
+export class OlVerkehrsKante {
+    public static draw(kante: Kante, layer: VectorLayer) {
         const olFeature = OlFeatureHelper.createFeature(kante, true);
         olFeature.setStyle(this.createStyle(kante));
         OlFeatureHelper.setLineGeometry(olFeature, [kante.haltestelle1.position, kante.haltestelle2.position]);
@@ -25,27 +23,27 @@ export class OlKante {
     }
 
 
-
     private static createStyle(kante: Kante): Style {
-        let dash, dashOffset;
-        const tot = kante.parallelKanteLut.length;
-        if (tot > 1) {
-            dash = [OlKante.DASH_LENGTH_PIXEL, (tot - 1) * OlKante.DASH_LENGTH_PIXEL];
-            dashOffset = OlKante.DASH_LENGTH_PIXEL * kante.parallelKanteLut.indexOf(kante);
-        } else if (kante.verkehrsmittelTyp === VerkehrsmittelTyp.FUSSWEG) {
-            dash = [10, 7];
-            dashOffset = 0;
+        if (kante.verkehrsmittelTyp === VerkehrsmittelTyp.FUSSWEG) {
+            return this.createFusswegStyle(kante);
         } else {
-            dash = [];
-            dashOffset = 0;
+            return OlColorHelper.createMultiColorStyle(
+                kante.parallelKanteLut.indexOf(kante),
+                kante.parallelKanteLut.length,
+                this.getKanteColor(kante),
+                2
+            );
         }
+    }
 
+
+    public static createFusswegStyle(kante: Kante): Style {
         return new Style({
             stroke: new Stroke({
                 color: this.getKanteColor(kante),
                 width: 2,
-                lineDash: dash,
-                lineDashOffset: dashOffset
+                lineDash: [10, 7],
+                lineDashOffset: 0
             })
         });
     }

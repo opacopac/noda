@@ -48,6 +48,20 @@ export class MenuComponent implements OnInit {
             const drData = this.storageService.deserializeDrData(response);
             this.appStateService.updateDrData(drData);
             this.appStateService.setIsLoading(false);
+
+            this.loadLinien();
+        });
+    }
+
+
+    private loadLinien() {
+        console.log('loading linien...');
+        this.appStateService.setIsLoading(true);
+        const url = this.LINIEN_JSON_URL + '?ver=' + Date.now();
+        this.storageService.downloadTextFile(url).subscribe(response => {
+            console.log('loading linien completed');
+            this.appStateService.updateLinien(response);
+            this.appStateService.setIsLoading(false);
         });
     }
 
@@ -58,18 +72,6 @@ export class MenuComponent implements OnInit {
             .subscribe((appState) => {
                 this.storageService.exportStammdatenJson(appState.drData, 'stammdaten.json');
             });
-    }
-
-
-    public loadLinien() {
-        console.log('loading linien...');
-        this.appStateService.setIsLoading(true);
-        const url = this.LINIEN_JSON_URL + '?ver=' + Date.now();
-        this.storageService.downloadTextFile(url).subscribe(response => {
-            console.log('loading linien completed');
-            this.appStateService.updateLinien(response);
-            this.appStateService.setIsLoading(false);
-        });
     }
 
 

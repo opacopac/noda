@@ -250,8 +250,8 @@ export class OlMapService {
     public addOverlay(container: HTMLElement): Overlay {
         const overlay = new Overlay({
             element: container,
-            autoPan: true,
-            autoPanAnimation: { source: undefined, duration: 250 }
+            // autoPan: true,
+            // autoPanAnimation: { source: undefined, duration: 250 }
         });
 
         this.map.addOverlay(overlay);

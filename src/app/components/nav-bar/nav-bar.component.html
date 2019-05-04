@@ -16,7 +16,7 @@
                 </mat-checkbox>
                 <br>
                 <mat-slide-toggle (change)="this.showHaltestellenLabelsChange($event.checked)"
-                                  [checked]="this.showHstLabels$ | async" [disabled]="!showHst.checked">show names
+                                  [checked]="this.showHstLabels$ | async" [disabled]="!showHst.checked">show labels
                 </mat-slide-toggle>
             </div>
             <div>
@@ -25,8 +25,7 @@
                 </mat-checkbox>
                 <br>
                 <mat-slide-toggle (change)="this.showKantenLabelsChange($event.checked)"
-                                  [checked]="this.showKantenLabels$ | async" [disabled]="!showKts.checked">show
-                    Betreiber
+                                  [checked]="this.showKantenLabels$ | async" [disabled]="!showKts.checked">show labels
                 </mat-slide-toggle>
             </div>
         </div>
@@ -72,8 +71,8 @@
                 {{ this.zonenXorLokalnetzeText$ | async }}
             </mat-slide-toggle>
             &nbsp;&nbsp;
-            <mat-slide-toggle (change)="this.showLinienChange($event.checked)" [checked]="this.showLinien$ | async" [disabled]="!(this.linienAreLoaded$ | async)">
-                show Linien
+            <mat-slide-toggle (change)="this.toggleColorsChange($event.checked)" [checked]="this.showLinien$ | async" [disabled]="!(this.linienAreLoaded$ | async)">
+                Verkehrsmittel / Linien
             </mat-slide-toggle>
         </div>
         <div>
@@ -99,7 +98,7 @@
                 </mat-checkbox>
                 &nbsp;
                 <mat-slide-toggle (change)="this.showHaltestellenLabelsChange($event.checked)"
-                                  [checked]="this.showHstLabels$ | async" [disabled]="!showHstSm.checked">show names
+                                  [checked]="this.showHstLabels$ | async" [disabled]="!showHstSm.checked">show labels
                 </mat-slide-toggle>
             </div>
             <div mat-menu-item (click)="$event.stopPropagation()">
@@ -108,12 +107,11 @@
                 </mat-checkbox>
                 &nbsp;
                 <mat-slide-toggle (change)="this.showKantenLabelsChange($event.checked)"
-                                  [checked]="this.showKantenLabels$ | async" [disabled]="!showKtsSm.checked">show
-                    Betreiber
+                                  [checked]="this.showKantenLabels$ | async" [disabled]="!showKtsSm.checked">show labels
                 </mat-slide-toggle>
             </div>
             <div mat-menu-item (click)="$event.stopPropagation()">
-                <mat-slide-toggle (change)="this.showLinienChange($event.checked)" [checked]="this.showLinien$ | async" [disabled]="!(this.linienAreLoaded$ | async)">
+                <mat-slide-toggle (change)="this.toggleColorsChange($event.checked)" [checked]="this.showLinien$ | async" [disabled]="!(this.linienAreLoaded$ | async)">
                     show Linien
                 </mat-slide-toggle>
             </div>
