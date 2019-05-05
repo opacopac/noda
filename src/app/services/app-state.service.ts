@@ -30,7 +30,8 @@ import {OlLinienKante} from '../ol-components/OlLinienKante';
     providedIn: 'root'
 })
 export class AppStateService {
-    private readonly MAX_HST_IN_VIEW = 500;
+    private readonly MIN_PIXEL_PER_HST = 70;
+    private readonly NAV_BAR_HEIGHT_PX = 150; // TODO
 
     public readonly appState$: Observable<AppState>;
     private readonly appStateSubject: BehaviorSubject<AppState>;
@@ -276,7 +277,11 @@ export class AppStateService {
 
         if (this.appState.showHst || this.appState.showKanten) {
             // determine hst & kanten for drawing
-            const hstList = this.appState.hstQuadTree.searchItems(this.appState.mapCoords.extent, this.MAX_HST_IN_VIEW);
+            const hstList = this.appState.hstQuadTree.searchItems(
+                this.appState.mapCoords.extent,
+                window.innerWidth / this.MIN_PIXEL_PER_HST,
+                (window.innerHeight - this.NAV_BAR_HEIGHT_PX ) / this.MIN_PIXEL_PER_HST
+            );
             const kantenList = this.appState.showKanten ? this.searchKanten(hstList) : [];
 
             // draw kanten

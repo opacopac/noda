@@ -148,7 +148,7 @@ export class PrecalcHelper {
 
     private static createHstQuadTree(hstMap: StringMapSer<Haltestelle, HaltestelleJson>): QuadTree<Haltestelle> {
         const extent = new Extent2d(5, 45, 15, 50); // TODO
-        const quadTree = new QuadTree<Haltestelle>(extent, 10); // TODO
+        const quadTree = new QuadTree<Haltestelle>(extent, 11); // TODO
 
         hstMap.forEach(hst => quadTree.addItem(hst));
 

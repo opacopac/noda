@@ -14,11 +14,11 @@ export class QuadTree<T extends QuadTreeIndexable> {
     }
 
 
-    public searchItems(extent: Extent2d, approxMaxItems: number): T[] {
+    public searchItems(extent: Extent2d, approxMaxItemsWidth: number, approxMaxItemsHeight: number): T[] {
         const itemList: T[] = [];
 
-        const minWidth = (extent.maxLon - extent.minLon) / Math.sqrt(approxMaxItems);
-        const minHeight = (extent.maxLat - extent.minLat) / Math.sqrt(approxMaxItems);
+        const minWidth = (extent.maxLon - extent.minLon) / approxMaxItemsWidth;
+        const minHeight = (extent.maxLat - extent.minLat) / approxMaxItemsHeight;
         this.searchItemsInNode(extent, minWidth, minHeight, itemList, this.rootNode);
 
         return itemList;
