@@ -29,6 +29,12 @@ export class StorageService {
     }
 
 
+    public exportJsonFile(jsonstring: string, fileName: string) {
+        const blob = new Blob([jsonstring], {type: 'application/json;charset=utf-8'});
+        saveAs(blob, fileName);
+    }
+
+
     public serializeDrData(drData: DrData): string {
         return JSON.stringify(drData);
     }

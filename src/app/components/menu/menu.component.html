@@ -13,5 +13,6 @@
         crop zones (max. radius 4km)
         <mat-slide-toggle (click)="this.cropZonenToggle()" [checked]="this.cropZones$ | async"></mat-slide-toggle>
     </button>
+    <button mat-menu-item (click)="this.exportZonenPolygons()">export zone polygons</button>
 </mat-menu>
 <input hidden type="file" #fileInput (change)="this.fileUploadChange($event)">

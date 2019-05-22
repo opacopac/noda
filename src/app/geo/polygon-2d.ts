@@ -23,6 +23,10 @@ export class Polygon2d {
 
 
     public toArray(): number[][][] {
+        if (this.outerBoundary === undefined) {
+            return [];
+        }
+
         return [
             this.outerBoundary.toArray(),
             ...this.holes.map(hole => hole.toArray())

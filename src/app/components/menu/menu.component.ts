@@ -80,6 +80,17 @@ export class MenuComponent implements OnInit {
     }
 
 
+    public exportZonenPolygons() {
+        this.appStateService.appState$
+            .pipe(first())
+            .subscribe((appState) => {
+                const polyData = this.getZonenPolyData(appState.drData);
+                const polyDataJsonString = JSON.stringify(polyData);
+                this.storageService.exportJsonFile(polyDataJsonString, 'zonenpolygons.json');
+            });
+    }
+
+
     public fileUploadChange(fileInputEvent: any) {
         const dataFile = fileInputEvent.target.files[0] as File;
         if (!dataFile) {
@@ -117,5 +128,21 @@ export class MenuComponent implements OnInit {
         };
 
         reader.readAsText(file);
+    }
+
+
+    private getZonenPolyData(drData: DrData): any {
+        return Array.from(drData.zonenplaene.values()).map(zonenplan => {
+            return {
+                zonenplan: zonenplan.bezeichnung,
+                zonen: zonenplan.zonen.map(zone => {
+                    return {
+                        code: zone.code,
+                        zonenPoly: zone.polygon ? zone.polygon.toArray() : undefined,
+                        hstPoly: zone.hstPolygon ? zone.hstPolygon.toArray() : undefined
+                    };
+                })
+            };
+        });
     }
 }
