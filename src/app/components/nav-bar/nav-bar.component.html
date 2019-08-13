@@ -78,11 +78,12 @@
         <div>
             <mat-form-field class="selector">
                 <mat-select placeholder="Relationsgebiet" (selectionChange)="this.relationsgebietChange($event.value)">
-                    <mat-option [value]="undefined">(none)</mat-option>
+                    <mat-option [value]="undefined">(not implemented)</mat-option>
+                    <!--<mat-option [value]="undefined">(none)</mat-option>
                     <mat-option *ngFor="let relationsgebiet of this.relationsgebietList$ | async"
                                 [value]="relationsgebiet">
                         {{ this.getDisplayText(relationsgebiet.bezeichnung) }}
-                    </mat-option>
+                    </mat-option>-->
                 </mat-select>
             </mat-form-field>
         </div>

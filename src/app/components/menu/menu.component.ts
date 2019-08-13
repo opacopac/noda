@@ -29,7 +29,7 @@ export class MenuComponent implements OnInit {
 
 
     ngOnInit() {
-       // this.loadPreparedDr();
+       this.loadPreparedDr();
     }
 
 
