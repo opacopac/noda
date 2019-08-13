@@ -1,8 +1,8 @@
-import {NovaDrSchema} from './NovaDrSchema';
+import {NovaDrSchemaMetaData} from './NovaDrSchema';
 
 
 export class NovaDrParserMetadata {
-    public static parseDatenreleaseId(jsonDr: NovaDrSchema): string {
-        return jsonDr.datenrelease.metadata.datenreleaseId;
+    public static parseDatenreleaseId(metaData: NovaDrSchemaMetaData): string {
+        return metaData.datenreleaseId;
     }
 }

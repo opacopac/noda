@@ -1,4 +1,4 @@
-import {NovaDrSchema, NovaDrSchemaHaltestelle} from './NovaDrSchema';
+import {NovaDrSchemaHaltestelle} from './NovaDrSchema';
 import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
 import {Position2d} from '../geo/position-2d';
 import {StringMapSer} from '../shared/string-map-ser';
@@ -6,8 +6,7 @@ import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 
 export class NovaDrParserHaltestelle {
-    public static parse(jsonDr: NovaDrSchema, stichdatum: string): StringMapSer<Haltestelle, HaltestelleJson> {
-        const drHstList = jsonDr.datenrelease.subsystemNetz.haltestellen.haltestelle;
+    public static parse(drHstList: NovaDrSchemaHaltestelle[], stichdatum: string): StringMapSer<Haltestelle, HaltestelleJson> {
         const hstList: StringMapSer<Haltestelle, HaltestelleJson> = new StringMapSer<Haltestelle, HaltestelleJson>();
 
         for (const drHst of drHstList) {

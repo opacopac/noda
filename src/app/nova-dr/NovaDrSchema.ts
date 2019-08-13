@@ -1,17 +1,3 @@
-export interface NovaDrSchema {
-    'datenrelease': NovaDrSchemaRoot;
-}
-
-
-export interface NovaDrSchemaRoot {
-    metadata: NovaDrSchemaMetaData;
-    subsystemNetz: NovaDrSchemaNetz;
-    subsystemZonenModell: NovaDrSchemaZonenModell;
-    subsystemDVModell: NovaDrSchemaDvModell;
-    subsystemInterModell: NovaDrSchemaInterModell;
-}
-
-
 export interface NovaDrSchemaMetaData {
     '@_schemaVersion': string;
     datenreleaseId: string;
@@ -31,14 +17,6 @@ export interface IdAttribute {
 
 
 // region netz
-
-export interface NovaDrSchemaNetz {
-    betreibers: { betreiber: NovaDrSchemaBetreiber[] };
-    haltestellen: { haltestelle: NovaDrSchemaHaltestelle[] };
-    kanten: { kante: NovaDrSchemaKante[] };
-    verwaltungen: { verwaltung: NovaDrSchemaVerwaltung[] };
-}
-
 
 export interface NovaDrSchemaHaltestelle extends IdAttribute {
     '@_id': string;
@@ -99,13 +77,6 @@ export interface NovaDrSchemaBetreiber extends IdAttribute {
 
 // region zonen
 
-export interface NovaDrSchemaZonenModell {
-    zonenplaene: { zonenplan: NovaDrSchemaZonenplan[] };
-    zonen: { zone: NovaDrSchemaZone[] };
-    lokalnetzen: { lokalnetz: NovaDrSchemaLokalnetz[] };
-}
-
-
 export interface NovaDrSchemaZonenplan extends IdAttribute {
     '@_id': string;
     version: {
@@ -153,11 +124,6 @@ export interface NovaDrSchemaLokalnetz extends IdAttribute {
 
 // region inter
 
-export interface NovaDrSchemaInterModell {
-    interBereiche: { interBereich: NovaDrSchemaInterbereich[] };
-}
-
-
 export interface NovaDrSchemaInterbereich extends IdAttribute {
     '@_id': string;
     version: {
@@ -189,12 +155,6 @@ export interface NovaDrSchemaAnkerpunktZubringer extends IdAttribute {
 
 
 // region dv
-
-export interface NovaDrSchemaDvModell {
-    relationsgebiete: { relationsgebiet: NovaDrSchemaRelationsgebiet[] };
-    rtmRelationen: { rtmRelation: NovaDrSchemaRtmRelation[] };
-}
-
 
 export interface NovaDrSchemaRelationsgebiet extends IdAttribute {
     '@_id': string;

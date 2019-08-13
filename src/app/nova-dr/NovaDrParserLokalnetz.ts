@@ -1,6 +1,5 @@
-import {NovaDrSchema, NovaDrSchemaLokalnetz} from './NovaDrSchema';
+import {NovaDrSchemaLokalnetz} from './NovaDrSchema';
 import {Kante, KanteJson} from '../model/kante';
-import {isArray} from 'util';
 import {Lokalnetz} from '../model/lokalnetz';
 import {StringMapSer} from '../shared/string-map-ser';
 import {ZoneLikeJson} from '../model/zonelike';
@@ -9,11 +8,10 @@ import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 export class NovaDrParserLokalnetz {
     public static parse(
-        jsonDr: NovaDrSchema,
+        drLokalnetzList: NovaDrSchemaLokalnetz[],
         stichdatum: string,
         kanteMap: StringMapSer<Kante, KanteJson>
     ): StringMapSer<Lokalnetz, ZoneLikeJson> {
-        const drLokalnetzList = jsonDr.datenrelease.subsystemZonenModell.lokalnetzen.lokalnetz;
         const lokalnetzMap = new StringMapSer<Lokalnetz, ZoneLikeJson>();
 
         for (const drLokalnetz of drLokalnetzList) {

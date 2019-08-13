@@ -1,4 +1,4 @@
-import {NovaDrSchema, NovaDrSchemaBetreiber} from './NovaDrSchema';
+import {NovaDrSchemaBetreiber} from './NovaDrSchema';
 import {StringMap} from '../shared/string-map-ser';
 import {NovaDrParserHelper} from './NovaDrParserHelper';
 import {Betreiber} from '../model/betreiber';
@@ -6,13 +6,12 @@ import {Betreiber} from '../model/betreiber';
 
 export class NovaDrParserBetreiber {
     public static parse(
-        jsonDr: NovaDrSchema,
+        betreiberList: NovaDrSchemaBetreiber[],
         stichdatum: string,
     ): StringMap<Betreiber> {
-        const BetreiberList = jsonDr.datenrelease.subsystemNetz.betreibers.betreiber;
         const betreiberMap = new StringMap<Betreiber>();
 
-        for (const drBetreiber of BetreiberList) {
+        for (const drBetreiber of betreiberList) {
             const id = NovaDrParserHelper.parseIdAttribute(drBetreiber);
             const betreiber = this.parseBetreiber(id, drBetreiber, stichdatum);
 

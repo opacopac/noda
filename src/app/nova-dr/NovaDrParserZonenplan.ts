@@ -1,4 +1,4 @@
-import {NovaDrSchema, NovaDrSchemaZonenplan} from './NovaDrSchema';
+import {NovaDrSchemaZonenplan} from './NovaDrSchema';
 import {Zone} from '../model/zone';
 import {Zonenplan, ZonenplanJson} from '../model/zonenplan';
 import {Lokalnetz} from '../model/lokalnetz';
@@ -9,12 +9,11 @@ import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 export class NovaDrParserZonenplan {
     public static parse(
-        jsonDr: NovaDrSchema,
+        drZonenplanList: NovaDrSchemaZonenplan[],
         stichdatum: string,
         zonenMap: StringMapSer<Zone, ZoneLikeJson>,
         lokalnetzMap: StringMapSer<Lokalnetz, ZoneLikeJson>
     ): StringMapSer<Zonenplan, ZonenplanJson> {
-        const drZonenplanList = jsonDr.datenrelease.subsystemZonenModell.zonenplaene.zonenplan;
         const zonenplanMap = new StringMapSer<Zonenplan, ZonenplanJson>();
 
         for (const drZonenplan of drZonenplanList) {

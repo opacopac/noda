@@ -14,6 +14,7 @@ export class ZoneColorHelper {
     private static readonly zonenplanColors: ZonenplanColors[] = [
         {
             zonenplaene: [
+                'A-Welle Abo & Billett',
                 'A-Welle Abo &amp; Billett',
                 'A-Welle City-Ticket',
                 'A-Welle Modul-Abo',
@@ -170,6 +171,7 @@ export class ZoneColorHelper {
                 'Ostwind Billett',
                 'Ostwind City-Ticket',
                 'Ostwind Modul-Abo',
+                'Vorarlberg OTV-VVV Abo & Billett',
                 'Vorarlberg OTV-VVV Abo &amp; Billett'
             ],
             colors: [
@@ -207,6 +209,7 @@ export class ZoneColorHelper {
         },
         {
             zonenplaene: [
+                'Schwyzerpass Abo & Billett',
                 'Schwyzerpass Abo &amp; Billett',
                 'Schwyzerpass City-Ticket',
                 'Schwyzerpass Kombi Abo Schwyz/Zug',
@@ -238,6 +241,7 @@ export class ZoneColorHelper {
         },
         {
             zonenplaene: [
+                'Unireso Abo & Billett',
                 'Unireso Abo &amp; Billett',
                 'Unireso Abo@Swisspass Unireso',
                 'Unireso City-Ticket',
@@ -262,7 +266,6 @@ export class ZoneColorHelper {
                 'Vagabond Abo',
                 'Vagabond City-Ticket',
                 'Vagabond Modul-Abo',
-
             ],
             colors: [
                 {color: '#DFBCAC', zones: [10]},
@@ -284,10 +287,12 @@ export class ZoneColorHelper {
         },
         {
             zonenplaene: [
+                'Z-Pass A-Welle-ZVV Abo & Billett',
                 'Z-Pass A-Welle-ZVV Abo &amp; Billett',
+                'Z-Pass Ostwind-ZVV Abo & Billett',
                 'Z-Pass Ostwind-ZVV Abo &amp; Billett',
+                'Z-Pass Schwyz/Zug-ZVV Abo & Billett',
                 'Z-Pass Schwyz/Zug-ZVV Abo &amp; Billett',
-
             ],
             colors: [
                 {color: '#F6F6F6', zones: [110, 120]},
@@ -312,6 +317,7 @@ export class ZoneColorHelper {
         },
         {
             zonenplaene: [
+                'Zugerpass Abo & Billett',
                 'Zugerpass Abo &amp; Billett',
                 'Zugerpass City-Ticket',
                 'Zugerpass Modul-Abo'
@@ -325,10 +331,11 @@ export class ZoneColorHelper {
         },
         {
             zonenplaene: [
+                'ZVV Abo & Billett',
                 'ZVV Abo &amp; Billett',
                 'ZVV Albis-Tageskarte',
+                'ZVV City-Ticket &  Modul-Abo',
                 'ZVV City-Ticket &amp;  Modul-Abo',
-
             ],
             colors: [
                 {color: '#F6F6F6', zones: [110, 120]},

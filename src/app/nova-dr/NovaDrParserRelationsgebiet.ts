@@ -1,12 +1,11 @@
-import {NovaDrSchema, NovaDrSchemaRelationsgebiet} from './NovaDrSchema';
+import {NovaDrSchemaRelationsgebiet} from './NovaDrSchema';
 import {Relationsgebiet, RelationsgebietJson} from '../model/relationsgebiet';
 import {StringMapSer} from '../shared/string-map-ser';
 import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 
 export class NovaDrParserRelationsgebiet {
-    public static parse(jsonDr: NovaDrSchema, stichdatum): StringMapSer<Relationsgebiet, RelationsgebietJson> {
-        const drRelationsgebietList = jsonDr.datenrelease.subsystemDVModell.relationsgebiete.relationsgebiet;
+    public static parse(drRelationsgebietList: NovaDrSchemaRelationsgebiet[], stichdatum): StringMapSer<Relationsgebiet, RelationsgebietJson> {
         const relationsgebietMap = new StringMapSer<Relationsgebiet, RelationsgebietJson>();
 
         for (const drRelationsgebiet of drRelationsgebietList) {

@@ -1,4 +1,4 @@
-import {NovaDrSchema, NovaDrSchemaZone} from './NovaDrSchema';
+import {NovaDrSchemaZone} from './NovaDrSchema';
 import {Kante, KanteJson} from '../model/kante';
 import {Zone} from '../model/zone';
 import {StringMapSer} from '../shared/string-map-ser';
@@ -7,8 +7,7 @@ import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 
 export class NovaDrParserZone {
-    public static parse(jsonDr: NovaDrSchema, stichdatum: string, kanteMap: StringMapSer<Kante, KanteJson>): StringMapSer<Zone, ZoneLikeJson> {
-        const drZonenList = jsonDr.datenrelease.subsystemZonenModell.zonen.zone;
+    public static parse(drZonenList: NovaDrSchemaZone[], stichdatum: string, kanteMap: StringMapSer<Kante, KanteJson>): StringMapSer<Zone, ZoneLikeJson> {
         const zonenMap = new StringMapSer<Zone, ZoneLikeJson>();
 
         for (const drZone of drZonenList) {

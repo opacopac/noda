@@ -3,8 +3,8 @@ import {first, map} from 'rxjs/operators';
 import {StorageService} from '../../services/storage.service';
 import {AppStateService} from '../../services/app-state.service';
 import {DrData} from '../../model/dr-data';
-import {NovaDrParser} from '../../nova-dr/NovaDrParser';
 import {Observable} from 'rxjs';
+import {NovaDrParser} from '../../nova-dr/NovaDrParser';
 
 
 @Component({
@@ -29,7 +29,7 @@ export class MenuComponent implements OnInit {
 
 
     ngOnInit() {
-       this.loadPreparedDr();
+       // this.loadPreparedDr();
     }
 
 
@@ -104,30 +104,33 @@ export class MenuComponent implements OnInit {
     private uploadFile(file: File) {
         console.log('uploading file...');
 
-        this.appStateService.setIsLoading(true);
+        const filename = file.name.toLowerCase();
+        if (filename.endsWith('.xml')) {
+            console.log('xml file detected');
+            this.appStateService.setIsLoading(true);
 
-        const reader = new FileReader();
-        reader.onload = (ev: ProgressEvent) => {
-            console.log('uploading file completed');
+            const parser = new NovaDrParser();
+            parser.parseXmlFile(file)
+                .then((drData) => {
+                    this.appStateService.setIsLoading(false);
+                    this.appStateService.updateDrData(drData);
+                });
+        } else if (filename.endsWith('.json')) {
+            console.log('json file detected');
+            this.appStateService.setIsLoading(true);
 
-            const filename = file.name.toLowerCase();
-            let drData: DrData;
-            if (filename.endsWith('.xml')) {
-                console.log('xml file detected');
-                drData = NovaDrParser.processXmlContent(reader.result as string);
-            } else if (filename.endsWith('.json')) {
-                console.log('json file detected');
-                drData = this.storageService.deserializeDrData(reader.result as string);
-            } else {
-                console.log('unknown file format');
-                return;
-            }
-
-            this.appStateService.setIsLoading(false);
-            this.appStateService.updateDrData(drData);
-        };
-
-        reader.readAsText(file);
+            const reader = new FileReader();
+            reader.onload = (ev: ProgressEvent) => {
+                console.log('uploading file completed');
+                const drData = this.storageService.deserializeDrData(reader.result as string);
+                this.appStateService.setIsLoading(false);
+                this.appStateService.updateDrData(drData);
+            };
+            reader.readAsText(file);
+        } else {
+            console.log('unknown file format');
+            return;
+        }
     }
 
 

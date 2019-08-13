@@ -1,5 +1,5 @@
 import {isArray} from 'util';
-import {NovaDrSchema, NovaDrSchemaRtmRelation} from './NovaDrSchema';
+import {NovaDrSchemaRtmRelation} from './NovaDrSchema';
 import {Relationsgebiet, RelationsgebietJson} from '../model/relationsgebiet';
 import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
 import {StringMapSer} from '../shared/string-map-ser';
@@ -8,13 +8,11 @@ import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 export class NovaDrParserRelation {
     public static parse(
-        jsonDr: NovaDrSchema,
+        drRelationList: NovaDrSchemaRtmRelation[],
         stichdatum: string,
         hstMap: StringMapSer<Haltestelle, HaltestelleJson>,
         relationsgebietMap: StringMapSer<Relationsgebiet, RelationsgebietJson>
     ) {
-        const drRelationList = jsonDr.datenrelease.subsystemDVModell.rtmRelationen.rtmRelation;
-
         for (const drRelations of drRelationList) {
             const id = NovaDrParserHelper.parseIdAttribute(drRelations);
             const relationsgebiet = this.parseRelation(id, drRelations, stichdatum, hstMap, relationsgebietMap);

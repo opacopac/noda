@@ -1,4 +1,4 @@
-import {NovaDrSchema, NovaDrSchemaKante} from './NovaDrSchema';
+import {NovaDrSchemaKante} from './NovaDrSchema';
 import {Haltestelle, HaltestelleJson} from '../model/haltestelle';
 import {Kante, KanteJson, VerkehrsmittelTyp} from '../model/kante';
 import {StringMap, StringMapSer} from '../shared/string-map-ser';
@@ -8,12 +8,11 @@ import {Verwaltung} from '../model/verwaltung';
 
 export class NovaDrParserKante {
     public static parse(
-        jsonDr: NovaDrSchema,
+        drKanteList: NovaDrSchemaKante[],
         stichdatum: string,
         hstMap: StringMapSer<Haltestelle, HaltestelleJson>,
         verwaltungMap: StringMap<Verwaltung>
     ): StringMapSer<Kante, KanteJson> {
-        const drKanteList = jsonDr.datenrelease.subsystemNetz.kanten.kante;
         const kanteMap: StringMapSer<Kante, KanteJson> = new StringMapSer<Kante, KanteJson>();
 
         for (const drKante of drKanteList) {

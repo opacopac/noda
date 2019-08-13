@@ -1,4 +1,4 @@
-import {NovaDrSchema, NovaDrSchemaAnkerpunkt, NovaDrSchemaInterbereich} from './NovaDrSchema';
+import {NovaDrSchemaAnkerpunkt, NovaDrSchemaInterbereich} from './NovaDrSchema';
 import {Kante, KanteJson} from '../model/kante';
 import {Interbereich, InterbereichJson} from '../model/interbereich';
 import {StringMapSer} from '../shared/string-map-ser';
@@ -9,13 +9,12 @@ import {NovaDrParserHelper} from './NovaDrParserHelper';
 
 export class NovaDrParserInterbereich {
     public static parse(
-        jsonDr: NovaDrSchema,
+        drInterbereichList: NovaDrSchemaInterbereich[],
         stichdatum: string,
         hstMap: StringMapSer<Haltestelle, HaltestelleJson>,
         kanteMap: StringMapSer<Kante, KanteJson>
     ): StringMapSer<Interbereich, InterbereichJson> {
         const interbereichMap = new StringMapSer<Interbereich, InterbereichJson>();
-        const drInterbereichList = NovaDrParserHelper.asArray(jsonDr.datenrelease.subsystemInterModell.interBereiche.interBereich);
 
         for (const drInterbereich of drInterbereichList) {
             const id = NovaDrParserHelper.parseIdAttribute(drInterbereich);
