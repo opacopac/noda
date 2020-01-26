@@ -16,8 +16,8 @@ import {Kante} from '../../model/kante';
     styleUrls: ['./map.component.css'],
 })
 export class MapComponent implements OnInit {
-    @ViewChild(OlOverlayHaltestelleComponent) mapOverlayHaltestelleComponent: OlOverlayHaltestelleComponent;
-    @ViewChild(OlOverlayKanteComponent) mapOverlayKanteComponent: OlOverlayKanteComponent;
+    @ViewChild(OlOverlayHaltestelleComponent, {static: true}) mapOverlayHaltestelleComponent: OlOverlayHaltestelleComponent;
+    @ViewChild(OlOverlayKanteComponent, {static: true}) mapOverlayKanteComponent: OlOverlayKanteComponent;
     public selectedHaltestelle$: Observable<Haltestelle>;
     private selectedHaltestelleSubscription: Subscription;
     public selectedKante$: Observable<Kante>;

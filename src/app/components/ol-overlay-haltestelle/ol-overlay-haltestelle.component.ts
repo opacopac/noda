@@ -15,7 +15,7 @@ import {VerkehrsmittelTyp} from '../../model/kante';
 export class OlOverlayHaltestelleComponent extends OlOverlayBase implements OnInit {
     public VerkehrsmittelTyp = VerkehrsmittelTyp;
     public haltestelle: Haltestelle;
-    @ViewChild('container') container: ElementRef;
+    @ViewChild('container', {static: true}) container: ElementRef;
 
 
     public constructor(

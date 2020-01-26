@@ -17,7 +17,7 @@ import {Zonenplan} from '../../model/zonenplan';
 export class OlOverlayKanteComponent extends OlOverlayBase implements OnInit {
     public VerkehrsmittelTyp = VerkehrsmittelTyp;
     public kante: Kante;
-    @ViewChild('container') container: ElementRef;
+    @ViewChild('container', {static: true}) container: ElementRef;
 
 
     public constructor(

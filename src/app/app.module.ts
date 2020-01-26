@@ -6,14 +6,21 @@ import {AppComponent} from './app.component';
 import {MapComponent} from './components/map/map.component';
 import {NavBarComponent} from './components/nav-bar/nav-bar.component';
 import {MenuComponent} from './components/menu/menu.component';
-import {
-    MatAutocompleteModule,
-    MatButtonModule, MatCardModule,
-    MatCheckboxModule, MatDividerModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule,
-    MatProgressBarModule, MatProgressSpinnerModule,
-    MatRadioModule, MatSelectModule, MatSlideToggleModule,
-    MatToolbarModule
-} from '@angular/material';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import 'hammerjs';
 import {ReactiveFormsModule} from '@angular/forms';
 import { OlOverlayHaltestelleComponent } from './components/ol-overlay-haltestelle/ol-overlay-haltestelle.component';
