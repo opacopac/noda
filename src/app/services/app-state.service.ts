@@ -193,10 +193,12 @@ export class AppStateService {
     }
 
 
-    public updateDrData(drData: DrData) {
+    public updateDrData(drData: DrData, redraw: boolean) {
         this.appState.drData = drData;
         this.appState.hstQuadTree = PrecalcHelper.precalc(drData);
-        this.drawDataItems();
+        if (redraw) {
+            this.drawDataItems();
+        }
         this.onStateChanged();
     }
 
@@ -205,6 +207,7 @@ export class AppStateService {
         const linienJson = JSON.parse(linienJsonString);
         this.appState.linien = Linie.fromJSON(linienJson, this.appState.drData.haltestellen, this.appState.drData.kanten);
         PrecalcHelper.createLinienLut(this.appState.linien);
+        this.drawDataItems();
         this.onStateChanged();
     }
 

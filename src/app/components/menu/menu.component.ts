@@ -13,8 +13,8 @@ import {NovaDrParser} from '../../nova-dr/NovaDrParser';
     styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-    private readonly STAMMDATEN_JSON_URL = 'http://www.tschanz.com/noda/tmp/stammdaten.json';
-    private readonly LINIEN_JSON_URL = 'http://www.tschanz.com/noda/tmp/linien.json';
+    private readonly STAMMDATEN_JSON_URL = 'https://www.tschanz.com/noda/tmp/stammdaten.json';
+    private readonly LINIEN_JSON_URL = 'https://www.tschanz.com/noda/tmp/linien.json';
     public readonly cropZones$: Observable<boolean>;
 
 
@@ -46,7 +46,7 @@ export class MenuComponent implements OnInit {
             console.log('loading prepared dr completed');
 
             const drData = this.storageService.deserializeDrData(response);
-            this.appStateService.updateDrData(drData);
+            this.appStateService.updateDrData(drData, false);
             this.appStateService.setIsLoading(false);
 
             this.loadLinien();
@@ -113,7 +113,7 @@ export class MenuComponent implements OnInit {
             parser.parseXmlFile(file)
                 .then((drData) => {
                     this.appStateService.setIsLoading(false);
-                    this.appStateService.updateDrData(drData);
+                    this.appStateService.updateDrData(drData, true);
                 });
         } else if (filename.endsWith('.json')) {
             console.log('json file detected');
@@ -124,7 +124,7 @@ export class MenuComponent implements OnInit {
                 console.log('uploading file completed');
                 const drData = this.storageService.deserializeDrData(reader.result as string);
                 this.appStateService.setIsLoading(false);
-                this.appStateService.updateDrData(drData);
+                this.appStateService.updateDrData(drData, true);
             };
             reader.readAsText(file);
         } else {

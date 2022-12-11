@@ -21,7 +21,7 @@ export class AppState {
     public showHst = true;
     public showHstLabels = false;
     public showKantenLabels = false;
-    public showLinien = false;
+    public showLinien = true;
     public selectedZonenplan: Zonenplan;
     public selectedInterbereich: Interbereich;
     public selectedRelationsgebiet: Relationsgebiet;
