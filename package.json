@@ -20,7 +20,7 @@
     "@angular/material": "^21.2.12",
     "@angular/platform-browser": "^21.2.14",
     "@angular/platform-browser-dynamic": "^21.2.14",
-    "@angular/router": "^21.2.14",
+    "@angular/router": "^21.2.24",
     "@turf/turf": "^5.1.6",
     "@types/file-saver": "^2.0.1",
     "@types/jszip": "^3.1.7",
